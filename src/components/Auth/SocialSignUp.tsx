@@ -1,12 +1,13 @@
 import React from "react";
-import { signIn } from "next-auth/react";
 
 
 const SocialSignUp = () => {
     return (
         <div className="flex gap-4">
             <button
-                onClick={() => signIn("google")}
+                onClick={() => {
+                    alert("Google sign-up.");
+                }}
                 className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-border hover:bg-herobg p-3.5 text-dark duration-200 ease-in dark:border-dark_border dark:text-white dark:hover:bg-darkmode"
             >
                 Sign Up
@@ -49,7 +50,9 @@ const SocialSignUp = () => {
             </button>
 
             <button
-                onClick={() => signIn("github")}
+                onClick={() => {
+                    alert("GitHub sign-up.");
+                }}
                 className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-border hover:bg-herobg p-3.5 text-dark duration-200 ease-in dark:border-dark_border dark:text-white dark:hover:bg-darkmode"
             >
                 Sign Up

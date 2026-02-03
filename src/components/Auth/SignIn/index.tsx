@@ -1,5 +1,5 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
+
 import Link from "next/link";
 import { useContext, useState } from "react";
 import SocialSignIn from "../SocialSignIn";
@@ -9,7 +9,6 @@ import toast, { Toaster } from "react-hot-toast";
 import AuthDialogContext from "@/app/context/AuthDialogContext";
 
 const Signin = ({ signInOpen }: { signInOpen?: any }) => {
-  const { data: session } = useSession();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,34 +17,40 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when submitting
+    setLoading(true);
+    setError("");
 
-    const result = await signIn("credentials", {
-      redirect: false,
-      username,
-      password,
-    });
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // 🔥 important for cookies
+          body: JSON.stringify({ username, password }),
+        }
+      );
 
-    setLoading(false); // Set loading to false once the sign-in attempt completes
+      const data = await res.json();
 
-    if (result?.error) {
-      setError(result.error);
-      toast.error(result.error); // Display toast for error
-    }
+      if (!res.ok) {
+        throw new Error(data.message || "Invalid credentials");
+      }
 
-    if (result?.status === 200) {
-      setTimeout(() => {
-        signInOpen(false); // Close the modal/dialog after a successful sign-in
-      }, 1200);
-      authDialog?.setIsSuccessDialogOpen(true); // Open success dialog
-      setTimeout(() => {
-        authDialog?.setIsSuccessDialogOpen(false); // Close success dialog after 1.1s
-      }, 1100);
-    } else {
-      authDialog?.setIsFailedDialogOpen(true); // Open failed dialog
-      setTimeout(() => {
-        authDialog?.setIsFailedDialogOpen(false); // Close failed dialog after 1.1s
-      }, 1100);
+      toast.success("Signed in successfully");
+
+      signInOpen?.(false);
+
+      authDialog?.setIsSuccessDialogOpen(true);
+      setTimeout(() => authDialog?.setIsSuccessDialogOpen(false), 1100);
+    } catch (err: any) {
+      setError(err.message);
+      toast.error(err.message);
+
+      authDialog?.setIsFailedDialogOpen(true);
+      setTimeout(() => authDialog?.setIsFailedDialogOpen(false), 1100);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,7 +59,9 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
       <div className="mb-10 text-center mx-auto inline-block max-w-40">
         <Logo />
       </div>
+
       <SocialSignIn />
+
       <span className="z-1 relative my-8 block text-center">
         <span className="-z-1 absolute left-0 top-1/2 block h-px w-full bg-border dark:bg-dark_border"></span>
         <span className="text-body-secondary relative z-10 inline-block bg-white px-3 text-base dark:bg-dark">
@@ -62,6 +69,7 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
         </span>
         <Toaster />
       </span>
+
       <form onSubmit={handleSubmit}>
         <div className="mb-5.5">
           <input
@@ -70,9 +78,10 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
             required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full rounded-md border placeholder:text-gray-400  border-border dark:border-dark_border border-solid bg-transparent px-5 py-3 text-base text-dark outline-hidden transition  focus:border-primary focus-visible:shadow-none dark:border-border_color dark:text-white dark:focus:border-primary"
+            className="w-full rounded-md border border-border bg-transparent px-5 py-3"
           />
         </div>
+
         <div className="mb-5.5">
           <input
             type="password"
@@ -80,28 +89,28 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
             value={password}
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-border dark:border-dark_border border-solid bg-transparent px-5 py-3 text-base text-dark outline-hidden transition  focus:border-primary focus-visible:shadow-none dark:border-border_color dark:text-white dark:focus:border-primary"
+            className="w-full rounded-md border border-border bg-transparent px-5 py-3"
           />
         </div>
+
         <div className="mb-9">
           <button
             type="submit"
-            className="flex w-full cursor-pointer items-center justify-center rounded-md border border-primary bg-primary hover:bg-darkprimary dark:hover:bg-darkprimary! px-5 py-3 text-base text-white transition duration-300 ease-in-out "
-            disabled={loading} // Disable button while loading
+            disabled={loading}
+            className="flex w-full items-center justify-center rounded-md bg-primary px-5 py-3 text-white"
           >
             Sign In
-            {loading && <Loader />} {/* Show loader when loading */}
+            {loading && <Loader />}
           </button>
         </div>
       </form>
-      {error && <div className="text-red-500">{error}</div>}{" "}
-      {/* Display error message */}
-      <Link
-        href="/"
-        className="mb-2 inline-block text-base text-dark hover:text-primary dark:text-white dark:hover:text-primary"
-      >
+
+      {error && <div className="text-red-500">{error}</div>}
+
+      <Link href="/" className="mb-2 inline-block text-base">
         Forget Password?
       </Link>
+
       <p className="text-body-secondary text-base">
         Not a member yet?{" "}
         <Link href="/" className="text-primary hover:underline">
