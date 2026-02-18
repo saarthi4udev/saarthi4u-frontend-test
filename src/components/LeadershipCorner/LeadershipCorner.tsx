@@ -9,17 +9,22 @@ const LeadershipCorner = () => {
   const ref = useRef(null);
   const inView = useInView(ref);
 
-  /* SAME animation style as Payment */
-  const topAnimation = {
-    initial: { y: "-100%", opacity: 0 },
-    animate: inView ? { y: 0, opacity: 1 } : { y: "-100%", opacity: 0 },
-    transition: { duration: 1, delay: 0.3 },
+  const badgeAnimation = {
+    initial: { opacity: 0, y: -20 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 },
+    transition: { duration: 0.6 },
   };
 
   const cardAnimation = {
-    initial: { y: "100%", opacity: 0 },
-    animate: inView ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 },
-    transition: { duration: 1, delay: 0.6 },
+    initial: { opacity: 0, y: 30, scale: 0.95 },
+    animate: inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 },
+    transition: { duration: 0.8, delay: 0.2 },
+  };
+
+  const contentAnimation = {
+    initial: { opacity: 0 },
+    animate: inView ? { opacity: 1 } : { opacity: 0 },
+    transition: { duration: 0.6, delay: 0.4 },
   };
 
   return (
@@ -31,7 +36,7 @@ const LeadershipCorner = () => {
 
         {/* TOP BADGE */}
         <motion.div
-          {...topAnimation}
+          {...badgeAnimation}
           className="flex justify-center mb-10"
         >
           <span
@@ -48,35 +53,53 @@ const LeadershipCorner = () => {
         <div className="flex justify-center">
           <motion.div
             {...cardAnimation}
+            whileHover={{ y: -8 }}
+            transition={{ duration: 0.3 }}
             className="
               w-full max-w-4xl
               rounded-3xl p-10 md:p-12
               bg-gradient-to-br from-slate-900 to-slate-800
               dark:from-slate-800 dark:to-slate-900
-              text-white shadow-xl relative overflow-hidden
+              text-white shadow-xl relative overflow-hidden hover:shadow-2xl transition-shadow
             "
           >
             {/* Decorative Accent */}
-            <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-primary/10" />
+            <motion.div
+              className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-primary/10"
+              animate={{ opacity: [0.1, 0.2, 0.1] }}
+              transition={{ duration: 4, repeat: Infinity }}
+            />
 
             {/* PROFILE */}
-            <div className="flex items-center gap-4 mb-8 relative z-10">
-              <Image
-                src="/images/leadership/ceo.jpeg"
-                alt="Deepshikha V Jain"
-                width={56}
-                height={56}
-                className="rounded-full border-2 border-white"
-              />
-              <div>
+            <motion.div
+              {...contentAnimation}
+              className="flex items-center gap-4 mb-8 relative z-10"
+            >
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Image
+                  src="/images/leadership/ceo.jpeg"
+                  alt="Deepshikha V Jain"
+                  width={56}
+                  height={56}
+                  className="rounded-full border-2 border-white"
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
                 <h4 className="font-semibold text-lg">
                   Deepshikha V Jain
                 </h4>
                 <p className="text-sm text-white/70">
                   CEO & Co-founder · Saarthi4u Education
                 </p>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* MESSAGE */}
             <div className="space-y-5 text-white/90 leading-relaxed relative z-10 text-base md:text-lg">

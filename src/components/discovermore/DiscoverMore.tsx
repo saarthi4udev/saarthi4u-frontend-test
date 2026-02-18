@@ -42,17 +42,28 @@ const DiscoverMore = () => {
   const ref = useRef(null);
   const inView = useInView(ref);
 
-  /* SAME animation style as Payment */
-  const topAnimation = {
-    initial: { y: "-100%", opacity: 0 },
-    animate: inView ? { y: 0, opacity: 1 } : { y: "-100%", opacity: 0 },
-    transition: { duration: 1, delay: 0.3 },
+  const badgeAnimation = {
+    initial: { opacity: 0, y: -20 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 },
+    transition: { duration: 0.6 },
   };
 
-  const bottomAnimation = (index: number) => ({
-    initial: { y: "100%", opacity: 0 },
-    animate: inView ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 },
-    transition: { duration: 1, delay: 0.3 + index * 0.2 },
+  const titleAnimation = {
+    initial: { opacity: 0, y: 20 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
+    transition: { duration: 0.8, delay: 0.1 },
+  };
+
+  const descriptionAnimation = {
+    initial: { opacity: 0, y: 20 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
+    transition: { duration: 0.8, delay: 0.2 },
+  };
+
+  const cardAnimation = (index: number) => ({
+    initial: { opacity: 0, y: 30 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 },
+    transition: { duration: 0.6, delay: 0.3 + index * 0.08 },
   });
 
   return (
@@ -63,7 +74,7 @@ const DiscoverMore = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
 
         {/* BADGE */}
-        <motion.div {...topAnimation} className="flex justify-center mb-6">
+        <motion.div {...badgeAnimation} className="flex justify-center mb-6">
           <span className="px-6 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300">
             EXPLORE MORE
           </span>
@@ -71,7 +82,7 @@ const DiscoverMore = () => {
 
         {/* HEADING */}
         <motion.h2
-          {...topAnimation}
+          {...titleAnimation}
           className="text-40 md:text-48 font-semibold text-center text-gray-900 dark:text-white"
         >
           Discover <span className="text-blue-600">More</span>
@@ -79,7 +90,7 @@ const DiscoverMore = () => {
 
         {/* SUBTITLE */}
         <motion.p
-          {...topAnimation}
+          {...descriptionAnimation}
           className="mt-4 max-w-3xl mx-auto text-center text-gray-600 dark:text-gray-300 text-18"
         >
           Find your perfect academic path with Saarthi4u, simplifying complex
@@ -91,37 +102,49 @@ const DiscoverMore = () => {
           {discoverItems.map((item, index) => (
             <motion.div
               key={index}
-              {...bottomAnimation(index)}
+              {...cardAnimation(index)}
             >
-              <Link
-                href={item.href}
-                className="
-                  group
-                  bg-gray-50
-                  dark:bg-gray-900
-                  rounded-2xl
-                  p-6
-                  flex flex-col items-center text-center
-                  border border-gray-200 dark:border-gray-700
-                  shadow-sm hover:shadow-lg transition-all
-                "
+              <motion.div
+                whileHover={{ y: -8 }}
+                transition={{ duration: 0.3 }}
               >
-                {/* IMAGE */}
-                <div className="w-28 h-28 rounded-xl overflow-hidden mb-6 bg-white">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    width={120}
-                    height={120}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                <Link
+                  href={item.href}
+                  className="
+                    group
+                    bg-gray-50
+                    dark:bg-gray-900
+                    rounded-2xl
+                    p-6
+                    flex flex-col items-center text-center
+                    border border-gray-200 dark:border-gray-700
+                    shadow-sm hover:shadow-lg transition-all
+                  "
+                >
+                  {/* IMAGE */}
+                  <motion.div
+                    className="w-28 h-28 rounded-xl overflow-hidden mb-6 bg-white"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      width={120}
+                      height={120}
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
 
-                {/* TITLE */}
-                <h3 className="text-18 font-medium text-gray-900 dark:text-white group-hover:text-blue-600 transition">
-                  {item.title}
-                </h3>
-              </Link>
+                  {/* TITLE */}
+                  <motion.h3
+                    className="text-18 font-medium text-gray-900 dark:text-white group-hover:text-blue-600 transition"
+                    whileHover={{ letterSpacing: "0.5px" }}
+                  >
+                    {item.title}
+                  </motion.h3>
+                </Link>
+              </motion.div>
             </motion.div>
           ))}
         </div>

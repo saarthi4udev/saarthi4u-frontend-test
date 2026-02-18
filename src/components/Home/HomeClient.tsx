@@ -5,6 +5,7 @@ import { useAuth } from "@/app/context/AuthContext";
 
 import Hero from "@/components/Home/Hero";
 import DiscoverMore from "@/components/discovermore/DiscoverMore";
+import ExploreColleges from "@/components/Home/ExploreColleges";
 import EducationalPartners from "@/components/Educationpatner/EducationalPartners";
 import LeadershipCorner from "@/components/LeadershipCorner/LeadershipCorner";
 import UpdateProfileDialog from "./UpdateProfileDialog";
@@ -23,6 +24,7 @@ export default function HomeClient() {
     <>
       <Hero />
       <DiscoverMore />
+      <ExploreColleges />
       <EducationalPartners />
       <LeadershipCorner />
 

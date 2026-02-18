@@ -26,17 +26,28 @@ const EducationalPartners = () => {
   const ref = useRef(null);
   const inView = useInView(ref);
 
-  /* SAME animation pattern as other sections */
-  const topAnimation = {
-    initial: { y: "-100%", opacity: 0 },
-    animate: inView ? { y: 0, opacity: 1 } : { y: "-100%", opacity: 0 },
-    transition: { duration: 1, delay: 0.3 },
+  const badgeAnimation = {
+    initial: { opacity: 0, y: -20 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 },
+    transition: { duration: 0.6 },
   };
 
-  const bottomAnimation = (index: number) => ({
-    initial: { y: "100%", opacity: 0 },
-    animate: inView ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 },
-    transition: { duration: 1, delay: 0.4 + index * 0.3 },
+  const titleAnimation = {
+    initial: { opacity: 0, y: 20 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
+    transition: { duration: 0.8, delay: 0.1 },
+  };
+
+  const descriptionAnimation = {
+    initial: { opacity: 0, y: 20 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
+    transition: { duration: 0.8, delay: 0.2 },
+  };
+
+  const cardAnimation = (index: number) => ({
+    initial: { opacity: 0, y: 30 },
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 },
+    transition: { duration: 0.6, delay: 0.3 + index * 0.1 },
   });
 
   return (
@@ -47,7 +58,7 @@ const EducationalPartners = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
 
         {/* BADGE */}
-        <motion.div {...topAnimation} className="flex justify-center mb-6">
+        <motion.div {...badgeAnimation} className="flex justify-center mb-6">
           <span className="px-6 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary dark:bg-primary/20">
             TRUSTED PARTNERS
           </span>
@@ -55,7 +66,7 @@ const EducationalPartners = () => {
 
         {/* HEADING */}
         <motion.h2
-          {...topAnimation}
+          {...titleAnimation}
           className="text-40 md:text-48 font-semibold text-center text-midnight_text dark:text-white"
         >
           Our Educational <span className="text-primary">Partners</span>
@@ -63,7 +74,7 @@ const EducationalPartners = () => {
 
         {/* SUBTITLE */}
         <motion.p
-          {...topAnimation}
+          {...descriptionAnimation}
           className="mt-4 max-w-3xl mx-auto text-center text-muted dark:text-white/80 text-18"
         >
           Collaborating with top institutions to provide quality education
@@ -74,49 +85,83 @@ const EducationalPartners = () => {
           {partners.map((partner, index) => (
             <motion.div
               key={index}
-              {...bottomAnimation(index)}
-              className="
-                bg-white dark:bg-[#0f172a]
-                rounded-3xl p-8
-                shadow-md hover:shadow-xl transition-all duration-300
-                border border-border dark:border-white/10
-              "
+              {...cardAnimation(index)}
             >
-              {/* LOGO */}
-              <div
+              <motion.div
+                whileHover={{ y: -8 }}
+                transition={{ duration: 0.3 }}
                 className="
-                  rounded-2xl
-                  bg-white dark:bg-white
+                  bg-white dark:bg-[#0f172a]
+                  rounded-3xl p-8
+                  shadow-md hover:shadow-xl transition-all duration-300
                   border border-border dark:border-white/10
-                  p-10 flex justify-center items-center
                 "
               >
-                <Image
-                  src={partner.logo}
-                  alt={partner.name}
-                  width={120}
-                  height={120}
-                  className="object-contain"
-                />
-              </div>
+                {/* LOGO */}
+                <motion.div
+                  className="
+                    rounded-2xl
+                    bg-white dark:bg-white
+                    border border-border dark:border-white/10
+                    p-10 flex justify-center items-center
+                  "
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Image
+                    src={partner.logo}
+                    alt={partner.name}
+                    width={120}
+                    height={120}
+                    className="object-contain"
+                  />
+                </motion.div>
 
-              {/* TEXT */}
-              <div className="text-center mt-8">
-                <h3 className="text-20 font-semibold text-midnight_text dark:text-white">
-                  {partner.name}
-                </h3>
-                <p className="mt-2 text-muted dark:text-white/80">
-                  {partner.description}
-                </p>
-              </div>
+                {/* TEXT */}
+                <motion.div
+                  className="text-center mt-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <motion.h3
+                    className="text-20 font-semibold text-midnight_text dark:text-white"
+                    whileHover={{ letterSpacing: "0.5px" }}
+                  >
+                    {partner.name}
+                  </motion.h3>
+                  <motion.p
+                    className="mt-2 text-muted dark:text-white/80"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.15 }}
+                  >
+                    {partner.description}
+                  </motion.p>
+                </motion.div>
 
-              {/* VERIFIED */}
-              <div className="mt-8 flex justify-center items-center gap-2 text-primary font-medium">
-                <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-white text-xs">
-                  ✓
-                </span>
-                Verified Partner
-              </div>
+                {/* VERIFIED */}
+                <motion.div
+                  className="mt-8 flex justify-center items-center gap-2 text-primary font-medium"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <motion.span
+                    className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-white text-xs"
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatType: "loop",
+                    }}
+                  >
+                    ✓
+                  </motion.span>
+                  Verified Partner
+                </motion.div>
+              </motion.div>
             </motion.div>
           ))}
         </div>

@@ -30,7 +30,7 @@ const SocialSignIn = () => {
         "/auth/login/google",
         {},
         {
-          withCredentials: true, // ⭐ REQUIRED
+          withCredentials: true, //  to set cookies from backend
           headers: {
             Authorization: `Bearer ${token}`,
           },
