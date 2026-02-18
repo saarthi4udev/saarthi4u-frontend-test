@@ -7,14 +7,16 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 
 interface CollegeDetailPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-export default function CollegeDetailPage({
-  params: { slug },
-}: CollegeDetailPageProps) {
+export default async function CollegeDetailPage({
+  params,
+}: Readonly<CollegeDetailPageProps>) {
+  const { slug } = await params;
+
   const college = colleges.find((c) => c.slug === slug);
 
   if (!college) {
