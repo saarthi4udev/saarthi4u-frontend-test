@@ -3,9 +3,10 @@ import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { ThemeProvider } from "next-themes";
-import { AuthDialogProvider } from "./context/AuthDialogContext";
 import ScrollToTop from "@/components/ScrollToTop";
-import AuthProvider from "@/components/Providers/AuthProvider";
+import WhatsAppFloat from "@/components/Common/WhatsAppFloat";
+import { AuthProvider } from "./context/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 const dmsans = DM_Sans({ subsets: ["latin"] });
 
@@ -17,20 +18,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={dmsans.className}>
-        <AuthDialogProvider>
-          <AuthProvider>
-            <ThemeProvider
-              attribute="class"
-              enableSystem={false}
-              defaultTheme="light"
-            >
-              <Header />
-              {children}
-              <Footer />
-              <ScrollToTop />
-            </ThemeProvider>
-          </AuthProvider>
-        </AuthDialogProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            enableSystem={false}
+            defaultTheme="light"
+          >
+            <Header />
+            <Toaster position="top-center" reverseOrder={false} />
+            {children}
+            <Footer />
+            <WhatsAppFloat />
+            <ScrollToTop />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

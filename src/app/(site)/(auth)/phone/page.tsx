@@ -1,9 +1,10 @@
-import Signin from "@/components/Auth/SignIn";
+
+import PhoneAuthClient from "@/components/Auth/PhoneAuth/PhoneAuthClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title:
-    "Sign In | Saarthi4u",
+    "Phone Login | Saarthi4u",
 };
 
 const SigninPage = () => {
@@ -12,7 +13,7 @@ const SigninPage = () => {
         <div className="mx-auto max-w-c-1315 px-4 md:px-8 xl:px-0">
           <div className="flex flex-col items-center justify-center">
             <div className="w-full max-w-md rounded-lg bg-white p-8 dark:bg-midnight_text">
-              <Signin />
+              <PhoneAuthClient />
             </div>
           </div>
         </div>

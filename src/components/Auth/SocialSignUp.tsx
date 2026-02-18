@@ -1,16 +1,63 @@
-import React from "react";
+"use client";
 
+import api from "@/app/api/axios";
+import { firebaseApp } from "@/app/firebase";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const SocialSignUp = () => {
+    const router = useRouter();
+
+    const handleGoogleSignIn = async () => {
+        try {
+            const provider = new GoogleAuthProvider();
+
+            provider.setCustomParameters({
+                prompt: "select_account",
+            });
+
+            const auth = getAuth(firebaseApp);
+
+            // Firebase popup
+            const result = await signInWithPopup(auth, provider);
+
+            // Firebase ID token
+            const token = await result.user.getIdToken();
+
+            // Send token to backend
+            await api.post(
+                "/auth/login/google",
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            toast.success("Google sign-in successful 🎉");
+
+            // Logged in
+            setTimeout(() => {
+                router.push("/");
+                globalThis.location.reload(); // reload to update auth state from cookie
+            }, 800);
+        } catch (err: any) {
+            console.error("Google sign-in failed", err);
+            alert(err.message || "Google sign-in failed");
+        }
+    };
+
     return (
         <div className="flex gap-4">
+            {/* GOOGLE */}
             <button
-                onClick={() => {
-                    alert("Google sign-up.");
-                }}
-                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-border hover:bg-herobg p-3.5 text-dark duration-200 ease-in dark:border-dark_border dark:text-white dark:hover:bg-darkmode"
+                onClick={handleGoogleSignIn}
+                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-border hover:bg-herobg p-3.5 duration-200 ease-in dark:border-dark_border dark:text-white dark:hover:bg-darkmode"
             >
-                Sign Up
+                Sign In
+                {/* Google SVG (unchanged) */}
                 <svg
                     width="23"
                     height="22"
@@ -49,13 +96,14 @@ const SocialSignUp = () => {
                 </svg>
             </button>
 
+            {/* Phone */}
             <button
                 onClick={() => {
-                    alert("GitHub sign-up.");
+                    router.push("/phone");
                 }}
                 className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-border hover:bg-herobg p-3.5 text-dark duration-200 ease-in dark:border-dark_border dark:text-white dark:hover:bg-darkmode"
             >
-                Sign Up
+                Sign In
                 <svg
                     width="22"
                     height="22"
@@ -64,10 +112,11 @@ const SocialSignUp = () => {
                     xmlns="http://www.w3.org/2000/svg"
                 >
                     <path
-                        d="M10.9997 1.83331C5.93773 1.83331 1.83301 6.04119 1.83301 11.232C1.83301 15.3847 4.45954 18.9077 8.10178 20.1505C8.55988 20.2375 8.72811 19.9466 8.72811 19.6983C8.72811 19.4743 8.71956 18.7338 8.71567 17.9485C6.16541 18.517 5.6273 16.8395 5.6273 16.8395C5.21032 15.7532 4.60951 15.4644 4.60951 15.4644C3.77785 14.8811 4.6722 14.893 4.6722 14.893C5.59272 14.9593 6.07742 15.8615 6.07742 15.8615C6.89499 17.2984 8.22184 16.883 8.74493 16.6429C8.82718 16.0353 9.06478 15.6208 9.32694 15.3861C7.2909 15.1484 5.15051 14.3425 5.15051 10.7412C5.15051 9.71509 5.5086 8.87661 6.09503 8.21844C5.99984 7.98167 5.68611 7.02577 6.18382 5.73115C6.18382 5.73115 6.95358 5.47855 8.70532 6.69458C9.43648 6.48627 10.2207 6.3819 10.9997 6.37836C11.7787 6.3819 12.5635 6.48627 13.2961 6.69458C15.0457 5.47855 15.8145 5.73115 15.8145 5.73115C16.3134 7.02577 15.9995 7.98167 15.9043 8.21844C16.4921 8.87661 16.8477 9.715 16.8477 10.7412C16.8477 14.351 14.7033 15.146 12.662 15.3786C12.9909 15.6702 13.2838 16.2423 13.2838 17.1191C13.2838 18.3766 13.2732 19.3888 13.2732 19.6983C13.2732 19.9485 13.4382 20.2415 13.9028 20.1492C17.5431 18.905 20.1663 15.3833 20.1663 11.232C20.1663 6.04119 16.0621 1.83331 10.9997 1.83331Z"
+                        d="M19.2762 15.2967L16.0695 13.9217C15.7926 13.8079 15.4852 13.7775 15.1912 13.8352C14.8971 13.8929 14.6293 14.0362 14.4228 14.2467L13.0037 15.6917C10.7736 14.6426 8.95833 12.8273 7.90917 10.5971L9.35417 9.17804C9.56471 8.97156 9.70802 8.70375 9.76569 8.40971C9.82336 8.11566 9.79295 7.80828 9.67917 7.53138L8.30417 4.32471C8.17891 4.03967 7.95839 3.80763 7.67982 3.66873C7.40125 3.52983 7.08197 3.4926 6.77833 3.56304L3.79667 4.24554C3.50238 4.31319 3.23971 4.47884 3.05187 4.71511C2.86403 4.95139 2.76199 5.24421 2.7625 5.54671C2.7625 13.9259 8.57417 19.7375 16.9533 19.7375C17.2558 19.738 17.5487 19.636 17.7849 19.4482C18.0212 19.2603 18.1869 18.9977 18.2545 18.7034L18.937 15.7217C19.0074 15.4181 18.9702 15.0988 18.8313 14.8202C18.6924 14.5416 18.4604 14.3211 18.1753 14.1959Z"
                         fill="currentColor"
                     />
                 </svg>
+
             </button>
         </div>
     );

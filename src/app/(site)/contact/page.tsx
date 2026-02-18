@@ -6,7 +6,7 @@ import HeroSub from "@/components/SharedComponents/HeroSub";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact | Nicktio",
+  title: "Contact | Saarthi4u",
 };
 
 const page = () => {

@@ -1,54 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+
 import SocialSignIn from "../SocialSignIn";
 import Logo from "@/components/Layout/Header/Logo";
 import Loader from "@/components/Common/Loader";
-import toast, { Toaster } from "react-hot-toast";
-import AuthDialogContext from "@/app/context/AuthDialogContext";
 
-const Signin = ({ signInOpen }: { signInOpen?: any }) => {
-  const [username, setUsername] = useState("");
+import { useAuth } from "@/app/context/AuthContext";
+import { authApi } from "@/app/api/auth.api";
+import { useRouter } from "next/navigation";
+
+const Signin = () => {
+  const router = useRouter();
+  const auth = useAuth();
+  const login = auth.login;
+  const { isAuthenticated, loading: authLoading } = useAuth();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const authDialog = useContext(AuthDialogContext);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.replace("/");
+    }
+  }, [isAuthenticated, authLoading, router]);
+
+  // Prevent flicker
+  if (authLoading || isAuthenticated) {
+    return null;
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setError(null);
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include", // 🔥 important for cookies
-          body: JSON.stringify({ username, password }),
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Invalid credentials");
-      }
-
-      toast.success("Signed in successfully");
-
-      signInOpen?.(false);
-
-      authDialog?.setIsSuccessDialogOpen(true);
-      setTimeout(() => authDialog?.setIsSuccessDialogOpen(false), 1100);
+      await authApi.login(email, password);
+      await login(); // 🔥 refresh profile from cookie
+      toast.success("Login successful 🎉");
+      // ✅ redirect after short delay so toast is visible
+      setTimeout(() => {
+        router.push("/");
+        globalThis.location.reload(); // reload to update auth state from cookie
+      }, 800);
     } catch (err: any) {
-      setError(err.message);
-      toast.error(err.message);
-
-      authDialog?.setIsFailedDialogOpen(true);
-      setTimeout(() => authDialog?.setIsFailedDialogOpen(false), 1100);
+      const message = err?.message || "Login failed";
+      toast.error(message);
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -56,6 +59,7 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
 
   return (
     <>
+
       <div className="mb-10 text-center mx-auto inline-block max-w-40">
         <Logo />
       </div>
@@ -63,21 +67,20 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
       <SocialSignIn />
 
       <span className="z-1 relative my-8 block text-center">
-        <span className="-z-1 absolute left-0 top-1/2 block h-px w-full bg-border dark:bg-dark_border"></span>
+        <span className="-z-1 absolute left-0 top-1/2 block h-px w-full bg-border dark:bg-dark_border" />
         <span className="text-body-secondary relative z-10 inline-block bg-white px-3 text-base dark:bg-dark">
           OR
         </span>
-        <Toaster />
       </span>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-5.5">
           <input
-            type="text"
-            placeholder="Username"
+            type="email"
+            placeholder="Email"
             required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-md border border-border bg-transparent px-5 py-3"
           />
         </div>
@@ -85,9 +88,9 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
         <div className="mb-5.5">
           <input
             type="password"
+            placeholder="Password"
             required
             value={password}
-            placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-md border border-border bg-transparent px-5 py-3"
           />
@@ -97,7 +100,7 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full items-center justify-center rounded-md bg-primary px-5 py-3 text-white"
+            className="flex w-full items-center justify-center rounded-md bg-primary px-5 py-3 text-white disabled:opacity-60"
           >
             Sign In
             {loading && <Loader />}
@@ -105,15 +108,15 @@ const Signin = ({ signInOpen }: { signInOpen?: any }) => {
         </div>
       </form>
 
-      {error && <div className="text-red-500">{error}</div>}
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
 
-      <Link href="/" className="mb-2 inline-block text-base">
+      <Link href="/forgot-password" className="mb-2 inline-block text-base">
         Forget Password?
       </Link>
 
       <p className="text-body-secondary text-base">
         Not a member yet?{" "}
-        <Link href="/" className="text-primary hover:underline">
+        <Link href="/signup" className="text-primary hover:underline">
           Sign Up
         </Link>
       </p>

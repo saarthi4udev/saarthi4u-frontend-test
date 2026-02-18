@@ -131,14 +131,14 @@ export const BeneifitImage = [
 export const footerLinks = {
   features: [
     { label: "Career Guidance", href: "/career-guidance" },
-    { label: "College Finder", href: "/colleges" },
+    { label: "College Finder", href: "/college" },
     { label: "Scholarships", href: "/scholarships" },
-    { label: "Entrance Exams", href: "/exams" },
+    { label: "Entrance Exams", href: "/exam" },
   ],
   resources: [
     { label: "About Us", href: "/about-us" },
     { label: "Blog", href: "/blog" },
-    { label: "FAQs", href: "/faqs" },
+    { label: "FAQs", href: "/faq" },
     { label: "Help Center", href: "/help" },
   ],
   platform: [
