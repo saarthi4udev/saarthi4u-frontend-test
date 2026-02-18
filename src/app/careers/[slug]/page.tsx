@@ -1,6 +1,11 @@
 import ClientOpening from './ClientOpening';
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const slug = params.slug;
+type PageProps = {
+  params: Promise<{ slug: string }>;
+};
+
+export default async function Page({ params }: Readonly<PageProps>) {
+  const { slug } = await params;
   return <ClientOpening slug={slug} />;
 }
+
