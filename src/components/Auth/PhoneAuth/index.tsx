@@ -104,6 +104,7 @@ const PhoneAuth = () => {
                 "/auth/login/phone",
                 {},
                 {
+                    withCredentials: true, // ⭐ REQUIRED
                     headers: {
                         Authorization: `Bearer ${idToken}`,
                     },

@@ -30,6 +30,7 @@ const SocialSignIn = () => {
         "/auth/login/google",
         {},
         {
+          withCredentials: true, // ⭐ REQUIRED
           headers: {
             Authorization: `Bearer ${token}`,
           },
