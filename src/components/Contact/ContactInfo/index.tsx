@@ -1,97 +1,143 @@
-import React from "react";
+"use client";
+
 import Link from "next/link";
+import { Icon } from "@iconify/react";
+import { motion } from "motion/react";
+
+const contactCards = [
+  {
+    title: "Business Email",
+    value: "info@saarthi4u.com",
+    href: "mailto:info@saarthi4u.com",
+    icon: "mdi:email-outline",
+    description: "For admissions, counselling, and support queries.",
+  },
+  {
+    title: "Call Support",
+    value: "+91 9930718925",
+    href: "tel:+919930718925",
+    icon: "mdi:phone-outline",
+    description: "Talk directly with our student guidance team.",
+  },
+  {
+    title: "Office Hours",
+    value: "Mon - Sat • 9:30 AM - 7:00 PM",
+    href: "#office-locations",
+    icon: "mdi:clock-time-four-outline",
+    description: "Fast responses during active support hours.",
+  },
+  {
+    title: "Quick Help",
+    value: "FAQs & Priority Support",
+    href: "/faq",
+    icon: "mdi:help-circle-outline",
+    description: "Get instant answers or continue with human support.",
+  },
+];
+
+const trustItems = [
+  "Dedicated student counselling support",
+  "Response within 24 working hours",
+  "Confidential and secure communication",
+];
 
 const ContactInfo = () => {
   return (
-    <section className="dark:bg-darkmode pt-8 pb-24">
-      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
-        <div className="mb-11 text-center w-full">
-          <h2 className="text-40 md:text-52 font-semibold text-midnight_text dark:text-white">
-  Let's Start Your <span className="text-[#FFFF00]">Journey</span> Together
-</h2>
-          <p className="mt-4 max-w-3xl mx-auto text-muted dark:text-white/80 text-18">
-            Your journey toward success starts with a simple conversation. At Saarthi4u, we're committed to understanding your unique strengths, interests, and goals to provide guidance that truly makes a difference.
-          </p>
-        </div>
-        <div className="flex md:flex-row flex-col items-center justify-center md:gap-28 gap-8">
-          <div className="flex sm:flex-row flex-col items-start sm:gap-8 gap-4">
-            <div className="bg-heroBg dark:bg-search p-4 flex items-center justify-center rounded-full">
-              <i className="bg-[url('/images/contact-page/email.svg')] bg-no-repeat bg-contain w-9 h-9 inline-block"></i>
-            </div>
-            <div className="flex md:flex-col sm:flex-row flex-col md:items-start sm:items-center items-start h-full justify-between">
-              <div>
-                <span className="text-midnight_text dark:text-white text-xl font-bold">
-                  Email US
-                </span>
-                <p className="text-DeepOcean font-normal text-xl max-w-80 pt-3 pb-7 dark:text-white dark:text-opacity-50">
-                  Please feel free to drop us a line. We will respond as soon as
-                  possible.
-                </p>
-              </div>
-              <div>
-                <Link href="#" className="text-primary text-18 font-medium flex items-center gap-3 group hover:text-midnight_text dark:hover:text-white">
-                  Leave a message
-                  <svg
-                    width="23"
-                    height="17"
-                    viewBox="0 0 23 17"
-                    fill="#FFFF00"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="group-hover:fill-midnight_text dark:group-hover:fill-white"
-                  >
-                    <path
-                      d="M22.653 7.76352L15.3613 0.471852C15.1648 0.282104 14.9017 0.177109 14.6286 0.179483C14.3555 0.181856 14.0942 0.291407 13.9011 0.484541C13.7079 0.677674 13.5984 0.938937 13.596 1.21206C13.5936 1.48518 13.6986 1.74831 13.8884 1.94477L19.4019 7.45831H1.08317C0.806904 7.45831 0.541951 7.56806 0.346601 7.76341C0.151251 7.95876 0.0415039 8.22371 0.0415039 8.49998C0.0415039 8.77625 0.151251 9.0412 0.346601 9.23655C0.541951 9.4319 0.806904 9.54165 1.08317 9.54165H19.4019L13.8884 15.0552C13.7889 15.1513 13.7095 15.2662 13.6549 15.3933C13.6003 15.5204 13.5716 15.6571 13.5704 15.7954C13.5692 15.9337 13.5956 16.0709 13.6479 16.1989C13.7003 16.3269 13.7777 16.4432 13.8755 16.541C13.9733 16.6388 14.0896 16.7162 14.2176 16.7685C14.3456 16.8209 14.4828 16.8473 14.6211 16.8461C14.7594 16.8449 14.8961 16.8161 15.0232 16.7615C15.1503 16.707 15.2652 16.6276 15.3613 16.5281L22.653 9.23644C22.8482 9.0411 22.958 8.77619 22.958 8.49998C22.958 8.22377 22.8482 7.95886 22.653 7.76352Z"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="flex sm:flex-row flex-col items-start sm:gap-8 gap-4">
-            <div className="bg-heroBg dark:bg-search p-4 flex items-center justify-center rounded-full">
-              <i className="bg-[url('/images/contact-page/Career.svg')] bg-no-repeat bg-contain w-9 h-9 inline-block"></i>
-            </div>
-            <div className="flex md:flex-col sm:flex-row flex-col md:items-start sm:items-center items-start h-full justify-between">
-              <div>
-                <span className="text-midnight_text dark:text-white text-xl font-bold">
-                  Careers
-                </span>
-                <p className="text-DeepOcean font-normal text-xl max-w-80 pt-3 pb-7 dark:text-white dark:text-opacity-50">
-                  Join our team and grow with a company that values innovation and talent.
-                </p>
-              </div>
-              <div>
-                <Link href="#" className="text-primary text-18 font-medium flex items-center gap-3 group hover:text-midnight_text dark:hover:text-white">
-                  Send an application
-                  <svg
-                    width="23"
-                    height="17"
-                    viewBox="0 0 23 17"
-                    fill="#FFFF00"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="group-hover:fill-midnight_text dark:group-hover:fill-white"
-                  >
-                    <path
-                      d="M22.653 7.76352L15.3613 0.471852C15.1648 0.282104 14.9017 0.177109 14.6286 0.179483C14.3555 0.181856 14.0942 0.291407 13.9011 0.484541C13.7079 0.677674 13.5984 0.938937 13.596 1.21206C13.5936 1.48518 13.6986 1.74831 13.8884 1.94477L19.4019 7.45831H1.08317C0.806904 7.45831 0.541951 7.56806 0.346601 7.76341C0.151251 7.95876 0.0415039 8.22371 0.0415039 8.49998C0.0415039 8.77625 0.151251 9.0412 0.346601 9.23655C0.541951 9.4319 0.806904 9.54165 1.08317 9.54165H19.4019L13.8884 15.0552C13.7889 15.1513 13.7095 15.2662 13.6549 15.3933C13.6003 15.5204 13.5716 15.6571 13.5704 15.7954C13.5692 15.9337 13.5956 16.0709 13.6479 16.1989C13.7003 16.3269 13.7777 16.4432 13.8755 16.541C13.9733 16.6388 14.0896 16.7162 14.2176 16.7685C14.3456 16.8209 14.4828 16.8473 14.6211 16.8461C14.7594 16.8449 14.8961 16.8161 15.0232 16.7615C15.1503 16.707 15.2652 16.6276 15.3613 16.5281L22.653 9.23644C22.8482 9.0411 22.958 8.77619 22.958 8.49998C22.958 8.22377 22.8482 7.95886 22.653 7.76352Z"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="md:pt-32 pt-11 md:pb-28 pb-8">
-<iframe
-  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14009.240485599259!2d77.37517923452664!3d28.620466096688475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cef050db2c1b3%3A0x5ad04213abb8ce96!2sSector%2063!5e0!3m2!1sen!2sin!4v1770057791236!5m2!1sen!2sin"
-  width="1114"
-  height="477"
-  loading="lazy"
-  referrerPolicy="no-referrer-when-downgrade"
-  className="rounded-lg w-full"
-/>  
-        </div>
+    <section className="relative overflow-hidden py-12 md:py-14 dark:bg-darkmode">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -left-12 top-10 h-44 w-44 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute -right-12 bottom-4 h-56 w-56 rounded-full bg-secondary/15 blur-3xl" />
       </div>
-      <div className="border-b border-solid border-border dark:border-dark_border"></div>
+
+      <div className="container mx-auto px-4 sm:px-6">
+        <motion.div
+          className="text-center max-w-3xl mx-auto mb-8"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="inline-flex rounded-full border border-primary/25 bg-white/80 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.15em] text-primary dark:border-primary/35 dark:bg-darkheader/80">
+            Contact Saarthi4u
+          </span>
+          <h2 className="mt-4 text-40 font-extrabold leading-tight text-midnight_text dark:text-white">
+            Let&apos;s Start Your <span className="text-primary">Journey</span>
+          </h2>
+          <p className="mt-4 text-18 font-medium text-midnight_text/70 dark:text-white/80">
+            Whether you need course guidance, college shortlisting, or scholarship support,
+            our team is here to help you make confident decisions.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8 items-stretch">
+          {contactCards.map((item, index) => (
+            <motion.div
+              key={item.title}
+              className="h-full"
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.45, delay: index * 0.06 }}
+            >
+              <Link
+                href={item.href}
+                className="group block h-full rounded-2xl border border-border bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:bg-primary/[0.04] hover:shadow-xl dark:border-dark_border dark:bg-darkheader dark:hover:border-primary/50 dark:hover:bg-primary/[0.08]"
+              >
+                <motion.div
+                  className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 text-primary transition-colors duration-300 group-hover:from-primary group-hover:to-secondary group-hover:text-white"
+                  whileHover={{ rotate: 6, scale: 1.06 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Icon icon={item.icon} className="w-5 h-5" />
+                </motion.div>
+                <h3 className="mb-2 text-20 font-bold text-midnight_text dark:text-white">
+                  {item.title}
+                </h3>
+                <p className="text-14 font-semibold text-primary mb-2 break-all">{item.value}</p>
+                <p className="text-14 text-midnight_text/65 dark:text-white/75 leading-6 min-h-[78px]">{item.description}</p>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          className="grid items-center gap-6 rounded-2xl border border-border bg-gradient-to-r from-heroBg to-white p-6 transition-all duration-300 hover:border-primary/40 hover:bg-primary/[0.03] md:grid-cols-5 md:p-7 dark:border-dark_border dark:from-darkheader dark:to-darkheader dark:hover:border-primary/40 dark:hover:bg-primary/[0.08]"
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.55 }}
+        >
+          <div className="md:col-span-3">
+            <h3 className="mb-3 text-24 font-extrabold text-midnight_text dark:text-white">
+              Why Students Contact Saarthi4u
+            </h3>
+            <ul className="space-y-2 text-midnight_text/70 dark:text-white/80 text-14">
+              {trustItems.map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <Icon icon="mdi:check-circle-outline" className="w-4 h-4 text-primary mt-0.5" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="md:col-span-2 flex flex-wrap gap-3 md:justify-end">
+            <Link
+              href="#contact-form"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-secondary px-6 py-3.5 font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+            >
+              Get Online Consultation
+              <Icon icon="solar:alt-arrow-right-linear" className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/help"
+              className="inline-flex items-center gap-2 rounded-xl border border-primary px-5 py-3.5 font-semibold text-primary transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary hover:text-white"
+            >
+              Visit Help Center
+            </Link>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };

@@ -1,8 +1,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { HeaderItem } from "../../../../types/menu";
+import { Icon } from "@iconify/react";
 
-const MobileHeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
+const MobileHeaderLink: React.FC<{ item: HeaderItem; onNavigate?: () => void }> = ({
+  item,
+  onNavigate,
+}) => {
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
   const handleToggle = () => {
@@ -10,42 +14,53 @@ const MobileHeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
   };
 
   return (
-    <div className="relative w-full">
-      <Link
-        href={item.href}
-        onClick={item.submenu ? handleToggle : undefined}
-        className="flex items-center justify-between w-full py-2 text-black focus:outline-hidden"
-      >
-        {item.label}
+    <div className="w-full rounded-xl border border-border/60 bg-white/70 px-2 dark:border-dark_border/80 dark:bg-dark_b/80">
+      <div className="flex items-center justify-between gap-2">
+        <Link
+          href={item.href}
+          onClick={onNavigate}
+          className="flex min-h-12 flex-1 items-center rounded-lg px-2 text-16 font-medium text-midnight_text transition-colors duration-200 hover:text-secondary dark:text-white"
+        >
+          {item.label}
+        </Link>
+
         {item.submenu && (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1.5em"
-            height="1.5em"
-            viewBox="0 0 24 24"
+          <button
+            type="button"
+            onClick={handleToggle}
+            className="grid h-10 w-10 place-items-center rounded-lg text-midnight_text transition-colors duration-200 hover:bg-secondary/10 hover:text-secondary dark:text-white"
+            aria-label={`Toggle ${item.label} submenu`}
+            aria-expanded={submenuOpen}
           >
-            <path
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-              d="m7 10l5 5l5-5"
+            <Icon
+              icon="solar:alt-arrow-down-outline"
+              className={`text-xl transition-transform duration-300 ${
+                submenuOpen ? "rotate-180" : ""
+              }`}
             />
-          </svg>
+          </button>
         )}
-      </Link>
-      {submenuOpen && item.submenu && (
-        <div className="bg-white p-2 w-full">
-          {item.submenu.map((subItem, index) => (
-            <Link
-              key={index}
-              href={subItem.href}
-              className="block py-2 text-midnight_text hover:bg-primary hover:text-white "
-            >
-              {subItem.label}
-            </Link>
-          ))}
+      </div>
+
+      {item.submenu && (
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            submenuOpen ? "max-h-80 pb-2" : "max-h-0"
+          }`}
+        >
+          <div className="space-y-1 border-t border-border/70 pt-2 dark:border-dark_border/80">
+            {item.submenu.map((subItem, index) => (
+              <Link
+                key={index}
+                href={subItem.href}
+                onClick={onNavigate}
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-14 font-medium text-midnight_text transition-all duration-200 hover:bg-secondary hover:text-white dark:text-white/90"
+              >
+                {subItem.label}
+                <Icon icon="solar:arrow-right-linear" className="text-base" />
+              </Link>
+            ))}
+          </div>
         </div>
       )}
     </div>

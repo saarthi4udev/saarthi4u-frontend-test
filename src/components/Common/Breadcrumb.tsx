@@ -15,7 +15,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
               <h1 className="text-black mb-4 text-3xl font-bold sm:text-4xl md:text-[40px] md:leading-[1.2] dark:text-white">
                 {pageName}
               </h1>
-              <p className="text-black dark:text-black-6 mb-5 text-base">
+              <p className="text-gray-900 dark:text-gray-300 mb-5 text-base">
                 {pageDescription}
               </p>
 
@@ -29,7 +29,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
                   </Link>
                 </li>
                 <li>
-                  <p className="text-body-color flex items-center gap-2.5 text-base font-medium">
+                  <p className="text-gray-500 dark:text-gray-400 flex items-center gap-2.5 text-base font-medium">
                     <span className="text-body-color dark:text-white dark:text-opacity-50"> / </span>
                     {pageName}
                   </p>

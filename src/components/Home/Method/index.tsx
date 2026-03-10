@@ -65,7 +65,7 @@ const Method = () => {
                     </p>
                     <Link
                       href="#"
-                      className="text-17 flex gap-2 items-center hover:text-blue-700 text-primary "
+                      className="text-17 flex gap-2 items-center hover:text-secondary text-primary "
                     >
                       Get Started
                       <Icon
@@ -102,7 +102,7 @@ const Method = () => {
                   </p>
                   <Link
                     href="#"
-                    className="text-17 flex gap-2 items-center hover:text-blue-700 text-primary "
+                    className="text-17 flex gap-2 items-center hover:text-secondary text-primary "
                   >
                     Get Started
                     <Icon
@@ -136,7 +136,7 @@ const Method = () => {
                   </p>
                   <Link
                     href="#"
-                    className="text-17 flex gap-2 items-center hover:text-blue-700 text-primary "
+                    className="text-17 flex gap-2 items-center hover:text-secondary text-primary "
                   >
                     Get Started
                     <Icon
@@ -181,7 +181,7 @@ const Method = () => {
                   </p>
                   <Link
                     href="#"
-                    className="text-17 flex gap-2 items-center hover:text-blue-700 text-primary "
+                    className="text-17 flex gap-2 items-center hover:text-secondary text-primary "
                   >
                     Get Started
                     <Icon

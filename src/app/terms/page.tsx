@@ -206,9 +206,9 @@ const TermsPage = () => {
     <main className="bg-white dark:bg-slate-900 w-full">
 
       {/* HERO */}
-      <section className="pt-28 pb-20 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+      <section className="pt-28 pb-20 bg-heroBg dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
         <div className="mx-auto max-w-5xl px-6 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-3xl">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-secondary/10 text-3xl">
             ⚖️
           </div>
 
@@ -314,14 +314,14 @@ const TermsPage = () => {
                 group relative overflow-hidden rounded-xl
                 border border-slate-200 bg-white p-8
                 transition-all duration-300
-                hover:-translate-y-1 hover:shadow-xl hover:border-blue-500
+                hover:-translate-y-1 hover:shadow-xl hover:border-secondary
                 dark:bg-slate-800 dark:border-slate-700
               "
             >
               {/* Accent bar */}
               <div
                 className="
-                  absolute left-0 top-0 h-full w-1 bg-blue-600
+                  absolute left-0 top-0 h-full w-1 bg-secondary
                   scale-y-0 origin-top transition-transform duration-300
                   group-hover:scale-y-100
                 "
@@ -331,7 +331,7 @@ const TermsPage = () => {
                 <div
                   className="
                     flex h-10 w-10 shrink-0 items-center justify-center
-                    rounded-md bg-blue-100 text-xl
+                    rounded-md bg-secondary/10 text-xl
                     transition-transform duration-300
                     group-hover:scale-110
                   "

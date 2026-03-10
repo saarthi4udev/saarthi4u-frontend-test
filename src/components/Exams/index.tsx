@@ -1,178 +1,318 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { Icon } from "@iconify/react";
+import {
+  getAllExams,
+  getUniqueExamFilters,
+  formatFeeRange,
+} from "@/app/api/exam";
 
-/* ---------------- FILTER DATA ---------------- */
-
-const EXAM_TYPES = [
-  "All Exams",
-  "Engineering",
-  "Medical",
-  "Civil Services",
-  "Defence",
-  "Banking",
-  "Railways",
-  "Teaching",
-];
-
-const EXAM_LEVELS = ["All Levels", "National", "State"];
-
-const CONDUCTING_BODY = ["All Bodies", "UPSC", "SSC", "IBPS", "RRB", "NTA"];
-
-/* ---------------- EXAMS ---------------- */
-
-const exams = [
-  { name: "UPSC Civil Services", type: "Civil Services", level: "National", body: "UPSC", slug: "upsc-cse" },
-  { name: "JEE Main", type: "Engineering", level: "National", body: "NTA", slug: "jee-main" },
-  { name: "NEET", type: "Medical", level: "National", body: "NTA", slug: "neet" },
-  { name: "SSC CGL", type: "Government Jobs", level: "National", body: "SSC", slug: "ssc-cgl" },
-  { name: "IBPS PO", type: "Banking", level: "National", body: "IBPS", slug: "ibps-po" },
-];
-
-/* ---------------- HELPERS ---------------- */
-
-const randomImage = (seed: string) =>
-  `https://picsum.photos/seed/${seed}/600/400`;
-
-/* ---------------- COMPONENT ---------------- */
+const ALL = {
+  category: "All Categories",
+  level: "All Levels",
+  body: "All Bodies",
+  mode: "All Modes",
+  frequency: "All Frequencies",
+  stream: "All Streams",
+};
 
 export default function ExamsSection() {
-  const [open, setOpen] = useState<string | null>(null);
-  const barRef = useRef<HTMLDivElement>(null);
 
-  const [filters, setFilters] = useState({
-    type: "All Exams",
-    level: "All Levels",
-    body: "All Bodies",
-  });
+  const [exams, setExams] = useState<any[]>([]);
 
-  /* close dropdown on outside click */
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (barRef.current && !barRef.current.contains(e.target as Node)) {
-        setOpen(null);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    async function loadExams() {
+      const data = await getAllExams();
+      setExams(data);
+    }
+
+    loadExams();
   }, []);
 
-  /* memoized filtering */
+  const { categories, levels, bodies, modes, frequencies, streams } =
+    getUniqueExamFilters(exams);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState(ALL.category);
+  const [levelFilter, setLevelFilter] = useState(ALL.level);
+  const [bodyFilter, setBodyFilter] = useState(ALL.body);
+  const [modeFilter, setModeFilter] = useState(ALL.mode);
+  const [frequencyFilter, setFrequencyFilter] = useState(ALL.frequency);
+  const [streamFilter, setStreamFilter] = useState(ALL.stream);
+  const [popularOnly, setPopularOnly] = useState(false);
+
   const filteredExams = useMemo(() => {
-    return exams.filter(
-      (e) =>
-        (filters.type === "All Exams" || e.type === filters.type) &&
-        (filters.level === "All Levels" || e.level === filters.level) &&
-        (filters.body === "All Bodies" || e.body === filters.body)
-    );
-  }, [filters]);
 
-  /* reusable dropdown */
-  const Dropdown = ({ label, value, options, filterKey }: any) => (
-    <div className="relative w-1/3">
-      <button
-        onClick={() => setOpen(open === filterKey ? null : filterKey)}
-        className="
-          w-full h-14 px-6 flex justify-between items-center text-sm font-medium
-          hover:bg-gray-50 dark:hover:bg-[#020617]
-        "
-      >
-        <span>
-          <span className="text-muted mr-1">{label}:</span>
-          {value}
-        </span>
-        <span>▾</span>
-      </button>
+    const query = searchQuery.trim().toLowerCase();
 
-      {open === filterKey && (
-        <div
-          className="
-            absolute z-50 w-full mt-2 rounded-xl border shadow
-            bg-white dark:bg-[#0f172a] dark:border-slate-800
-            max-h-60 overflow-auto
-          "
-        >
-          {options.map((o: string) => (
-            <button
-              key={o}
-              onClick={() => {
-                setFilters({ ...filters, [filterKey]: o });
-                setOpen(null);
-              }}
-              className="block w-full px-5 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#020617]"
-            >
-              {o}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+    return exams.filter((exam) => {
+
+      const categoryMatch =
+        categoryFilter === ALL.category ||
+        (exam.category ?? "").toLowerCase() === categoryFilter.toLowerCase();
+
+      const levelMatch =
+        levelFilter === ALL.level ||
+        (exam.level ?? "").toLowerCase() === levelFilter.toLowerCase();
+
+      const bodyMatch =
+        bodyFilter === ALL.body ||
+        (exam.conductingBody ?? "").toLowerCase() === bodyFilter.toLowerCase();
+
+      const modeMatch =
+        modeFilter === ALL.mode ||
+        (exam.examMode ?? "").toLowerCase() === modeFilter.toLowerCase();
+
+      const frequencyMatch =
+        frequencyFilter === ALL.frequency ||
+        (exam.frequency ?? "").toLowerCase() === frequencyFilter.toLowerCase();
+
+      const streamMatch =
+        streamFilter === ALL.stream ||
+        (exam.stream ?? "").toLowerCase() === streamFilter.toLowerCase();
+
+      const popularMatch = !popularOnly || exam.popular;
+
+      if (!query) {
+        return (
+          categoryMatch &&
+          levelMatch &&
+          bodyMatch &&
+          modeMatch &&
+          frequencyMatch &&
+          streamMatch &&
+          popularMatch
+        );
+      }
+
+      const searchMatch =
+        (exam.name ?? "").toLowerCase().includes(query) ||
+        (exam.category ?? "").toLowerCase().includes(query) ||
+        (exam.conductingBody ?? "").toLowerCase().includes(query) ||
+        (exam.acceptedFor ?? []).some((item: string) =>
+          item.toLowerCase().includes(query)
+        );
+
+      return (
+        categoryMatch &&
+        levelMatch &&
+        bodyMatch &&
+        modeMatch &&
+        frequencyMatch &&
+        streamMatch &&
+        popularMatch &&
+        searchMatch
+      );
+
+    });
+
+  }, [
+    exams,
+    bodyFilter,
+    categoryFilter,
+    frequencyFilter,
+    levelFilter,
+    modeFilter,
+    popularOnly,
+    searchQuery,
+    streamFilter,
+  ]);
+
+  const resetFilters = () => {
+    setSearchQuery("");
+    setCategoryFilter(ALL.category);
+    setLevelFilter(ALL.level);
+    setBodyFilter(ALL.body);
+    setModeFilter(ALL.mode);
+    setFrequencyFilter(ALL.frequency);
+    setStreamFilter(ALL.stream);
+    setPopularOnly(false);
+  };
 
   return (
-    <section className="py-24 bg-white dark:bg-midnight_text">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="relative min-h-screen overflow-hidden bg-white py-20 transition-colors duration-300 dark:bg-slate-950">
 
-        {/* HEADER */}
-        <div className="text-center mb-12">
-          <h2 className="text-40 font-semibold">
-            Explore <span className="text-primary">Exams</span>
-          </h2>
-          <p className="text-muted mt-3">
-            Filter exams by type, level, and conducting body
-          </p>
+      <div className="container mx-auto px-4 sm:px-6">
+
+        {/* SEARCH */}
+        <div className="mb-6">
+          <div className="flex items-center px-4 h-12 rounded-xl border bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800">
+            <Icon icon="mdi:magnify" className="w-5 h-5 text-gray-400 mr-2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search exam, category, body..."
+              className="bg-transparent w-full text-gray-900 dark:text-white focus:outline-none"
+            />
+          </div>
         </div>
 
-        {/* FILTER BAR */}
-        <div
-          ref={barRef}
-          className="flex border rounded-2xl mb-12 dark:border-slate-800"
-        >
-          <Dropdown label="Exam Type" value={filters.type} options={EXAM_TYPES} filterKey="type" />
-          <Dropdown label="Level" value={filters.level} options={EXAM_LEVELS} filterKey="level" />
-          <Dropdown label="Conducted By" value={filters.body} options={CONDUCTING_BODY} filterKey="body" />
+        {/* FILTERS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 p-4 mb-10 rounded-2xl border shadow-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700">
+
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="h-11 px-3 rounded-lg border bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-800 dark:text-gray-100"
+          >
+            <option>{ALL.category}</option>
+            {categories.map((item, index) => (
+              <option key={`cat-${item}-${index}`} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={levelFilter}
+            onChange={(e) => setLevelFilter(e.target.value)}
+            className="h-11 px-3 rounded-lg border bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-800 dark:text-gray-100"
+          >
+            <option>{ALL.level}</option>
+            {levels.map((item, index) => (
+              <option key={`level-${item}-${index}`} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={bodyFilter}
+            onChange={(e) => setBodyFilter(e.target.value)}
+            className="h-11 px-3 rounded-lg border bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-800 dark:text-gray-100"
+          >
+            <option>{ALL.body}</option>
+            {bodies.map((item, index) => (
+              <option key={`body-${item}-${index}`} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={modeFilter}
+            onChange={(e) => setModeFilter(e.target.value)}
+            className="h-11 px-3 rounded-lg border bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-800 dark:text-gray-100"
+          >
+            <option>{ALL.mode}</option>
+            {modes.map((item, index) => (
+              <option key={`mode-${item}-${index}`} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={frequencyFilter}
+            onChange={(e) => setFrequencyFilter(e.target.value)}
+            className="h-11 px-3 rounded-lg border bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-800 dark:text-gray-100"
+          >
+            <option>{ALL.frequency}</option>
+            {frequencies.map((item, index) => (
+              <option key={`freq-${item}-${index}`} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={streamFilter}
+            onChange={(e) => setStreamFilter(e.target.value)}
+            className="h-11 px-3 rounded-lg border bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-800 dark:text-gray-100"
+          >
+            <option>{ALL.stream}</option>
+            {streams.map((item, index) => (
+              <option key={`stream-${item}-${index}`} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+
+          <label className="flex items-center gap-3 h-11 px-3 rounded-lg border bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-800 dark:text-gray-100">
+            <input
+              type="checkbox"
+              checked={popularOnly}
+              onChange={(e) => setPopularOnly(e.target.checked)}
+              className="w-4 h-4"
+            />
+            Popular Exams
+          </label>
+
+          <button
+            onClick={resetFilters}
+            className="h-11 rounded-lg border border-primary text-primary font-semibold hover:bg-primary hover:text-white"
+          >
+            Reset Filters
+          </button>
+
         </div>
 
-        {/* EXAMS GRID */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* CARDS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
           {filteredExams.map((exam) => (
+
             <Link
-              key={exam.slug}
-              href={`/exams/${exam.slug}`}
-              className="
-                group relative overflow-hidden rounded-2xl border
-                dark:border-slate-800
-                transition hover:-translate-y-1 hover:shadow-xl
-              "
-            >
-              {/* background image */}
-              <div
-                className="absolute inset-0 bg-cover bg-center blur-[2px] scale-105"
-                style={{ backgroundImage: `url(${randomImage(exam.slug)})` }}
-              />
+              key={exam.slug ?? exam.id}
+              href={`/exam/${exam.slug}`}
+className="group p-6 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm"
+          >
 
-              {/* overlay */}
-              <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
+              <div className="flex items-start justify-between mb-4">
 
-              {/* content */}
-              <div className="relative p-6">
-                <h3 className="font-semibold text-white">
-                  {exam.name}
-                </h3>
-                <p className="text-sm text-gray-200 mt-1">
-                  {exam.type} · {exam.body}
-                </p>
+                <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
+                  {exam.level}
+                </span>
+
+                {exam.popular && (
+                  <span className="rounded-full bg-green-100 dark:bg-green-900/30 px-2 py-1 text-xs font-semibold text-green-700 dark:text-green-300">
+                    Popular
+                  </span>
+                )}
+
               </div>
+
+              <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                {exam.name}
+              </h3>
+
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">
+                {exam.overview}
+              </p>
+
+              <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+
+                <p className="flex items-center gap-2">
+                  <Icon icon="mdi:office-building-outline" className="w-4 h-4" />
+                  {exam.conductingBody}
+                </p>
+
+                <p className="flex items-center gap-2">
+                  <Icon icon="mdi:refresh" className="w-4 h-4" />
+                  {exam.frequency} • {exam.examMode}
+                </p>
+
+                <p className="flex items-center gap-2">
+                  <Icon icon="mdi:currency-inr" className="w-4 h-4" />
+                  Application Fee: {formatFeeRange(exam.applicationFee)}
+                </p>
+
+              </div>
+
             </Link>
+
           ))}
 
-          {filteredExams.length === 0 && (
-            <div className="col-span-full text-center text-muted py-12">
-              No exams found for selected filters
-            </div>
-          )}
         </div>
+
+        {filteredExams.length === 0 && (
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            No exams found for selected filters.
+          </div>
+        )}
 
       </div>
     </section>

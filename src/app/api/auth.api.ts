@@ -7,6 +7,7 @@ export const authApi = {
   register: (payload: {
     name: string;
     email: string;
+    phone?: string;
     password: string;
     role: "admin" | "user";
   }) => api.post("/auth/register", payload),

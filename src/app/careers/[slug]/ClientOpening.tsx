@@ -43,7 +43,7 @@ export default function ClientOpening({ slug }: { slug: string }) {
 
   return (
     <main className="bg-white dark:bg-slate-900">
-      <section className="bg-gradient-to-r from-violet-600 via-violet-500 to-violet-400 py-12 text-white">
+      <section className="bg-gradient-to-r from-primary via-primary/90 to-secondary py-12 text-white">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <h1 className="text-3xl font-bold">Apply — {title}</h1>
           <p className="mt-2 text-sm text-white/90">Role auto-filled. Complete the short form to apply.</p>
@@ -95,7 +95,7 @@ export default function ClientOpening({ slug }: { slug: string }) {
             {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
             {success && <p className="mb-3 text-sm text-green-600">Application submitted — redirecting...</p>}
 
-            <button disabled={submitting} type="submit" className="w-full rounded-md bg-violet-600 px-4 py-2 text-white hover:bg-violet-700 disabled:opacity-60">
+            <button disabled={submitting} type="submit" className="w-full rounded-md bg-accent px-4 py-2 text-primary font-semibold hover:bg-accent-dark disabled:opacity-60">
               {submitting ? 'Sending...' : 'Apply Now'}
             </button>
           </form>

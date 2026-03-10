@@ -5,6 +5,8 @@ import Footer from "@/components/Layout/Footer";
 import { ThemeProvider } from "next-themes";
 import ScrollToTop from "@/components/ScrollToTop";
 import WhatsAppFloat from "@/components/Common/WhatsAppFloat";
+import AIChatbot from "@/components/Common/AIChatbot";
+import EnquiryPopup from "@/components/EnquiryPopup/EnquiryPopup";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 
@@ -26,10 +28,13 @@ export default function RootLayout({
           >
             <Header />
             <Toaster position="top-center" reverseOrder={false} />
-            {children}
+            {/* offset for fixed header */}
+            <main className="pt-20">{children}</main>
             <Footer />
+            <AIChatbot />
             <WhatsAppFloat />
             <ScrollToTop />
+            <EnquiryPopup />
           </ThemeProvider>
         </AuthProvider>
       </body>

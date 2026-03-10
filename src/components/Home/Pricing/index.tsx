@@ -254,7 +254,7 @@ const Pricing = () => {
                   Free
                 </p>
                 <div className="py-3 border-b border-border dark:border-dark_border flex justify-center">
-                  <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
                     <Icon
                       icon="solar:unread-outline"
                       width="18"
@@ -270,7 +270,7 @@ const Pricing = () => {
                   Free & unlimited
                 </p>
                 <div className="py-3 border-b border-border dark:border-dark_border flex justify-center">
-                  <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
                     <Icon
                       icon="solar:unread-outline"
                       width="18"
@@ -283,7 +283,7 @@ const Pricing = () => {
                   0.5%
                 </p>
                 <div className="py-3 border-b border-border dark:border-dark_border flex justify-center">
-                  <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
                     <Icon
                       icon="solar:unread-outline"
                       width="18"
@@ -318,7 +318,7 @@ const Pricing = () => {
                   Free
                 </p>
                 <div className="py-3 border-b border-border dark:border-dark_border flex justify-center">
-                  <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
                     <Icon
                       icon="solar:unread-outline"
                       width="18"
@@ -334,7 +334,7 @@ const Pricing = () => {
                   Free & unlimited
                 </p>
                 <div className="py-3 border-b border-border dark:border-dark_border flex justify-center">
-                  <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
                     <Icon
                       icon="solar:unread-outline"
                       width="18"
@@ -347,7 +347,7 @@ const Pricing = () => {
                   0.5%
                 </p>
                 <div className="py-3 border-b border-border dark:border-dark_border flex justify-center">
-                  <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
                     <Icon
                       icon="solar:unread-outline"
                       width="18"

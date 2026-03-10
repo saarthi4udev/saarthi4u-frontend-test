@@ -369,20 +369,47 @@ const AboutUsPage = () => {
     },
   ];
 
+  const missionVision = [
+    {
+      title: "Our Mission",
+      text: "Helping students and parents find the right college and career path through personalized, transparent guidance.",
+      accent: "from-secondary to-secondary/60",
+      badge: "🎯",
+    },
+    {
+      title: "Our Vision",
+      text: "A world where every student discovers their true potential through the right education and support.",
+      accent: "from-accent to-accent-dark",
+      badge: "🚀",
+    },
+  ];
+
   return (
-    <main className="bg-white dark:bg-slate-900 w-full">
+    <main className="w-full overflow-hidden bg-white dark:bg-slate-900">
 
       {/* HERO WITH IMAGE */}
-      <section className="pt-28 pb-24 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
-        <div className="mx-auto max-w-6xl px-6 grid items-center gap-12 md:grid-cols-2">
+      <section className="relative border-b border-slate-200 bg-gradient-to-br from-heroBg via-secondary/5 to-accent/5 pb-24 pt-28 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-16 top-20 h-40 w-40 rounded-full bg-secondary/20 blur-3xl" />
+          <div className="absolute -right-16 bottom-10 h-56 w-56 rounded-full bg-accent/20 blur-3xl" />
+        </div>
+
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 md:grid-cols-2">
 
           {/* TEXT */}
           <div className="animate-fadeIn">
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
-              About Saarthi4u
+            <span className="inline-flex items-center rounded-full border border-primary/30 bg-white/80 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-primary shadow-sm dark:border-primary/40 dark:bg-slate-800/70">
+              Student Success Partner
+            </span>
+
+            <h1 className="mt-5 text-4xl font-extrabold leading-tight text-slate-900 dark:text-white md:text-5xl lg:text-6xl">
+              About
+              <span className="bg-gradient-to-r from-secondary to-secondary/70 bg-clip-text pl-3 text-transparent">
+                Saarthi4u
+              </span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg text-slate-600 dark:text-slate-300">
+            <p className="mt-6 max-w-xl text-lg font-medium text-slate-600 dark:text-slate-300">
               Empowering students with the right guidance, at the right time,
               to build meaningful academic and career journeys.
             </p>
@@ -392,14 +419,12 @@ const AboutUsPage = () => {
               {stats.map((stat, index) => (
                 <div
                   key={index}
-                  className="rounded-xl border border-slate-200 bg-white p-5
-                  transition-all duration-300 hover:-translate-y-1 hover:shadow-lg
-                  dark:border-slate-700 dark:bg-slate-800"
+                  className="group rounded-2xl border border-secondary/15 bg-white/90 p-5 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:shadow-xl dark:border-slate-700 dark:bg-slate-800/90"
                 >
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-2xl font-extrabold text-secondary transition-transform duration-300 group-hover:scale-105 dark:text-secondary">
                     {stat.number}
                   </div>
-                  <div className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                  <div className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">
                     {stat.label}
                   </div>
                 </div>
@@ -409,13 +434,14 @@ const AboutUsPage = () => {
 
           {/* IMAGE */}
           <div className="relative flex justify-center animate-fadeInUp">
+            <div className="absolute inset-x-8 bottom-8 h-24 rounded-full bg-secondary/25 blur-2xl" />
             <Image
               src="/images/about-hero.svg"
               alt="About Saarthi4u"
               width={520}
               height={420}
               priority
-              className="w-full max-w-md"
+              className="relative w-full max-w-md transition-transform duration-500 hover:scale-[1.02]"
             />
           </div>
 
@@ -424,31 +450,23 @@ const AboutUsPage = () => {
 
       {/* MISSION & VISION */}
       <section className="py-24">
-        <div className="mx-auto max-w-6xl px-6 grid gap-10 md:grid-cols-2">
-          {[
-            {
-              title: "Our Mission",
-              text:
-                "Helping students and parents find the right college and career path through personalized, transparent guidance.",
-            },
-            {
-              title: "Our Vision",
-              text:
-                "A world where every student discovers their true potential through the right education and support.",
-            },
-          ].map((item, index) => (
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-2">
+          {missionVision.map((item, index) => (
             <div
               key={index}
-              className="rounded-xl border border-slate-200 bg-white p-8
-              transition-all duration-300 hover:-translate-y-1 hover:shadow-lg
-              dark:border-slate-700 dark:bg-slate-800"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-700 dark:bg-slate-800"
             >
-              <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">
+              <div className={`absolute left-0 top-0 h-1.5 w-full bg-gradient-to-r ${item.accent}`} />
+              <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-2xl dark:bg-slate-700">
+                {item.badge}
+              </div>
+              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
                 {item.title}
               </h2>
-              <p className="mt-4 text-slate-600 dark:text-slate-300">
+              <p className="mt-4 text-base font-medium leading-relaxed text-slate-600 dark:text-slate-300">
                 {item.text}
               </p>
+              <div className="mt-6 h-0.5 w-0 bg-gradient-to-r from-secondary to-secondary/60 transition-all duration-500 group-hover:w-24" />
             </div>
           ))}
         </div>
@@ -458,7 +476,10 @@ const AboutUsPage = () => {
       <section className="bg-slate-50 py-24 dark:bg-slate-900">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mb-14 text-center">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <span className="inline-flex rounded-full bg-secondary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-secondary">
+              Principles We Follow
+            </span>
+            <h2 className="mt-4 text-3xl font-extrabold text-slate-900 dark:text-white md:text-4xl">
               Our Core Values
             </h2>
           </div>
@@ -467,12 +488,12 @@ const AboutUsPage = () => {
             {values.map((value, index) => (
               <div
                 key={index}
-                className="rounded-xl border border-slate-200 bg-white p-6
-                transition-all duration-300 hover:-translate-y-1 hover:shadow-lg
-                dark:border-slate-700 dark:bg-slate-800"
+                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:shadow-xl dark:border-slate-700 dark:bg-slate-800"
               >
-                <div className="mb-3 text-3xl">{value.icon}</div>
-                <h3 className="font-semibold text-slate-900 dark:text-white">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-secondary/15 to-accent/15 text-2xl transition-transform duration-300 group-hover:scale-110 dark:from-slate-700 dark:to-slate-600">
+                  {value.icon}
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   {value.title}
                 </h3>
                 <p className="mt-2 text-slate-600 dark:text-slate-400">
@@ -485,28 +506,25 @@ const AboutUsPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-800">
+      <section className="bg-gradient-to-r from-primary via-primary/90 to-primary/80 py-20 text-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-700">
         <div className="mx-auto max-w-4xl px-6 text-center">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-3xl font-extrabold text-white md:text-4xl">
             Ready to Start Your Journey?
           </h2>
-          <p className="mt-4 text-slate-600 dark:text-slate-300">
+          <p className="mt-4 text-base font-medium text-white/90">
             Join thousands of students who trust Saarthi4u for guidance.
           </p>
 
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a
               href="/contact"
-              className="rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white
-              transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-blue-700"
+              className="rounded-xl bg-accent px-8 py-3 font-bold text-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
             >
               Get Free Consultation
             </a>
             <a
               href="/course"
-              className="rounded-lg border border-slate-300 px-8 py-3 font-semibold text-slate-700
-              transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100
-              dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
+              className="rounded-xl border border-white/70 px-8 py-3 font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white/10"
             >
               Explore Courses
             </a>

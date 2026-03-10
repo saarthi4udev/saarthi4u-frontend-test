@@ -1,201 +1,1014 @@
 "use client";
 
-import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import CollegeCard from "@/components/Home/ExploreColleges/CollegeCard";
+// import { colleges as collegesData } from "@/app/api/data";
+import { getAllColleges } from "@/app/api/colleges";
+import { compareCollegesByIds } from "@/app/api/collegeCompare";
+import Image from "next/image";
+import { Icon } from "@iconify/react";
+import { AnimatePresence, motion } from "motion/react";
 
-/* ---------------- FILTER DATA ---------------- */
+/* ---------------- CONSTANTS ---------------- */
 
-const STATES = [
-  "All States",
-  "Delhi",
-  "Maharashtra",
-  "Tamil Nadu",
-  "Karnataka",
-  "Uttar Pradesh",
-  "Rajasthan",
-  "West Bengal",
-  "Gujarat",
-  "Punjab",
-  "Haryana",
-];
+const ALL_STATES = "All States";
+const ALL_TYPES = "All Types";
+const ALL_OWNERSHIP = "All Ownership";
 
-const CATEGORIES = [
-  "All Categories",
-  "Engineering",
-  "Medical",
-  "Arts & Science",
-];
+type CollegeFilterKey = "state" | "type" | "ownership";
 
-const OWNERSHIP = [
-  "All Ownership",
-  "Government",
-  "Private",
-];
+type CompareCollege = {
+  id: string;
+  name: string;
+  location?: string;
+  city?: string;
+  type?: string;
+  category?: string;
+  rating?: number;
+  reviews?: number;
+  avgFees?: number;
+  facultyCount?: number;
+  studentFacultyRatio?: number;
+  recruiterCount?: number;
+  placementScore?: number;
+  overallScore?: number;
+  averagePackage?: string;
+  highlights?: string[];
+  facilities?: string[];
+  recruiters?: string[];
+  courses?: Array<{ name?: string; duration?: string; fee?: number | string }>;
+  established?: string | number;
+  nirfRanking?: string | number;
+  avgPackage?: string;
+  highestPackage?: string;
+  campusSize?: string;
+  description?: string;
+};
 
-/* ---------------- COLLEGES DATA (40+) ---------------- */
+type CompareVerdict = {
+  winner?: string;
+  summary?: string;
+  categoryLeaders?: {
+    bestOverall?: string;
+    bestRating?: string;
+    bestPlacement?: string;
+    bestROI?: string;
+    bestFacultyRatio?: string;
+  };
+};
 
-const colleges = [
-  // DELHI
-  { name: "AIIMS Delhi", state: "Delhi", category: "Medical", ownership: "Government", slug: "aiims-delhi" },
-  { name: "Delhi Technological University (DTU)", state: "Delhi", category: "Engineering", ownership: "Government", slug: "dtu" },
-  { name: "Jamia Millia Islamia", state: "Delhi", category: "Arts & Science", ownership: "Government", slug: "jamia" },
-  { name: "University of Delhi", state: "Delhi", category: "Arts & Science", ownership: "Government", slug: "du" },
+type CompareResult = {
+  summary: string;
+  colleges: CompareCollege[];
+  verdict?: CompareVerdict;
+};
 
-  // MAHARASHTRA
-  { name: "IIT Bombay", state: "Maharashtra", category: "Engineering", ownership: "Government", slug: "iit-bombay" },
-  { name: "AIIMS Nagpur", state: "Maharashtra", category: "Medical", ownership: "Government", slug: "aiims-nagpur" },
-  { name: "College of Engineering Pune (COEP)", state: "Maharashtra", category: "Engineering", ownership: "Government", slug: "coep" },
-  { name: "Symbiosis International University", state: "Maharashtra", category: "Arts & Science", ownership: "Private", slug: "symbiosis" },
+/* ---------------- DROPDOWN ---------------- */
 
-  // TAMIL NADU
-  { name: "IIT Madras", state: "Tamil Nadu", category: "Engineering", ownership: "Government", slug: "iit-madras" },
-  { name: "Christian Medical College, Vellore", state: "Tamil Nadu", category: "Medical", ownership: "Private", slug: "cmc-vellore" },
-  { name: "Anna University", state: "Tamil Nadu", category: "Engineering", ownership: "Government", slug: "anna-university" },
-  { name: "Madras University", state: "Tamil Nadu", category: "Arts & Science", ownership: "Government", slug: "madras-university" },
+type DropdownProps = {
+  label: string;
+  value: string;
+  options: string[];
+  keyName: CollegeFilterKey;
+  open: string | null;
+  setOpen: (value: string | null) => void;
+  setFilters: React.Dispatch<
+    React.SetStateAction<{
+      state: string;
+      type: string;
+      ownership: string;
+    }>
+  >;
+};
 
-  // KARNATAKA
-  { name: "IISc Bangalore", state: "Karnataka", category: "Engineering", ownership: "Government", slug: "iisc" },
-  { name: "NIMHANS", state: "Karnataka", category: "Medical", ownership: "Government", slug: "nimhans" },
-  { name: "RV College of Engineering", state: "Karnataka", category: "Engineering", ownership: "Private", slug: "rvce" },
-  { name: "Bangalore University", state: "Karnataka", category: "Arts & Science", ownership: "Government", slug: "bangalore-university" },
+const Dropdown = ({
+  label,
+  value,
+  options,
+  keyName,
+  open,
+  setOpen,
+  setFilters,
+}: DropdownProps) => (
+  <div className="relative flex-1">
+    <button
+      onClick={() => setOpen(open === keyName ? null : keyName)}
+      className="
+          w-full h-14 px-6 flex justify-between items-center text-sm font-semibold
+          rounded-xl border shadow-sm
+          bg-white dark:bg-slate-900
+          border-gray-200 dark:border-slate-700
+          text-gray-800 dark:text-gray-100
+          hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-primary/40
+          transition-all duration-200
+        "
+    >
+      <span>
+        <span className="text-gray-500 dark:text-gray-400">
+          {label}:
+        </span>{" "}
+        {value}
+      </span>
+      <span className="text-gray-500 dark:text-gray-400">▾</span>
+    </button>
 
-  // UTTAR PRADESH
-  { name: "IIT Kanpur", state: "Uttar Pradesh", category: "Engineering", ownership: "Government", slug: "iit-kanpur" },
-  { name: "AIIMS Gorakhpur", state: "Uttar Pradesh", category: "Medical", ownership: "Government", slug: "aiims-gorakhpur" },
-  { name: "Amity University Noida", state: "Uttar Pradesh", category: "Engineering", ownership: "Private", slug: "amity-noida" },
-  { name: "Banaras Hindu University (BHU)", state: "Uttar Pradesh", category: "Arts & Science", ownership: "Government", slug: "bhu" },
+    {open === keyName && (
+      <div
+        className="
+            absolute z-50 mt-2 w-full max-h-64 overflow-auto rounded-xl shadow-xl
+            bg-white dark:bg-slate-900
+            border border-gray-200 dark:border-slate-700
+          "
+      >
+        {options.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => {
+              setFilters((prev) => ({ ...prev, [keyName]: opt }));
+              setOpen(null);
+            }}
+            className="
+                block w-full text-left px-5 py-3 text-sm
+                text-gray-800 dark:text-gray-100
+                hover:bg-primary/10 dark:hover:bg-slate-800
+                transition-colors duration-200
+              "
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+);
 
-  // GUJARAT
-  { name: "IIT Gandhinagar", state: "Gujarat", category: "Engineering", ownership: "Government", slug: "iit-gandhinagar" },
-  { name: "AIIMS Rajkot", state: "Gujarat", category: "Medical", ownership: "Government", slug: "aiims-rajkot" },
-  { name: "Nirma University", state: "Gujarat", category: "Engineering", ownership: "Private", slug: "nirma" },
-
-  // RAJASTHAN
-  { name: "IIT Jodhpur", state: "Rajasthan", category: "Engineering", ownership: "Government", slug: "iit-jodhpur" },
-  { name: "AIIMS Jodhpur", state: "Rajasthan", category: "Medical", ownership: "Government", slug: "aiims-jodhpur" },
-  { name: "University of Rajasthan", state: "Rajasthan", category: "Arts & Science", ownership: "Government", slug: "university-of-rajasthan" },
-];
-
-const getRandomImage = (seed: number) =>
-  `https://picsum.photos/seed/${seed}/600/400`;
-
-
-/* ---------------- COMPONENT ---------------- */
+/* ---------------- MAIN SECTION ---------------- */
 
 export default function CollegesSection() {
+  const [collegesData, setCollegesData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
 
+  const stateOptions = useMemo(
+    () => [
+      ALL_STATES,
+      ...Array.from(
+        new Set(collegesData.map((c) => c.state).filter(Boolean))
+      ).sort(),
+    ],
+    [collegesData]
+  );
+
+  const typeOptions = useMemo(
+  () => [
+    ALL_TYPES,
+    ...Array.from(
+      new Set(
+        collegesData
+          .map((college) => college.category)
+          .filter(Boolean)
+      )
+    ),
+  ],
+  [collegesData]
+);
+
+  // const ownershipOptions = useMemo(
+  //   () => [
+  //     ALL_OWNERSHIP,
+  //     ...Array.from(
+  //       new Set(
+  //         collegesData.map((c) => c.Category?.name).filter(Boolean)
+  //       )
+  //     ),
+  //   ],
+  //   [collegesData]
+  // );
+  const ownershipOptions = [
+    ALL_OWNERSHIP,
+    "Public",
+    "Private",
+  ];
+
   const [filters, setFilters] = useState({
-    state: "All States",
-    category: "All Categories",
-    ownership: "All Ownership",
+    state: ALL_STATES,
+    type: ALL_TYPES,
+    ownership: ALL_OWNERSHIP,
   });
 
+  const [selectedCollegeOneId, setSelectedCollegeOneId] = useState("");
+  const [selectedCollegeTwoId, setSelectedCollegeTwoId] = useState("");
+  const [compareLoading, setCompareLoading] = useState(false);
+  const [compareError, setCompareError] = useState<string | null>(null);
+  const [compareResult, setCompareResult] = useState<CompareResult | null>(null);
+  const [showCompareDetails, setShowCompareDetails] = useState(false);
+
+  /* -------- Close Dropdown Outside Click -------- */
+
+  // useEffect(() => {
+  //   const close = (e: MouseEvent) => {
+  //     if (barRef.current && !barRef.current.contains(e.target as Node)) {
+  //       setOpen(null);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", close);
+  //   return () => document.removeEventListener("mousedown", close);
+  // }, []);
+
   useEffect(() => {
-    const close = (e: MouseEvent) => {
-      if (barRef.current && !barRef.current.contains(e.target as Node)) {
-        setOpen(null);
-      }
+  const fetchColleges = async () => {
+    try {
+      const raw = await getAllColleges();
+
+      /**
+       * Normalize new API → old UI structure
+       * So your entire existing logic keeps working
+       */
+      const normalized = raw.map((college: any) => ({
+        ...college,
+
+        // category used in filters
+        category: college?.Category?.name || "",
+
+        // used in card + compare
+        established: college?.establishedYear || null,
+
+        // location used in compare table
+        location: [college?.city, college?.state]
+          .filter(Boolean)
+          .join(", "),
+
+        // remove html from overview
+        description: college?.overview
+          ? college.overview.replace(/<[^>]*>?/gm, "")
+          : "",
+
+        // ensure logo exists
+        logo: college?.logo || "",
+
+        // ensure type always exists
+        type: college?.type || "College",
+      }));
+
+      setCollegesData(normalized);
+    } catch (error) {
+      console.error("Error fetching colleges:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchColleges();
+}, []);
+
+  /* -------- Reset -------- */
+
+  const handleReset = () => {
+    setFilters({
+      state: ALL_STATES,
+      type: ALL_TYPES,
+      ownership: ALL_OWNERSHIP,
+    });
+    setOpen(null);
+  };
+
+  // const collegeOptions = useMemo(
+  //   () =>
+  //     collegesData
+  //       .map((college) => ({ id: college.id, name: college.name }))
+  //       .sort((a, b) => a.name.localeCompare(b.name)),
+  //   [],
+  // );
+
+  const collegeOptions = useMemo(
+    () =>
+      collegesData
+        .map((college) => ({
+          id: String(college.id),
+          name: college.name,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [collegesData]   // ✅ IMPORTANT
+  );
+
+  const canCompare =
+    selectedCollegeOneId.length > 0 &&
+    selectedCollegeTwoId.length > 0 &&
+    selectedCollegeOneId !== selectedCollegeTwoId;
+
+  const selectedCollegeOne = useMemo(
+  () =>
+    collegesData.find(
+      (college) => String(college.id) === String(selectedCollegeOneId)
+    ),
+  [selectedCollegeOneId, collegesData]
+);
+
+const selectedCollegeTwo = useMemo(
+  () =>
+    collegesData.find(
+      (college) => String(college.id) === String(selectedCollegeTwoId)
+    ),
+  [selectedCollegeTwoId, collegesData]
+);
+
+  const getFallbackCompare = (collegeIds: string[]): CompareResult => {
+    // Normalise id comparison to avoid type mismatch (API ids may be numbers while selections are strings)
+    const selected = collegeIds
+      .map((id) =>
+        collegesData.find((college) => String(college.id) === String(id))
+      )
+      .filter(
+        (college): college is (typeof collegesData)[number] => Boolean(college)
+      )
+      .map((college) => ({
+        id: String(college.id),
+        name: college.name,
+        location: college.location,
+        city: college.city,
+        type: college.type,
+        category: college.category,
+        rating: college.rating,
+        reviews: college.reviews,
+        established: college.established,
+        nirfRanking: college.nirfRanking,
+        avgPackage: college.avgPackage,
+        highestPackage: college.highestPackage,
+        campusSize: college.campusSize,
+        description: college.description,
+      }));
+
+    return {
+      summary: "",
+      colleges: selected,
     };
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, []);
+  };
 
-  const filteredColleges = colleges.filter((c) =>
-    (filters.state === "All States" || c.state === filters.state) &&
-    (filters.category === "All Categories" || c.category === filters.category) &&
-    (filters.ownership === "All Ownership" || c.ownership === filters.ownership)
-  );
+  const normalizeCompareResponse = (payload: any): CompareResult | null => {
+    const root = payload?.data ?? payload;
+    const verdict: CompareVerdict | undefined = root?.verdict;
+    const summary =
+      verdict?.summary ||
+      root?.summary ||
+      root?.overallSummary ||
+      root?.comparisonSummary ||
+      "";
 
-  const Dropdown = ({ label, value, options, keyName }: any) => (
-    <div className="relative w-1/3">
-      <button
-        onClick={() => setOpen(open === keyName ? null : keyName)}
-        className="w-full h-14 px-6 flex justify-between items-center text-sm font-medium"
-      >
-        <span><span className="text-muted">{label}:</span> {value}</span>
-        <span>▾</span>
-      </button>
+    const rawColleges =
+      (Array.isArray(root?.data) && root?.data) ||
+      root?.colleges ||
+      root?.items ||
+      root?.data?.colleges ||
+      root?.result?.colleges ||
+      [];
 
-      {open === keyName && (
-        <div className="absolute z-50 bg-white dark:bg-[#0f172a] border rounded-xl w-full mt-2 max-h-64 overflow-auto">
-          {options.map((opt: string) => (
-            <button
-              key={opt}
-              onClick={() => {
-                setFilters({ ...filters, [keyName]: opt });
-                setOpen(null);
-              }}
-              className="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-[#020617]"
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+    if (!Array.isArray(rawColleges)) {
+      return null;
+    }
+
+    const colleges: CompareCollege[] = rawColleges.map((college: any) => ({
+      id: String(college?.id ?? ""),
+      name: college?.name ?? "N/A",
+      location: college?.location,
+      city: college?.city,
+      type: college?.type,
+      category: college?.category,
+      rating: college?.avgRating ?? college?.rating,
+      reviews: college?.reviews,
+      avgFees: college?.avgFees,
+      facultyCount: college?.facultyCount,
+      studentFacultyRatio: college?.studentFacultyRatio,
+      highestPackage: college?.highestPackage,
+      averagePackage: college?.averagePackage,
+      avgPackage: college?.avgPackage,
+      recruiterCount: college?.recruiterCount,
+      placementScore: college?.placementScore,
+      overallScore: college?.overallScore,
+      highlights: college?.highlights,
+      facilities: college?.facilities,
+      recruiters: college?.recruiters,
+      courses: college?.courses,
+      established: college?.established,
+      nirfRanking: college?.nirfRanking,
+      campusSize: college?.campusSize,
+      description: college?.description,
+    }));
+
+    return {
+      summary,
+      colleges,
+      verdict,
+    };
+  };
+
+  const handleCompare = async () => {
+    if (!canCompare) {
+      setCompareError("Please select two different colleges.");
+      return;
+    }
+
+    setCompareLoading(true);
+    setCompareError(null);
+
+    const collegeIds = [selectedCollegeOneId, selectedCollegeTwoId];
+
+    try {
+      const response = await compareCollegesByIds(collegeIds);
+      const normalized = normalizeCompareResponse(response);
+
+      if (!normalized || normalized.colleges.length < 2) {
+        setCompareResult(getFallbackCompare(collegeIds));
+      } else {
+        setCompareResult(normalized);
+      }
+      setShowCompareDetails(true);
+    } catch {
+      setCompareResult(getFallbackCompare(collegeIds));
+      setCompareError(null);
+      setShowCompareDetails(true);
+    } finally {
+      setCompareLoading(false);
+    }
+  };
+
+  const handleSwap = () => {
+    if (!selectedCollegeOneId || !selectedCollegeTwoId) return;
+    setSelectedCollegeOneId(selectedCollegeTwoId);
+    setSelectedCollegeTwoId(selectedCollegeOneId);
+    setCompareError(null);
+  };
+
+  const handleCompareReset = () => {
+    setSelectedCollegeOneId("");
+    setSelectedCollegeTwoId("");
+    setCompareError(null);
+    setCompareResult(null);
+    setShowCompareDetails(false);
+  };
+
+  const compareRows = useMemo(() => {
+    if (!compareResult || compareResult.colleges.length < 2) return [];
+
+    const [collegeOne, collegeTwo] = compareResult.colleges;
+    const formatValue = (value: unknown) =>
+      value === null || value === undefined || value === "" ? "N/A" : String(value);
+    const formatCurrency = (value: unknown) => {
+      if (value === null || value === undefined || value === "") return "N/A";
+      const numberValue = Number(value);
+      if (!Number.isFinite(numberValue)) return String(value);
+      return `₹${numberValue.toLocaleString("en-IN")}`;
+    };
+
+    return [
+      { label: "Location", first: [collegeOne.location, collegeOne.city].filter(Boolean).join(", ") || "N/A", second: [collegeTwo.location, collegeTwo.city].filter(Boolean).join(", ") || "N/A" },
+      { label: "Type", first: collegeOne.type || "N/A", second: collegeTwo.type || "N/A" },
+      { label: "Category", first: collegeOne.category || "N/A", second: collegeTwo.category || "N/A" },
+      { label: "Avg Rating", first: formatValue(collegeOne.rating), second: formatValue(collegeTwo.rating) },
+      { label: "Avg Fees", first: formatCurrency(collegeOne.avgFees), second: formatCurrency(collegeTwo.avgFees) },
+      { label: "Faculty Count", first: formatValue(collegeOne.facultyCount), second: formatValue(collegeTwo.facultyCount) },
+      { label: "Student/Faculty Ratio", first: formatValue(collegeOne.studentFacultyRatio), second: formatValue(collegeTwo.studentFacultyRatio) },
+      { label: "Highest Package", first: formatValue(collegeOne.highestPackage), second: formatValue(collegeTwo.highestPackage) },
+      { label: "Average Package", first: formatValue(collegeOne.averagePackage || collegeOne.avgPackage), second: formatValue(collegeTwo.averagePackage || collegeTwo.avgPackage) },
+      { label: "Recruiter Count", first: formatValue(collegeOne.recruiterCount), second: formatValue(collegeTwo.recruiterCount) },
+      { label: "Placement Score", first: formatValue(collegeOne.placementScore), second: formatValue(collegeTwo.placementScore) },
+      { label: "Overall Score", first: formatValue(collegeOne.overallScore), second: formatValue(collegeTwo.overallScore) },
+      { label: "Courses", first: formatValue(collegeOne.courses?.length), second: formatValue(collegeTwo.courses?.length) },
+      { label: "Facilities", first: formatValue(collegeOne.facilities?.length), second: formatValue(collegeTwo.facilities?.length) },
+    ];
+  }, [compareResult]);
+
+  const compareHighlights = useMemo(() => {
+    if (!compareResult || compareResult.colleges.length < 2) return null;
+
+    const [first, second] = compareResult.colleges;
+    const categoryLeaders = compareResult.verdict?.categoryLeaders;
+
+    const firstRating = typeof first.rating === "number" ? first.rating : Number(first.rating);
+    const secondRating = typeof second.rating === "number" ? second.rating : Number(second.rating);
+
+    const firstPlacement = Number(first.placementScore);
+    const secondPlacement = Number(second.placementScore);
+
+    const firstFacultyRatio = Number(first.studentFacultyRatio);
+    const secondFacultyRatio = Number(second.studentFacultyRatio);
+
+    const higherRatingWinner =
+      Number.isFinite(firstRating) && Number.isFinite(secondRating)
+        ? firstRating > secondRating
+          ? first.name
+          : secondRating > firstRating
+            ? second.name
+            : "Tie"
+        : "N/A";
+
+    const strongerPlacementWinner =
+      Number.isFinite(firstPlacement) && Number.isFinite(secondPlacement)
+        ? firstPlacement > secondPlacement
+          ? first.name
+          : secondPlacement > firstPlacement
+            ? second.name
+            : "Tie"
+        : "N/A";
+
+    const betterFacultyRatioWinner =
+      Number.isFinite(firstFacultyRatio) && firstFacultyRatio > 0 && Number.isFinite(secondFacultyRatio) && secondFacultyRatio > 0
+        ? firstFacultyRatio < secondFacultyRatio
+          ? first.name
+          : secondFacultyRatio < firstFacultyRatio
+            ? second.name
+            : "Tie"
+        : "N/A";
+
+    return {
+      higherRatingWinner: categoryLeaders?.bestRating || higherRatingWinner,
+      strongerPlacementWinner: categoryLeaders?.bestPlacement || strongerPlacementWinner,
+      betterFacultyRatioWinner: categoryLeaders?.bestFacultyRatio || betterFacultyRatioWinner,
+    };
+  }, [compareResult]);
+
+  const compareMeta = useMemo(() => {
+    if (!compareResult || compareResult.colleges.length < 2) {
+      return { first: null, second: null };
+    }
+
+    const findMeta = (item: CompareCollege) =>
+      collegesData.find((college) => String(college.id) === String(item.id)) ||
+      collegesData.find((college) => college.name === item.name) ||
+      null;
+
+    return {
+      first: findMeta(compareResult.colleges[0]),
+      second: findMeta(compareResult.colleges[1]),
+    };
+  }, [compareResult]);
+
+  const compareRecommendation = useMemo(() => {
+    if (!compareResult || compareResult.colleges.length < 2 || !compareHighlights) {
+      return null;
+    }
+
+    if (compareResult.verdict?.winner || compareResult.verdict?.summary) {
+      return {
+        title: `Recommended: ${compareResult.verdict?.winner || "Best Match"}`,
+        subtitle:
+          compareResult.verdict?.summary ||
+          "This recommendation is based on overall comparison metrics.",
+      };
+    }
+
+    const firstName = compareResult.colleges[0].name;
+    const secondName = compareResult.colleges[1].name;
+
+    let firstScore = 0;
+    let secondScore = 0;
+
+    const winners = [
+      compareHighlights.higherRatingWinner,
+      compareHighlights.strongerPlacementWinner,
+      compareHighlights.betterFacultyRatioWinner,
+    ];
+
+    winners.forEach((winner) => {
+      if (winner === firstName) firstScore += 1;
+      if (winner === secondName) secondScore += 1;
+    });
+
+    if (firstScore === secondScore) {
+      return {
+        title: "Balanced Comparison",
+        subtitle: "Both colleges perform similarly based on current metrics.",
+      };
+    }
+
+    const bestName = firstScore > secondScore ? firstName : secondName;
+    const score = Math.max(firstScore, secondScore);
+
+    return {
+      title: `Recommended: ${bestName}`,
+      subtitle: `Leads in ${score} out of 3 key benchmark metrics.`,
+    };
+  }, [compareHighlights, compareResult]);
+
+  const filteredColleges = collegesData.filter((college) => {
+    const stateMatch =
+      filters.state === ALL_STATES ||
+      college.state === filters.state;
+
+    const typeMatch =
+      filters.type === ALL_TYPES ||
+      college.category === filters.type;
+
+    const ownershipMatch =
+      filters.ownership === ALL_OWNERSHIP ||
+      college.ownership === filters.ownership;
+
+    return stateMatch && typeMatch && ownershipMatch;
+  });
 
   return (
-    <section className="py-24 bg-white dark:bg-midnight_text">
-      <div className="max-w-5xl mx-auto px-6">
+    <section className="relative overflow-hidden bg-white py-24 transition-colors dark:bg-slate-950">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -left-16 top-6 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute -right-16 bottom-10 h-72 w-72 rounded-full bg-secondary/10 blur-3xl" />
+      </div>
 
+      <div className="container mx-auto px-4 sm:px-6">
         {/* HEADER */}
         <div className="text-center mb-12">
-          <h2 className="text-40 font-semibold">
+          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-white/90 px-4 py-2 text-sm font-semibold text-primary shadow-sm dark:border-primary/35 dark:bg-slate-800">
+            <Icon icon="mdi:school-outline" className="w-4 h-4" />
+            College Discovery
+          </span>
+          <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white md:text-5xl">
             Explore <span className="text-primary">Colleges</span>
           </h2>
-          <p className="text-muted mt-3">
-            Filter colleges by state, category, and ownership
+          <p className="mt-3 text-base font-medium text-gray-500 dark:text-gray-400">
+            Filter colleges by state, type, and ownership
           </p>
         </div>
 
+        {/* COMPARE SECTION */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="relative mb-6 rounded-2xl border border-primary/20 dark:border-primary/30 bg-gradient-to-br from-white via-white to-primary/5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 shadow-sm overflow-hidden"
+        >
+          <motion.div
+            aria-hidden
+            className="absolute -top-16 -left-10 w-44 h-44 rounded-full bg-primary/10 blur-2xl"
+            animate={{ scale: [1, 1.08, 1], opacity: [0.45, 0.65, 0.45] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            aria-hidden
+            className="absolute -bottom-16 -right-8 w-40 h-40 rounded-full bg-primary/10 blur-2xl"
+            animate={{ scale: [1.05, 1, 1.05], opacity: [0.35, 0.6, 0.35] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          <div className="px-5 md:px-6 py-4 border-b border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+              <div>
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <motion.span
+                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary"
+                    animate={{ rotate: [0, 8, -8, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Icon icon="mdi:compare-horizontal" width="18" height="18" />
+                  </motion.span>
+                  Compare Colleges
+                </h3>
+                <p className="mt-1 text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                  Pick two colleges, compare fast, and open detailed results only when needed.
+                </p>
+              </div>
+              <div className="hidden md:flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary">1</span>
+                Select
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary">2</span>
+                Compare
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary">3</span>
+                Decide
+              </div>
+            </div>
+          </div>
+
+          <div className="p-5 md:p-6 flex flex-col gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-3 items-end">
+              <div className="xl:col-span-4">
+                <label
+                  htmlFor="compare-college-one"
+                  className="block text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300 mb-1.5"
+                >
+                  College 1
+                </label>
+                <select
+                  id="compare-college-one"
+                  value={selectedCollegeOneId}
+                  onChange={(event) => {
+                    setSelectedCollegeOneId(event.target.value);
+                    setCompareError(null);
+                  }}
+                  className="
+                      w-full h-11 rounded-lg px-3
+                      border border-gray-300 dark:border-slate-700
+                      bg-white dark:bg-slate-900
+                      text-sm text-gray-900 dark:text-gray-100
+                      focus:outline-none focus:ring-2 focus:ring-primary/30
+                    "
+                >
+                  <option value="">Select first college</option>
+                  {collegeOptions.map((college) => (
+                    <option key={college.id} value={college.id}>
+                      {college.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="xl:col-span-4">
+                <label
+                  htmlFor="compare-college-two"
+                  className="block text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300 mb-1.5"
+                >
+                  College 2
+                </label>
+                <select
+                  id="compare-college-two"
+                  value={selectedCollegeTwoId}
+                  onChange={(event) => {
+                    setSelectedCollegeTwoId(event.target.value);
+                    setCompareError(null);
+                  }}
+                  className="
+                      w-full h-11 rounded-lg px-3
+                      border border-gray-300 dark:border-slate-700
+                      bg-white dark:bg-slate-900
+                      text-sm text-gray-900 dark:text-gray-100
+                      focus:outline-none focus:ring-2 focus:ring-primary/40
+                    "
+                >
+                  <option value="">Select second college</option>
+                  {collegeOptions.map((college) => (
+                    <option key={college.id} value={college.id}>
+                      {college.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="md:col-span-2 xl:col-span-4 flex items-center justify-start xl:justify-end gap-2 flex-wrap">
+                <button
+                  onClick={handleCompare}
+                  disabled={!canCompare || compareLoading}
+                  className="
+                      h-10 px-4 rounded-lg font-medium whitespace-nowrap text-sm
+                      bg-primary text-white shadow-sm shadow-primary/30
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                      hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition
+                    "
+                >
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon icon="mdi:scale-balance" width="16" height="16" />
+                    {compareLoading ? "Comparing..." : "Compare Colleges"}
+                  </span>
+                </button>
+                <button
+                  onClick={handleSwap}
+                  disabled={!canCompare}
+                  className="
+                      h-10 px-3.5 rounded-lg font-medium whitespace-nowrap text-sm
+                      border border-primary/25 dark:border-primary/30
+                      text-primary
+                      bg-primary/5
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                      hover:bg-primary/10 hover:-translate-y-0.5 active:translate-y-0 transition
+                    "
+                >
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon icon="mdi:swap-horizontal" width="16" height="16" />
+                    Swap
+                  </span>
+                </button>
+                <button
+                  onClick={handleCompareReset}
+                  className="
+                      h-10 px-3.5 rounded-lg font-medium whitespace-nowrap text-sm
+                      border border-rose-200 dark:border-rose-400/30
+                      text-rose-600 dark:text-rose-300
+                      bg-rose-50/60 dark:bg-rose-500/10
+                      hover:bg-rose-100/70 dark:hover:bg-rose-500/20 hover:-translate-y-0.5 active:translate-y-0 transition
+                    "
+                >
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon icon="mdi:close-circle-outline" width="16" height="16" />
+                    Clear Compare
+                  </span>
+                </button>
+
+                {compareResult && compareResult.colleges.length >= 2 && (
+                  <button
+                    onClick={() => setShowCompareDetails((prev) => !prev)}
+                    className="h-10 px-3.5 rounded-lg border border-primary/30 text-primary text-sm font-medium hover:bg-primary/10 hover:-translate-y-0.5 active:translate-y-0 transition"
+                  >
+                    {showCompareDetails ? "Hide Details" : "View Details"}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="text-gray-500 dark:text-gray-400">Selected:</span>
+              <span className="inline-flex items-center px-3 py-1 rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/40 text-gray-800 dark:text-gray-100">
+                <Icon icon="mdi:school-outline" width="14" height="14" className="mr-1.5 text-primary" />
+                {selectedCollegeOne?.name || "College 1"}
+              </span>
+              <span className="text-primary font-semibold">vs</span>
+              <span className="inline-flex items-center px-3 py-1 rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/40 text-gray-800 dark:text-gray-100">
+                <Icon icon="mdi:school-outline" width="14" height="14" className="mr-1.5 text-primary" />
+                {selectedCollegeTwo?.name || "College 2"}
+              </span>
+            </div>
+
+            {compareError && (
+              <p className="text-sm text-amber-600 dark:text-amber-400">{compareError}</p>
+            )}
+
+            <AnimatePresence initial={false}>
+              {compareResult && compareResult.colleges.length >= 2 && showCompareDetails && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: -6, height: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-900"
+                >
+                  {compareRecommendation && (
+                    <div className="px-4 md:px-5 py-3 border-b border-gray-200 dark:border-slate-700 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">{compareRecommendation.title}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">{compareRecommendation.subtitle}</p>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-3 md:p-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-900/50">
+                    <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900">
+                      {compareMeta.first?.logo ? (
+                        <Image
+                          src={compareMeta.first.logo}
+                          alt={compareResult.colleges[0]?.name || "College 1"}
+                          width={36}
+                          height={36}
+                          className="rounded-md border border-gray-200 dark:border-slate-700 bg-white"
+                        />
+                      ) : (
+                        <div className="w-9 h-9 rounded-md border border-gray-200 dark:border-slate-700 flex items-center justify-center text-primary">
+                          <Icon icon="mdi:school" width="18" height="18" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{compareResult.colleges[0]?.name || "College 1"}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {[compareResult.colleges[0]?.location, compareResult.colleges[0]?.city].filter(Boolean).join(", ") || "N/A"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900">
+                      {compareMeta.second?.logo ? (
+                        <Image
+                          src={compareMeta.second.logo}
+                          alt={compareResult.colleges[1]?.name || "College 2"}
+                          width={36}
+                          height={36}
+                          className="rounded-md border border-gray-200 dark:border-slate-700 bg-white"
+                        />
+                      ) : (
+                        <div className="w-9 h-9 rounded-md border border-gray-200 dark:border-slate-700 flex items-center justify-center text-primary">
+                          <Icon icon="mdi:school" width="18" height="18" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{compareResult.colleges[1]?.name || "College 2"}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {[compareResult.colleges[1]?.location, compareResult.colleges[1]?.city].filter(Boolean).join(", ") || "N/A"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {compareResult.summary && (
+                    <div className="px-4 md:px-5 py-3 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/40">
+                      <p className="text-sm text-gray-700 dark:text-gray-200">{compareResult.summary}</p>
+                    </div>
+                  )}
+
+                  {compareHighlights && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 px-4 md:px-5 py-3 border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                      <div className="rounded-lg border border-gray-200 dark:border-slate-700 p-3">
+                        <p className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Best Rating</p>
+                        <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">{compareHighlights.higherRatingWinner}</p>
+                      </div>
+                      <div className="rounded-lg border border-gray-200 dark:border-slate-700 p-3">
+                        <p className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Best Placement</p>
+                        <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">{compareHighlights.strongerPlacementWinner}</p>
+                      </div>
+                      <div className="rounded-lg border border-gray-200 dark:border-slate-700 p-3">
+                        <p className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Best Faculty Ratio</p>
+                        <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">{compareHighlights.betterFacultyRatioWinner}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left bg-gray-50 dark:bg-slate-900">
+                          <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-slate-700 min-w-[160px]">Metric</th>
+                          <th className="px-4 py-3 font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-slate-700 min-w-[220px]">{compareResult.colleges[0]?.name || "College 1"}</th>
+                          <th className="px-4 py-3 font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-slate-700 min-w-[220px]">{compareResult.colleges[1]?.name || "College 2"}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {compareRows.map((row) => (
+                          <tr key={row.label} className="odd:bg-white even:bg-gray-50/70 dark:odd:bg-slate-900 dark:even:bg-slate-800/20">
+                            <td className="px-4 py-3 font-medium text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-slate-800">{row.label}</td>
+                            <td className="px-4 py-3 text-gray-800 dark:text-gray-100 border-b border-gray-100 dark:border-slate-800">{row.first}</td>
+                            <td className="px-4 py-3 text-gray-800 dark:text-gray-100 border-b border-gray-100 dark:border-slate-800">{row.second}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
         {/* FILTER BAR */}
-        <div ref={barRef} className="flex border rounded-2xl mb-12">
-          <Dropdown label="State" value={filters.state} options={STATES} keyName="state" />
-          <Dropdown label="Category" value={filters.category} options={CATEGORIES} keyName="category" />
-          <Dropdown label="Ownership" value={filters.ownership} options={OWNERSHIP} keyName="ownership" />
+        <div
+          ref={barRef}
+          className="
+              flex items-center gap-4 flex-wrap md:flex-nowrap
+              border rounded-2xl p-4 mb-8
+              bg-white dark:bg-slate-900
+              border-gray-200 dark:border-slate-700
+              shadow-sm
+            "
+        >
+          <div className="flex flex-1 gap-4">
+            <Dropdown
+              label="State"
+              value={filters.state}
+              options={stateOptions}
+              keyName="state"
+              open={open}
+              setOpen={setOpen}
+              setFilters={setFilters}
+            />
+            <Dropdown
+              label="Type"
+              value={filters.type}
+              options={typeOptions}
+              keyName="type"
+              open={open}
+              setOpen={setOpen}
+              setFilters={setFilters}
+            />
+            <Dropdown
+              label="Ownership"
+              value={filters.ownership}
+              options={ownershipOptions}
+              keyName="ownership"
+              open={open}
+              setOpen={setOpen}
+              setFilters={setFilters}
+            />
+          </div>
+
+          {/* RESET BUTTON */}
+          <button
+            onClick={handleReset}
+            className="
+                h-14 px-6 rounded-xl font-medium whitespace-nowrap
+                border border-primary
+                text-primary
+                hover:bg-primary/10
+                dark:hover:bg-primary/20
+                transition
+              "
+          >
+            Reset Filters
+          </button>
         </div>
 
-        {/* COLLEGE LIST */}
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredColleges.map((college, idx) => (
-            <li
-              key={idx}
-              className="relative overflow-hidden rounded-2xl border dark:border-slate-800"
-            >
-              {/* Background image */}
-              <div
-                className="absolute inset-0 bg-cover bg-center blur-[2px] scale-105"
-                style={{
-                  backgroundImage: `url(${getRandomImage(idx)})`,
-                }}
-              />
+        {/* GRID */}
+        {/* GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
-              {/* Dark overlay */}
-              <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
+          {/* Loading State */}
+          {loading && (
+            <div className="col-span-full text-center py-10 text-gray-500 dark:text-gray-400">
+              Loading colleges...
+            </div>
+          )}
 
-              {/* Content (NOT blurred) */}
-              <Link href="#" className="relative block p-6 h-full">
-                <h3 className="font-semibold text-white">
-                  {college.name}
-                </h3>
-                <p className="mt-2 text-sm text-gray-200">
-                  {college.state} • {college.category} • {college.ownership}
-                </p>
-              </Link>
-            </li>
-
+          {/* Colleges */}
+          {!loading && filteredColleges.map((college) => (
+            <CollegeCard key={college.id} college={college} />
           ))}
 
-          {filteredColleges.length === 0 && (
-            <li className="col-span-full px-6 py-10 text-center text-muted">
+          {/* No Data */}
+          {!loading && filteredColleges.length === 0 && (
+            <div className="col-span-full text-center py-10 text-gray-500 dark:text-gray-400">
               No colleges found for selected filters
-            </li>
+            </div>
           )}
-        </ul>
-
+        </div>
       </div>
     </section>
   );

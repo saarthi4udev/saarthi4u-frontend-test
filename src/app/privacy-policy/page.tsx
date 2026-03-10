@@ -341,7 +341,7 @@ const sections = [
     icon: "👤",
     title: "User Rights & Choices",
     content:
-      "You may access, update, correct, or request deletion of your data by contacting infodesk@saarthi4u.com.",
+      "You may access, update, correct, or request deletion of your data by contacting info@saarthi4u.com.",
   },
   {
     icon: "🗄️",
@@ -374,7 +374,7 @@ const PrivacyPolicyPage = () => {
     <main className="bg-white dark:bg-slate-900 w-full">
 
       {/* ================= HERO ================= */}
-      <section className="pt-28 pb-24 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+      <section className="pt-28 pb-24 bg-heroBg dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
         <div className="mx-auto max-w-7xl px-6 grid items-center gap-16 lg:grid-cols-2">
 
           {/* TEXT */}
@@ -393,13 +393,13 @@ const PrivacyPolicyPage = () => {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <span className="rounded-md bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+              <span className="rounded-md bg-secondary/10 px-4 py-2 text-sm font-medium text-secondary">
                 Transparency
               </span>
-              <span className="rounded-md bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+              <span className="rounded-md bg-secondary/10 px-4 py-2 text-sm font-medium text-secondary">
                 Data Protection
               </span>
-              <span className="rounded-md bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+              <span className="rounded-md bg-secondary/10 px-4 py-2 text-sm font-medium text-secondary">
                 User Trust
               </span>
             </div>
@@ -407,7 +407,7 @@ const PrivacyPolicyPage = () => {
 
           {/* IMAGE */}
           <div className="relative flex justify-center lg:justify-end">
-            <div className="absolute -top-12 -right-12 h-72 w-72 rounded-full bg-blue-100 blur-3xl opacity-70"></div>
+            <div className="absolute -top-12 -right-12 h-72 w-72 rounded-full bg-secondary/15 blur-3xl opacity-70"></div>
             <img
               src="/images/privacy-hero.png"
               alt="Privacy and data protection"
@@ -429,21 +429,21 @@ const PrivacyPolicyPage = () => {
                 group relative rounded-xl
                 border border-slate-200 bg-white p-8
                 transition-all duration-300
-                hover:-translate-y-1 hover:shadow-xl hover:border-blue-500
+                hover:-translate-y-1 hover:shadow-xl hover:border-secondary
                 dark:bg-slate-800 dark:border-slate-700
               "
             >
               {/* Accent bar */}
               <div
                 className="
-                  absolute left-0 top-0 h-full w-1 bg-blue-600
+                  absolute left-0 top-0 h-full w-1 bg-secondary
                   scale-y-0 origin-top transition-transform duration-300
                   group-hover:scale-y-100
                 "
               />
 
               <div className="flex gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-100 text-xl">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-secondary/10 text-xl">
                   {section.icon}
                 </div>
 
@@ -471,10 +471,10 @@ const PrivacyPolicyPage = () => {
           <p className="text-slate-600 dark:text-slate-300">
             For privacy-related questions, contact us at{" "}
             <a
-              href="mailto:infodesk@saarthi4u.com"
-              className="font-semibold text-blue-600 hover:underline"
+              href="mailto:info@saarthi4u.com"
+              className="font-semibold text-secondary hover:underline"
             >
-              infodesk@saarthi4u.com
+              info@saarthi4u.com
             </a>
           </p>
         </div>

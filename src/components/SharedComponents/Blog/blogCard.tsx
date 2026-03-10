@@ -43,7 +43,7 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
         <div>
           <Link
             href={`/blog/${slug}`}
-            className="text-20 text-primary hover:text-blue-700"
+            className="text-20 text-primary hover:text-secondary"
           >
             {type}
           </Link>

@@ -4,106 +4,144 @@ import { format } from "date-fns";
 import Image from "next/image";
 
 type Props = {
-    params: { slug: string };
+  params: { slug: string };
 };
 
+/* ============================= */
+/* METADATA */
+/* ============================= */
+
 export async function generateMetadata({ params }: Props) {
-    const posts = getAllPosts(["title", "date", "excerpt", "coverImage", "slug"]);
-    const post = getPostBySlug(params.slug, [
-        "title",
-        "author",
-        "content",
-        "metadata",
-    ]);
+  const post = getPostBySlug(params.slug, [
+    "title",
+    "author",
+    "content",
+    "metadata",
+  ]);
 
-    const siteName = process.env.SITE_NAME || "Your Site Name";
-    const authorName = process.env.AUTHOR_NAME || "Your Author Name";
+  const siteName = process.env.SITE_NAME || "Your Site Name";
+  const authorName = process.env.AUTHOR_NAME || "Your Author Name";
 
-    if (post) {
-        const metadata = {
-            title: `${post.title || "Single Post Page"} | ${siteName}`,
-            author: authorName,
-            robots: {
-                index: true,
-                follow: true,
-                nocache: true,
-                googleBot: {
-                    index: true,
-                    follow: false,
-                    "max-video-preview": -1,
-                    "max-image-preview": "large",
-                    "max-snippet": -1,
-                },
-            },
-        };
+  if (post) {
+    return {
+      title: `${post.title || "Single Post Page"} | ${siteName}`,
+      author: authorName,
+      robots: {
+        index: true,
+        follow: true,
+        nocache: true,
+        googleBot: {
+          index: true,
+          follow: false,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
+    };
+  }
 
-        return metadata;
-    } else {
-        return {
-            title: "Not Found",
-            description: "No blog article has been found",
-            author: authorName,
-            robots: {
-                index: false,
-                follow: false,
-                nocache: false,
-                googleBot: {
-                    index: false,
-                    follow: false,
-                    "max-video-preview": -1,
-                    "max-image-preview": "large",
-                    "max-snippet": -1,
-                },
-            },
-        };
-    }
+  return {
+    title: "Not Found",
+    description: "No blog article has been found",
+    author: authorName,
+    robots: {
+      index: false,
+      follow: false,
+      nocache: false,
+      googleBot: {
+        index: false,
+        follow: false,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+  };
 }
 
+/* ============================= */
+/* PAGE */
+/* ============================= */
+
 export default async function BlogHead({ params }: Readonly<Props>) {
-    const posts = getAllPosts(["title", "date", "excerpt", "coverImage", "slug"]);
-    const post = getPostBySlug(params.slug, [
-        "title",
-        "author",
-        "authorImage",
-        "content",
-        "coverImage",
-        "date",
-    ]);
+  const post = getPostBySlug(params.slug, [
+    "title",
+    "author",
+    "authorImage",
+    "content",
+    "coverImage",
+    "date",
+  ]);
 
-    const content = await markdownToHtml(post.content || "");
+  const content = await markdownToHtml(post.content || "");
 
-    return (
-        <section className="pt-44">
-            <div className="container mx-auto max-w-300">
-                <div className="grid md:grid-cols-12 grid-cols-1 items-center">
-                    <div className="col-span-8">
-                        <div className="flex flex-col sm:flex-row">
-                            <span className="text-16 text-midnight_text pr-7 border-r border-solid border-white w-fit">
-                                {format(new Date(post.date), "dd MMM yyyy")}
-                            </span>
-                            <span className="text-16 text-midnight_text sm:pl-7 pl-0 w-fit">13 Comments</span>
-                        </div>
-                        <h2 className="text-midnight_text pt-7 text-40 font-bold">
-                            {post.title}
-                        </h2>
-                    </div>
-                    <div className="flex  gap-6 col-span-4 pt-4 md:pt-0">
-                        <Image
-                            src={post.authorImage}
-                            alt="image"
-                            className="rounded-full"
-                            width={84}
-                            height={84}
-                            quality={100}
-                            style={{ width: 'auto', height: 'auto' }}
-                        />
-                        <div>
-                            <span className="text-22 text-midnight_text">Silicaman</span>
-                            <p className="text-xl text-midnight_text">Author</p>
-                        </div>
-                    </div>
-                </div>
+  return (
+    <section className="pt-44 pb-16 bg-white dark:bg-slate-950 transition-colors duration-300">
+      <div className="container mx-auto max-w-6xl px-4">
+
+        {/* BLOG HEADER CARD */}
+        <div className="
+          rounded-3xl border
+          bg-white dark:bg-slate-900
+          border-gray-200 dark:border-slate-800
+          p-8 md:p-12
+          shadow-sm
+          transition-colors
+        ">
+          <div className="grid md:grid-cols-12 grid-cols-1 items-center gap-10">
+
+            {/* LEFT CONTENT */}
+            <div className="col-span-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <span className="pr-6 border-r border-gray-200 dark:border-slate-700">
+                  {format(new Date(post.date), "dd MMM yyyy")}
+                </span>
+                <span>13 Comments</span>
+              </div>
+
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white pt-6 leading-tight">
+                {post.title}
+              </h1>
             </div>
-        </section>
-    );
+
+            {/* AUTHOR SECTION */}
+            <div className="col-span-4 flex items-center gap-6">
+              <Image
+                src={post.authorImage}
+                alt="Author Image"
+                className="rounded-full border border-gray-200 dark:border-slate-700"
+                width={84}
+                height={84}
+                quality={100}
+              />
+              <div>
+                <span className="block text-lg font-semibold text-gray-900 dark:text-white">
+                  {post.author || "Author Name"}
+                </span>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Author
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* BLOG CONTENT */}
+        <div className="
+          mt-12 rounded-3xl border
+          bg-white dark:bg-slate-900
+          border-gray-200 dark:border-slate-800
+          p-8 md:p-12
+          prose prose-lg max-w-none
+          dark:prose-invert
+          transition-colors
+        ">
+          <div dangerouslySetInnerHTML={{ __html: content }} />
+        </div>
+
+      </div>
+    </section>
+  );
 }

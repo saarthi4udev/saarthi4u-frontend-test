@@ -458,7 +458,7 @@ const FAQPage = () => {
     <main className="bg-white dark:bg-slate-900 w-full">
 
       {/* HERO – FULL WIDTH */}
-      <section className="w-full bg-slate-50 dark:bg-slate-900 pt-28 pb-24">
+      <section className="w-full bg-heroBg dark:bg-slate-900 pt-28 pb-24">
         <div className="mx-auto max-w-7xl px-6 grid gap-16 lg:grid-cols-2 items-center">
 
           {/* TEXT */}
@@ -475,13 +475,13 @@ const FAQPage = () => {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <span className="rounded-md bg-blue-100 px-4 py-2 text-blue-700 font-medium">
+              <span className="rounded-md bg-secondary/10 px-4 py-2 text-secondary font-medium">
                 Admissions & Courses
               </span>
-              <span className="rounded-md bg-blue-100 px-4 py-2 text-blue-700 font-medium">
+              <span className="rounded-md bg-secondary/10 px-4 py-2 text-secondary font-medium">
                 Counseling & Guidance
               </span>
-              <span className="rounded-md bg-blue-100 px-4 py-2 text-blue-700 font-medium">
+              <span className="rounded-md bg-secondary/10 px-4 py-2 text-secondary font-medium">
                 Study Abroad
               </span>
             </div>
@@ -489,7 +489,7 @@ const FAQPage = () => {
 
           {/* IMAGE */}
           <div className="relative flex justify-center">
-            <div className="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-blue-100 blur-3xl"></div>
+            <div className="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-secondary/15 blur-3xl"></div>
             <img
               src="/images/faq-education.png"
               alt="Education guidance and FAQs"
@@ -564,7 +564,7 @@ const FAQPage = () => {
 
           <a
             href="/contact"
-            className="mt-8 inline-block rounded-lg bg-blue-600 px-10 py-3 font-semibold text-white hover:bg-blue-700 transition"
+            className="mt-8 inline-block rounded-lg bg-accent px-10 py-3 font-semibold text-primary hover:bg-accent-dark transition"
           >
             Get Free Counseling →
           </a>

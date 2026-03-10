@@ -1,10 +1,19 @@
-export type Blog = {
-  map(arg0: (blog: { slug: React.Key | null | undefined; coverImage: string | import("next/dist/shared/lib/get-img-props").StaticImport; }) => import("react").JSX.Element): import("react").ReactNode;
+export type BlogPost = {
   id?: number;
-  title?: string;
-  type?: string;
-  slug?: string;
-  excerpt?: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content?: string;
   coverImage?: string;
+  featuredImage: string;
   date: string;
+  author: string;
+  authorImage?: string;
+  type?: string;
+  category: string;
+  tags: string[];
+  readingTime: number;
+  popularScore: number;
 };
+
+export type Blog = BlogPost;

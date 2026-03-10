@@ -5,6 +5,7 @@ import { authApi } from "../api/auth.api";
 import api from "../api/axios";
 
 type User = {
+  phone: string;
   id: number;
   name: string;
   email: string;

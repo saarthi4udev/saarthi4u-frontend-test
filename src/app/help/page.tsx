@@ -227,7 +227,7 @@ const HelpPage = () => {
     <main className="bg-white dark:bg-slate-900 w-full">
 
       {/* HERO */}
-      <section className="pt-28 pb-24 bg-slate-50 dark:bg-slate-900">
+      <section className="pt-28 pb-24 bg-heroBg dark:bg-slate-900">
         <div className="mx-auto max-w-6xl px-6 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
             Saarthi4u Help Center
@@ -435,7 +435,7 @@ const HelpPage = () => {
 
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { icon: "📧", title: "Email", value: "infodesk@saarthi4u.com", href: "mailto:infodesk@saarthi4u.com" },
+              { icon: "📧", title: "Email", value: "info@saarthi4u.com", href: "mailto:info@saarthi4u.com" },
               { icon: "📞", title: "Phone", value: "+91 9958989150", href: "tel:+919958989150" },
               { icon: "🏢", title: "Office", value: "Sector-63, Noida – 201301", href: "#" },
             ].map((item, index) => (
@@ -471,7 +471,7 @@ const HelpPage = () => {
           </p>
           <a
             href="/contact"
-            className="inline-block rounded-lg bg-blue-600 px-10 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-blue-700"
+            className="inline-block rounded-lg bg-accent px-10 py-3 font-semibold text-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-accent-dark"
           >
             Contact Support
           </a>

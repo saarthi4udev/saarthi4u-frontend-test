@@ -305,7 +305,7 @@ export default function CareersPage() {
     <main className="bg-white dark:bg-slate-900 w-full overflow-x-hidden">
 
       {/* HERO */}
-      <section className="pt-28 pb-24 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+      <section className="pt-28 pb-24 bg-heroBg dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
         <div className="mx-auto max-w-7xl px-6 grid items-center gap-16 lg:grid-cols-2">
 
           {/* LEFT CONTENT */}
@@ -328,7 +328,7 @@ export default function CareersPage() {
               ].map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-md bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700"
+                  className="rounded-md bg-secondary/10 px-4 py-2 text-sm font-medium text-secondary"
                 >
                   {tag}
                 </span>
@@ -339,7 +339,7 @@ export default function CareersPage() {
           {/* RIGHT IMAGE */}
           <div className="relative flex justify-center lg:justify-end animate-fadeIn">
             {/* Soft background glow */}
-            <div className="absolute -top-12 -right-12 h-72 w-72 rounded-full bg-blue-100 blur-3xl opacity-70"></div>
+            <div className="absolute -top-12 -right-12 h-72 w-72 rounded-full bg-secondary/15 blur-3xl opacity-70"></div>
 
             <img
               src="/images/careers-hero.png"
@@ -381,7 +381,7 @@ export default function CareersPage() {
                 "
               >
                 {/* Hover accent */}
-                <div className="absolute inset-x-0 top-0 h-1 bg-blue-600 scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-secondary scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
 
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -396,7 +396,7 @@ export default function CareersPage() {
                     </p>
                   </div>
 
-                  <span className="shrink-0 rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+                  <span className="shrink-0 rounded-full bg-secondary/10 px-3 py-1 text-xs font-medium text-secondary">
                     {o.exp}
                   </span>
                 </div>
@@ -404,14 +404,14 @@ export default function CareersPage() {
                 <div className="mt-6 flex items-center gap-4">
                   <Link
                     href={`/careers/${o.slug}`}
-                    className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+                    className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-primary transition hover:bg-accent-dark"
                   >
                     View & Apply →
                   </Link>
 
                   <a
-                    href={`mailto:careers@saarthi4u.com?subject=Job Interest - ${o.title}`}
-                    className="text-sm text-slate-500 hover:text-blue-600 transition"
+                    href={`mailto:info@saarthi4u.com?subject=Job Interest - ${o.title}`}
+                    className="text-sm text-slate-500 hover:text-secondary transition"
                   >
                     Contact HR
                   </a>
@@ -428,10 +428,10 @@ export default function CareersPage() {
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Share your resume at{' '}
               <a
-                href="mailto:careers@saarthi4u.com"
-                className="font-medium text-blue-600"
+                href="mailto:info@saarthi4u.com"
+                className="font-medium text-secondary"
               >
-                careers@saarthi4u.com
+                info@saarthi4u.com
               </a>{' '}
               and we’ll reach out when a suitable opportunity opens.
             </p>
@@ -448,7 +448,7 @@ export default function CareersPage() {
 
           <a
             href="/contact"
-            className="inline-block rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white transition hover:scale-105 hover:bg-blue-700"
+            className="inline-block rounded-lg bg-accent px-8 py-3 font-semibold text-primary transition hover:scale-105 hover:bg-accent-dark"
           >
             Contact Us
           </a>

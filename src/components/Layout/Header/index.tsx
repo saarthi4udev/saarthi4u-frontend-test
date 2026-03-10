@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { headerData } from "../Header/Navigation/menuData";
 import Logo from "./Logo";
 import HeaderLink from "../Header/Navigation/HeaderLink";
@@ -11,29 +11,29 @@ import { useTheme } from "next-themes";
 import { useAuth } from "@/app/context/AuthContext";
 import toast from "react-hot-toast";
 import api from "@/app/api/axios";
-
+import ProfileDropdown from "../../profiledropdown/ProfileDropdown";
 
 const Header: React.FC = () => {
-
   const pathUrl = usePathname();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
 
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const navbarRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const { isAuthenticated, logout, user } = useAuth();
-
+  const isAuthPage = ["/signin", "/signup", "/phone"].some(
+    (route) => pathUrl === route || pathUrl.startsWith(`${route}/`)
+  );
 
   const handleLogout = async () => {
     const confirmed = globalThis.confirm("Do you really want to logout?");
     if (!confirmed) return;
 
     try {
-      
       await logout();
     } catch (err) {
       toast.error("Logout failed. Please try again.");
@@ -50,13 +50,17 @@ const Header: React.FC = () => {
     }, 800);
   };
 
-
-  // Function to handle scroll to set sticky class
-  const handleScroll = () => {
-    setSticky(window.scrollY >= 80);
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const value = searchTerm.trim();
+    setNavbarOpen(false);
+    router.push(value ? `/college?search=${encodeURIComponent(value)}` : "/college");
   };
 
-  // Function to handle click outside
+  const handleScroll = () => {
+    setSticky(window.scrollY >= 24);
+  };
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       mobileMenuRef.current &&
@@ -67,169 +71,229 @@ const Header: React.FC = () => {
     }
   };
 
+  const handleEscapeClose = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      setNavbarOpen(false);
+    }
+  };
+
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeClose);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeClose);
     };
   }, [navbarOpen]);
 
-  // Effect to handle body overflow
   useEffect(() => {
     if (navbarOpen) {
-      document.body.style.overflow = "hidden"; // Prevent scrolling
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""; // Reset scrolling
+      document.body.style.overflow = "";
     }
   }, [navbarOpen]);
 
+  useEffect(() => {
+    setNavbarOpen(false);
+  }, [pathUrl]);
+
+  const isHome = pathUrl === "/";
+
   return (
     <header
-      className={`fixed h-24 top-0 py-1 z-50 w-full bg-transparent transition-all ${sticky ? "shadow-lg bg-white dark:bg-darkheader" : "shadow-none"
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${sticky || !isHome
+          ? "border-b border-border bg-white/98 shadow-lg backdrop-blur-md dark:border-dark_border/80 dark:bg-darkheader/95"
+          : "bg-white/95 backdrop-blur-sm shadow-none dark:bg-darkheader/95"
         }`}
     >
-      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) flex justify-between lg:items-center xl:gap-16 lg:gap-8 px-4 py-6">
-        <Logo />
-        <nav className="hidden lg:flex grow items-center xl:justify-start justify-center space-x-10 text-17 text-midnight_text">
-          {headerData.map((item, index) => (
-            <HeaderLink key={index} item={item} />
-          ))}
-        </nav>
-        <div className="flex items-center gap-4">
+      <div
+        className={`container mx-auto flex items-center justify-between gap-3 px-4 transition-all duration-300 ${sticky ? "py-3" : "py-4"
+          }`}
+      >
+        <div className="flex items-center gap-6 xl:gap-8">
+          <Logo />
+
+          <nav className="hidden xl:flex items-center gap-1 rounded-full border border-primary/15 bg-primary/5 p-1.5 backdrop-blur-sm dark:border-dark_border/80 dark:bg-dark_b/70">
+            {headerData.map((item, index) => (
+              <HeaderLink key={index} item={item} />
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="hidden lg:flex h-10 items-center gap-2 rounded-full border border-border bg-gray-50 px-3 text-primary shadow-sm transition-all duration-300 focus-within:border-secondary/60 dark:border-dark_border dark:bg-dark_b dark:text-white"
+          >
+            <Icon icon="solar:magnifer-linear" className="text-xl text-secondary" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search colleges or courses"
+              className="w-44 xl:w-48 2xl:w-52 bg-transparent p-0 text-14 text-primary placeholder:text-muted focus:outline-hidden dark:text-white"
+              aria-label="Search colleges or courses"
+            />
+          </form>
+
           <button
             aria-label="Toggle theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex h-8 w-8 items-center justify-center text-body-color duration-300 dark:text-white"
+            className="grid h-10 w-10 place-items-center rounded-full border border-border bg-gray-50 text-primary transition-all duration-300 hover:border-secondary/45 hover:text-secondary dark:border-dark_border dark:bg-dark_b dark:text-white"
           >
-            <svg
-              viewBox="0 0 16 16"
-              className={`hidden h-6 w-6 dark:block ${!sticky && pathUrl === "/" && "text-white"
-                }`}
-            >
-              <path
-                d="M4.50663 3.2267L3.30663 2.03337L2.36663 2.97337L3.55996 4.1667L4.50663 3.2267ZM2.66663 7.00003H0.666626V8.33337H2.66663V7.00003ZM8.66663 0.366699H7.33329V2.33337H8.66663V0.366699V0.366699ZM13.6333 2.97337L12.6933 2.03337L11.5 3.2267L12.44 4.1667L13.6333 2.97337ZM11.4933 12.1067L12.6866 13.3067L13.6266 12.3667L12.4266 11.1734L11.4933 12.1067ZM13.3333 7.00003V8.33337H15.3333V7.00003H13.3333ZM7.99996 3.6667C5.79329 3.6667 3.99996 5.46003 3.99996 7.6667C3.99996 9.87337 5.79329 11.6667 7.99996 11.6667C10.2066 11.6667 12 9.87337 12 7.6667C12 5.46003 10.2066 3.6667 7.99996 3.6667ZM7.33329 14.9667H8.66663V13H7.33329V14.9667ZM2.36663 12.36L3.30663 13.3L4.49996 12.1L3.55996 11.16L2.36663 12.36Z"
-                fill="#FFFFFF"
-              />
-            </svg>
-            <svg
-              viewBox="0 0 23 23"
-              className={`h-8 w-8 text-dark dark:hidden ${!sticky && pathUrl === "/" && "text-white"
-                }`}
-            >
-              <path d="M16.6111 15.855C17.591 15.1394 18.3151 14.1979 18.7723 13.1623C16.4824 13.4065 14.1342 12.4631 12.6795 10.4711C11.2248 8.47905 11.0409 5.95516 11.9705 3.84818C10.8449 3.9685 9.72768 4.37162 8.74781 5.08719C5.7759 7.25747 5.12529 11.4308 7.29558 14.4028C9.46586 17.3747 13.6392 18.0253 16.6111 15.855Z" />
-            </svg>
+            <Icon
+              icon={theme === "dark" ? "solar:sun-bold" : "solar:moon-stars-bold"}
+              className="text-[1.15rem]"
+            />
           </button>
-          {isAuthenticated ? (
-            <>
-              {/* <a className="hidden lg:flex items-center text-dark dark:text-white">{useAuth()?.user?.name}</a> */}
-              <button
-                onClick={handleLogout}
-                className="hidden lg:flex items-center border border-red-500 text-red-500 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-500 hover:text-white"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
+
+          <Link
+            href="/contact"
+            className="group relative hidden md:flex h-10 items-center gap-2 overflow-hidden rounded-full bg-accent px-3.5 xl:px-4 text-14 font-semibold text-primary transition-all duration-300 hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
+          >
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            Get Consultation
+            <Icon icon="solar:arrow-right-linear" className="text-base" />
+          </Link>
+
+          {isAuthenticated && !isAuthPage ? (
+            <ProfileDropdown
+              onLogout={handleLogout}
+              userName={user?.name}
+            />
+          ) : !isAuthenticated && !isAuthPage ? (
+            <div className="hidden xl:flex items-center">
               <Link
                 href="/signin"
-                className="hidden lg:flex items-center bg-primary border border-primary text-white px-4 py-2 gap-2 rounded-lg text-sm font-semibold hover:bg-transparent hover:text-primary"
+                className="flex h-10 items-center gap-2 rounded-full border border-secondary bg-secondary px-4 text-14 font-semibold text-white"
               >
-                Sign In
-                <Icon icon="solar:arrow-right-linear" height="18" />
+                Get Started
               </Link>
+            </div>
+          ) : null}
 
+          {/* {isAuthenticated && !isAuthPage ? (
+            <button
+              onClick={handleLogout}
+              className="hidden xl:flex h-10 items-center rounded-full border border-danger px-3.5 text-14 font-semibold text-danger transition-all duration-300 hover:bg-danger hover:text-white"
+            >
+              Logout
+            </button>
+          ) : !isAuthenticated && !isAuthPage ? (
+            <div className="hidden xl:flex items-center">
               <Link
-                href="/signup"
-                className="hidden lg:flex items-center border border-primary text-primary px-4 py-2 gap-2 rounded-lg text-sm font-semibold hover:bg-primary hover:text-white"
+                href="/signin"
+                className="flex h-10 items-center gap-2 rounded-full border border-primary bg-primary px-4 text-14 font-semibold text-white transition-all duration-300 hover:opacity-90"
               >
-                Sign Up
-                <Icon icon="solar:arrow-right-linear" height="18" />
+                Get Started
+                <Icon icon="solar:arrow-right-linear" className="text-base" />
               </Link>
-            </>
-          )}
+            </div>
+          ) : null} */}
 
           <button
             onClick={() => setNavbarOpen(!navbarOpen)}
-            className="block lg:hidden p-2 rounded-lg"
+            className="group grid h-10 w-10 place-items-center rounded-full border border-border bg-gray-50 transition-all duration-300 hover:border-secondary/45 dark:border-dark_border dark:bg-dark_b lg:hidden"
             aria-label="Toggle mobile menu"
           >
-            <span className="block w-6 h-0.5 bg-black dark:bg-white"></span>
-            <span className="block w-6 h-0.5 bg-black dark:bg-white mt-1.5"></span>
-            <span className="block w-6 h-0.5 bg-black dark:bg-white mt-1.5"></span>
+            <div className="relative h-5 w-5">
+              <span
+                className={`absolute left-0 top-1 block h-0.5 w-5 bg-primary transition-all duration-300 dark:bg-white ${navbarOpen ? "translate-y-1.5 rotate-45" : ""
+                  }`}
+              />
+              <span
+                className={`absolute left-0 top-2.5 block h-0.5 w-5 bg-primary transition-all duration-300 dark:bg-white ${navbarOpen ? "opacity-0" : ""
+                  }`}
+              />
+              <span
+                className={`absolute left-0 top-4 block h-0.5 w-5 bg-primary transition-all duration-300 dark:bg-white ${navbarOpen ? "-translate-y-1.5 -rotate-45" : ""
+                  }`}
+              />
+            </div>
           </button>
         </div>
       </div>
+
+      <div
+        className={`fixed inset-0 z-40 bg-darkmode/40 backdrop-blur-[1px] transition-opacity duration-300 lg:hidden ${navbarOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+          }`}
+      />
+
       <div
         ref={mobileMenuRef}
-        className={`lg:hidden fixed top-0 right-0  h-full w-full bg-white shadow-lg transform transition-transform duration-300 max-w-xs ${navbarOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed right-0 top-0 z-50 h-full w-full max-w-sm transform border-l border-border/70 bg-white p-4 shadow-2xl transition-transform duration-300 dark:border-dark_border/70 dark:bg-darkheader lg:hidden ${navbarOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
-        <div className="flex items-center justify-between p-4">
-          <h2 className="text-lg font-bold text-midnight_text dark:text-midnight_text">
-            Menu
-          </h2>
+        <div className="flex items-center justify-between pb-4">
+          <Logo />
           <button
             onClick={() => setNavbarOpen(false)}
             aria-label="Close mobile menu"
+            className="grid h-10 w-10 place-items-center rounded-full border border-border text-midnight_text transition-colors duration-200 hover:border-primary/45 hover:text-primary dark:border-dark_border dark:text-white"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="dark:text-midnight_text"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <Icon icon="solar:close-circle-linear" className="text-2xl" />
           </button>
         </div>
-        <nav className="flex flex-col items-start p-4">
+
+        <form
+          onSubmit={handleSearchSubmit}
+          className="mb-4 flex h-11 items-center gap-2 rounded-full border border-border bg-white px-3 text-midnight_text shadow-sm focus-within:border-primary/60 dark:border-dark_border dark:bg-dark_b dark:text-white"
+        >
+          <Icon icon="solar:magnifer-linear" className="text-xl text-primary" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Search colleges or courses"
+            className="w-full bg-transparent p-0 text-14 placeholder:text-muted focus:outline-hidden dark:text-white"
+            aria-label="Search colleges or courses"
+          />
+        </form>
+
+        <nav className="flex max-h-[calc(100%-13rem)] flex-col gap-2 overflow-y-auto pr-1">
           {headerData.map((item, index) => (
-            <MobileHeaderLink key={index} item={item} />
+            <MobileHeaderLink
+              key={index}
+              item={item}
+              onNavigate={() => setNavbarOpen(false)}
+            />
           ))}
-          <div className="mt-4 flex flex-col space-y-4 w-full">
-            {!isAuthenticated ? (
-              <>
-                <Link
-                  href="/signin"
-                  className="border border-primary text-primary px-4 py-2 rounded-lg"
-                  onClick={() => setNavbarOpen(false)}
-                >
-                  Sign In
-                </Link>
-
-                <Link
-                  href="/signup"
-                  className="bg-primary text-white px-4 py-2 rounded-lg"
-                  onClick={() => setNavbarOpen(false)}
-                >
-                  Sign Up
-                </Link>
-              </>
-            ) : (
-              <button
-                onClick={() => {
-                  setNavbarOpen(false);
-                  handleLogout();
-                }}
-                className="border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white"
-              >
-                Logout
-              </button>
-            )}
-
-          </div>
+          <Link
+            href="/contact"
+            onClick={() => setNavbarOpen(false)}
+            className="mt-1 flex h-12 items-center justify-center gap-2 rounded-xl bg-accent px-4 text-14 font-semibold text-primary"
+          >
+            Get Consultation
+            <Icon icon="solar:arrow-right-linear" className="text-base" />
+          </Link>
         </nav>
+
+        <div className="mt-4 grid grid-cols-2 gap-2 border-t border-border/70 pt-4 dark:border-dark_border/70">
+          {!isAuthenticated && !isAuthPage ? (
+            <Link
+              href="/signin"
+              className="col-span-2 flex h-11 items-center justify-center gap-2 rounded-full border border-secondary bg-secondary px-4 text-14 font-semibold text-white transition-all duration-300 hover:opacity-90"
+              onClick={() => setNavbarOpen(false)}
+            >
+              Get Started
+              <Icon icon="solar:arrow-right-linear" className="text-base" />
+            </Link>
+          ) : isAuthenticated && !isAuthPage ? (
+            <button
+              onClick={() => {
+                setNavbarOpen(false);
+                handleLogout();
+              }}
+              className="col-span-2 flex h-11 items-center justify-center rounded-full border border-danger px-4 text-14 font-semibold text-danger transition-all duration-300 hover:bg-danger hover:text-white"
+            >
+              Logout
+            </button>
+          ) : null}
+        </div>
       </div>
     </header>
   );
