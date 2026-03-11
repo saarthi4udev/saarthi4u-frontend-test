@@ -1,4 +1,6 @@
-const BASE_URL = "https://saarthi4u-backend-test.onrender.com/api/exam";
+const base = process.env.NEXT_PUBLIC_API_URL;
+
+const BASE_URL = base + "/exam";
 
 //  Get all exams
 export async function getAllExams() {

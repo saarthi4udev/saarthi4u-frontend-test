@@ -15,12 +15,12 @@ const HeroSub: FC<HeroSubProps> = ({
   showBreadcrumb = true,
 }) => {
   return (
-      <section className="text-center bg-cover pt-8 pb-8 md:pt-10 md:pb-10 relative dark:bg-darkmode overflow-x-hidden">
-        <div className="w-full h-full absolute z-0 bg-heroBg rounded-b-[119px] -left-1/4 top-0 dark:bg-search"></div>
+      <section className="relative overflow-x-hidden bg-cover pt-6 pb-6 text-center dark:bg-darkmode md:pt-10 md:pb-10">
+        <div className="absolute top-0 -left-1/4 z-0 h-full w-full rounded-b-[64px] bg-heroBg dark:bg-search sm:rounded-b-[96px] lg:rounded-b-[119px]"></div>
         <div
-          className={`container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-1 flex items-start md:items-center gap-4 ${showBreadcrumb ? "justify-between" : "justify-start"}`}
+          className={`container relative z-1 mx-auto flex flex-col items-start gap-3 md:max-w-(--breakpoint-md) md:flex-row md:items-center lg:max-w-(--breakpoint-xl) ${showBreadcrumb ? "justify-between" : "justify-start"}`}
         >
-          <h2 className="text-midnight_text text-50 relative font-bold dark:text-white ">
+          <h2 className="relative text-left text-28 font-bold text-midnight_text dark:text-white sm:text-40 lg:text-50">
             {title}
           </h2>
           {showBreadcrumb && <Breadcrumb links={breadcrumbLinks} />}

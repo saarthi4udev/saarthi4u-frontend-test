@@ -265,6 +265,7 @@ import { DegreeLevel } from "@/types/courseDiscovery";
 const ALL_STATES = "All States";
 const ALL_LEVELS = "All Levels";
 const ALL_STREAMS = "All Streams";
+const base = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CoursesSection() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -277,7 +278,7 @@ export default function CoursesSection() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("https://saarthi4u-backend-test.onrender.com/api/category/all");
+        const res = await fetch(`${base}/category/all`);
         const result = await res.json();
 
         const formatted = result.data.map((cat: any) => ({

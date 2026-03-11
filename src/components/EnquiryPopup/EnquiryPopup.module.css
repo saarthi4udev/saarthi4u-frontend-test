@@ -31,7 +31,7 @@
   z-index: 9999;
   animation: popIn 0.42s cubic-bezier(0.22, 1, 0.36, 1);
   position: fixed;
-  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
   overflow-y: auto;
 }
 
@@ -72,13 +72,14 @@
 
 /* Content */
 .content {
-  padding: 32px 28px;
+  padding: 32px 28px 24px;
 }
 
 /* Header */
 .header {
   text-align: center;
   margin-bottom: 24px;
+  padding-right: 46px;
 }
 
 .title {
@@ -92,6 +93,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 10px;
+  overflow-wrap: anywhere;
 }
 
 .description {
@@ -254,13 +256,14 @@
 /* Mobile Responsive */
 @media (max-width: 640px) {
   .modal {
-    width: 95%;
+    width: calc(100vw - 20px);
     max-width: 100%;
-    margin: 16px;
+    max-height: calc(100dvh - 20px);
+    border-radius: 16px;
   }
 
   .content {
-    padding: 32px 20px;
+    padding: 28px 16px 18px;
   }
 
   .title {
@@ -287,11 +290,11 @@
   }
 
   .closeButton {
-    width: 32px;
-    height: 32px;
-    font-size: 20px;
-    top: 12px;
-    right: 12px;
+    width: 34px;
+    height: 34px;
+    font-size: 19px;
+    top: 10px;
+    right: 10px;
   }
 
   .form {
@@ -300,12 +303,20 @@
 
   .header {
     margin-bottom: 20px;
+    padding-right: 40px;
   }
 }
 
 @media (max-width: 480px) {
+  .modal {
+    width: calc(100vw - 14px);
+    max-height: calc(100dvh - 14px);
+    border-radius: 14px;
+  }
+
   .title {
     font-size: 18px;
+    line-height: 1.35;
   }
 
   .description {
@@ -313,7 +324,7 @@
   }
 
   .content {
-    padding: 24px 16px;
+    padding: 22px 14px 14px;
   }
 
   .input,

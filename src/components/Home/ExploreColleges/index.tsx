@@ -13,6 +13,30 @@ const ExploreColleges: React.FC = () => {
   const ref = useRef(null);
   const inView = useInView(ref);
 
+  const [liveStats, setLiveStats] = useState({
+    total: 0,
+    universities: 0,
+    topRanked: 0,
+  });
+
+  useEffect(() => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    fetch(`${baseUrl}/college/all`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        const list: { type?: string; nirfRanking?: number }[] =
+          data?.data ?? (Array.isArray(data) ? data : []);
+        if (list.length > 0) {
+          setLiveStats({
+            total: list.length,
+            universities: list.filter((c) => c.type === "University").length,
+            topRanked: list.filter((c) => c.nirfRanking != null && c.nirfRanking <= 100).length,
+          });
+        }
+      })
+      .catch(() => { });
+  }, []);
+
   const filteredColleges = useMemo(() => {
     if (!searchQuery.trim()) {
       return colleges.slice(0, 6);
@@ -148,9 +172,18 @@ const ExploreColleges: React.FC = () => {
           <div className="mx-auto mt-5 max-w-3xl overflow-hidden rounded-2xl border border-gray-200 bg-white/90 p-2 shadow-sm dark:border-gray-700 dark:bg-darkHeroBg/80">
             <div className="grid grid-cols-3 items-center divide-x divide-gray-200 dark:divide-gray-700">
               {[
-                { value: "5", label: "Colleges Listed" },
-                { value: "30", label: "Universities" },
-                { value: "50+", label: "Top Rankings" },
+                {
+                  value: liveStats.total > 0 ? `${liveStats.total}` : "—",
+                  label: "Colleges Listed",
+                },
+                {
+                  value: liveStats.universities > 0 ? `${liveStats.universities}` : "—",
+                  label: "Universities",
+                },
+                {
+                  value: liveStats.topRanked > 0 ? `${liveStats.topRanked}+` : "—",
+                  label: "Top Rankings",
+                },
               ].map((item, index) => (
                 <motion.div key={item.label} {...statsAnimation(index)} className="px-2 py-2 text-center">
                   <p className="text-2xl font-bold text-midnight_text dark:text-white sm:text-3xl">
@@ -269,11 +302,10 @@ const ExploreColleges: React.FC = () => {
                               onClick={() => setActiveCollegeSlug(college.slug)}
                               onMouseEnter={() => setActiveCollegeSlug(college.slug)}
                               onFocus={() => setActiveCollegeSlug(college.slug)}
-                              className={`group mt-2 flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all duration-300 ${
-                                isActive
+                              className={`group mt-2 flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all duration-300 ${isActive
                                   ? "border-secondary/35 bg-secondary/10 shadow-sm"
                                   : "border-secondary/10 bg-white/90 hover:-translate-y-0.5 hover:border-secondary/30 hover:bg-secondary/5 dark:border-primary/20 dark:bg-darkmode dark:hover:bg-slate-800"
-                              }`}
+                                }`}
                             >
                               <div className="min-w-0">
                                 <p className="truncate text-base font-semibold text-midnight_text dark:text-white">
@@ -291,9 +323,8 @@ const ExploreColleges: React.FC = () => {
                                 <Icon icon="ph:star-fill" className="h-4 w-4 text-yellow-400" />
                                 <Icon
                                   icon="solar:alt-arrow-right-linear"
-                                  className={`h-4 w-4 text-secondary transition-transform duration-300 ${
-                                    isActive ? "translate-x-0.5" : "group-hover:translate-x-0.5"
-                                  }`}
+                                  className={`h-4 w-4 text-secondary transition-transform duration-300 ${isActive ? "translate-x-0.5" : "group-hover:translate-x-0.5"
+                                    }`}
                                 />
                               </div>
                             </button>

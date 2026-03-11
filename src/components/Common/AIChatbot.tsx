@@ -379,12 +379,12 @@ const AIChatbot: React.FC = () => {
 
   return (
     <>
-      <div className="fixed bottom-40 right-6 z-[9998] sm:bottom-40">
+      <div className="fixed bottom-28 right-4 z-[9998] sm:bottom-40 sm:right-6">
         <button
           type="button"
           onClick={openChat}
           aria-label="Open AI assistant"
-          className={`flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all duration-300 hover:scale-105 ${
+          className={`flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all duration-300 hover:scale-105 sm:h-14 sm:w-14 ${
             isOpen && !isMinimized ? "scale-0 opacity-0 pointer-events-none" : "scale-100 opacity-100"
           }`}
         >
@@ -395,10 +395,10 @@ const AIChatbot: React.FC = () => {
       </div>
 
       <section
-        className={`fixed right-4 z-[9998] flex h-[min(38rem,calc(100vh-8rem))] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-2xl transition-all duration-300 sm:right-6 ${
+        className={`fixed right-4 z-[9998] flex h-[min(38rem,calc(100dvh-7rem))] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-2xl transition-all duration-300 sm:right-6 ${
           isOpen && !isMinimized
-            ? "bottom-[6.5rem] translate-y-0 opacity-100"
-            : "pointer-events-none bottom-[5.5rem] translate-y-4 opacity-0"
+            ? "bottom-[5.5rem] translate-y-0 opacity-100 sm:bottom-[6.5rem]"
+            : "pointer-events-none bottom-[4.75rem] translate-y-4 opacity-0 sm:bottom-[5.5rem]"
         }`}
         aria-live="polite"
       >

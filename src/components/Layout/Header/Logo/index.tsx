@@ -3,14 +3,15 @@ import Link from "next/link";
 
 const Logo: React.FC = () => {
   return (
-    <Link href="/">
+    <Link href="/" className="inline-flex shrink-0 items-center" aria-label="Saarthi4u home">
       <Image
         src="/images/logo/new_logo.png"
         alt="logo"
         width={140}
         height={30}
         quality={100}
-        className="dark:hidden"
+        sizes="(max-width: 640px) 120px, (max-width: 1024px) 132px, 140px"
+        className="h-auto w-[120px] dark:hidden sm:w-[132px] lg:w-[140px]"
       />
 
       <Image
@@ -19,7 +20,8 @@ const Logo: React.FC = () => {
         width={140}
         height={30}
         quality={100}
-        className="hidden dark:block"
+        sizes="(max-width: 640px) 120px, (max-width: 1024px) 132px, 140px"
+        className="hidden h-auto w-[120px] dark:block sm:w-[132px] lg:w-[140px]"
       />
     </Link>
   );

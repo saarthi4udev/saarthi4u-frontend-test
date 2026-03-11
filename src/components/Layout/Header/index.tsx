@@ -111,7 +111,7 @@ const Header: React.FC = () => {
         }`}
     >
       <div
-        className={`container mx-auto flex items-center justify-between gap-3 px-4 transition-all duration-300 ${sticky ? "py-3" : "py-4"
+        className={`container mx-auto flex items-center justify-between gap-2 transition-all duration-300 sm:gap-3 ${sticky ? "py-3" : "py-4"
           }`}
       >
         <div className="flex items-center gap-6 xl:gap-8">
@@ -127,7 +127,7 @@ const Header: React.FC = () => {
         <div className="flex items-center gap-2">
           <form
             onSubmit={handleSearchSubmit}
-            className="hidden lg:flex h-10 items-center gap-2 rounded-full border border-border bg-gray-50 px-3 text-primary shadow-sm transition-all duration-300 focus-within:border-secondary/60 dark:border-dark_border dark:bg-dark_b dark:text-white"
+            className="hidden xl:flex h-10 items-center gap-2 rounded-full border border-border bg-gray-50 px-3 text-primary shadow-sm transition-all duration-300 focus-within:border-secondary/60 dark:border-dark_border dark:bg-dark_b dark:text-white"
           >
             <Icon icon="solar:magnifer-linear" className="text-xl text-secondary" />
             <input
@@ -153,7 +153,7 @@ const Header: React.FC = () => {
 
           <Link
             href="/contact"
-            className="group relative hidden md:flex h-10 items-center gap-2 overflow-hidden rounded-full bg-accent px-3.5 xl:px-4 text-14 font-semibold text-primary transition-all duration-300 hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
+            className="group relative hidden xl:flex h-10 items-center gap-2 overflow-hidden rounded-full bg-accent px-4 text-14 font-semibold text-primary transition-all duration-300 hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
           >
             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             Get Consultation
@@ -197,7 +197,7 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => setNavbarOpen(!navbarOpen)}
-            className="group grid h-10 w-10 place-items-center rounded-full border border-border bg-gray-50 transition-all duration-300 hover:border-secondary/45 dark:border-dark_border dark:bg-dark_b lg:hidden"
+            className="group grid h-10 w-10 place-items-center rounded-full border border-border bg-gray-50 transition-all duration-300 hover:border-secondary/45 dark:border-dark_border dark:bg-dark_b xl:hidden"
             aria-label="Toggle mobile menu"
           >
             <div className="relative h-5 w-5">
@@ -219,13 +219,14 @@ const Header: React.FC = () => {
       </div>
 
       <div
-        className={`fixed inset-0 z-40 bg-darkmode/40 backdrop-blur-[1px] transition-opacity duration-300 lg:hidden ${navbarOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        onClick={() => setNavbarOpen(false)}
+        className={`fixed inset-0 z-40 bg-darkmode/40 backdrop-blur-[1px] transition-opacity duration-300 xl:hidden ${navbarOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
           }`}
       />
 
       <div
         ref={mobileMenuRef}
-        className={`fixed right-0 top-0 z-50 h-full w-full max-w-sm transform border-l border-border/70 bg-white p-4 shadow-2xl transition-transform duration-300 dark:border-dark_border/70 dark:bg-darkheader lg:hidden ${navbarOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed right-0 top-0 z-50 flex h-[100dvh] w-[min(88vw,24rem)] transform flex-col border-l border-border/70 bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-300 dark:border-dark_border/70 dark:bg-darkheader xl:hidden ${navbarOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
         <div className="flex items-center justify-between pb-4">
@@ -254,7 +255,7 @@ const Header: React.FC = () => {
           />
         </form>
 
-        <nav className="flex max-h-[calc(100%-13rem)] flex-col gap-2 overflow-y-auto pr-1">
+        <nav className="flex-1 space-y-2 overflow-y-auto pr-1">
           {headerData.map((item, index) => (
             <MobileHeaderLink
               key={index}
@@ -272,7 +273,7 @@ const Header: React.FC = () => {
           </Link>
         </nav>
 
-        <div className="mt-4 grid grid-cols-2 gap-2 border-t border-border/70 pt-4 dark:border-dark_border/70">
+        <div className="mt-3 grid grid-cols-2 gap-2 border-t border-border/70 pt-4 dark:border-dark_border/70">
           {!isAuthenticated && !isAuthPage ? (
             <Link
               href="/signin"

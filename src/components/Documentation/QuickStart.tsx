@@ -1,3 +1,5 @@
+const base = process.env.NEXT_PUBLIC_API_URL;
+
 export const QuickStart = () => {
   return (
     <div className="pb-10 md:scroll-m-45 scroll-m-28" id="start" >
@@ -32,12 +34,12 @@ export const QuickStart = () => {
         <div className="py-4 px-3 rounded-md bg-black">
           <p className="text-sm text-gray-400">npm run dev or yarn run dev</p>
         </div>
-        <p className="text-base font-medium text-midnight_text dark:text-white dark:text-opacity-50 my-4">This command will start a local webserver <span className="dark:text-white" >http://localhost:3000:</span></p>
+        <p className="text-base font-medium text-midnight_text dark:text-white dark:text-opacity-50 my-4">This command will start a local webserver <span className="dark:text-white" >{base}:</span></p>
         <div className="py-4 px-3 rounded-md bg-black">
           <p className="text-sm text-gray-400">{"> Saarthi4u_project@1.0.1 dev"}</p>
           <p className="text-sm text-gray-400 mt-1">{"> next dev"}</p>
           <p className="text-sm text-gray-400 mt-6">{"-Next.js 15.1.1"}</p>
-          <p className="text-sm text-gray-400 mt-1">{"-Local: http://localhost:3000"}</p>
+          <p className="text-sm text-gray-400 mt-1">{`-Local: ${base}`}</p>
         </div>
       </div>
       <div className="p-6 rounded-md border mt-6 border-border dark:border-dark_border">

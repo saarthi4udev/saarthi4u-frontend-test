@@ -1,230 +1,3 @@
-// "use client";
-
-// import Link from "next/link";
-// import { Icon } from "@iconify/react";
-// import { ExamItem } from "@/types/examDiscovery";
-// import { College } from "@/types/college";
-// import { formatFeeRange } from "@/app/api/examDiscovery";
-// import CollegeCard from "@/components/Home/ExploreColleges/CollegeCard";
-
-// type Props = {
-//   exam: ExamItem;
-//   relatedColleges: College[];
-// };
-
-// export default function ExamDetailsView({ exam, relatedColleges }: Readonly<Props>) {
-//   return (
-//     <section className="py-14 min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-//   <div className="container mx-auto px-4 sm:px-6">
-
-//     {/* Breadcrumb */}
-//     <div className="flex flex-wrap items-center gap-2 text-sm mb-8 text-gray-500 dark:text-gray-400">
-//       <Link href="/exam" className="hover:text-primary transition-colors">
-//         Exams
-//       </Link>
-//       <Icon icon="mdi:chevron-right" />
-//       <span className="text-gray-900 dark:text-white">{exam.name}</span>
-//     </div>
-
-//     {/* Hero Card */}
-//     <div className="rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 md:p-8 mb-8 transition-colors">
-//       <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-//         <h1 className="text-4xl font-semibold text-gray-900 dark:text-white max-w-4xl">
-//           {exam.name}
-//         </h1>
-
-//         {exam.popular && (
-//           <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 h-fit mt-1">
-//             Popular Exam
-//           </span>
-//         )}
-//       </div>
-
-//       <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-4xl">
-//         {exam.description}
-//       </p>
-
-//       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 text-sm">
-//         {[
-//           { label: "Category", value: exam.category },
-//           { label: "Conducting Body", value: exam.conductingBody },
-//           { label: "Level", value: exam.level },
-//           { label: "Mode", value: exam.mode },
-//           { label: "Frequency", value: exam.frequency },
-//           { label: "Application Fee", value: formatFeeRange(exam.applicationFeeRange) },
-//         ].map((item) => (
-//           <div
-//             key={item.label}
-//             className="border border-gray-200 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-900 transition-colors"
-//           >
-//             <p className="text-gray-500 dark:text-gray-400">{item.label}</p>
-//             <p className="font-medium text-gray-900 dark:text-white">
-//               {item.value}
-//             </p>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-
-//     {/* Main Grid */}
-//     <div className="grid lg:grid-cols-3 gap-8">
-
-//       {/* Left Content */}
-//       <div className="lg:col-span-2 space-y-8">
-
-//         {/* Eligibility */}
-//         <div className="rounded-2xl border border-gray-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-900 transition-colors">
-//           <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
-//             Eligibility
-//           </h2>
-//           <ul className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
-//             <li>
-//               <span className="font-medium text-gray-900 dark:text-white">
-//                 Education:
-//               </span>{" "}
-//               {exam.eligibility.education.join(", ")}
-//             </li>
-//             <li>
-//               <span className="font-medium text-gray-900 dark:text-white">
-//                 Age Limit:
-//               </span>{" "}
-//               {exam.eligibility.ageLimit}
-//             </li>
-//             <li>
-//               <span className="font-medium text-gray-900 dark:text-white">
-//                 Attempts:
-//               </span>{" "}
-//               {exam.eligibility.attempts}
-//             </li>
-//             <li>
-//               <span className="font-medium text-gray-900 dark:text-white">
-//                 Nationality:
-//               </span>{" "}
-//               {exam.eligibility.nationality}
-//             </li>
-//           </ul>
-//         </div>
-
-//         {/* Reusable Card Wrapper Style Below */}
-//         {[
-//           {
-//             title: "Exam Pattern",
-//             content: (
-//               <div className="space-y-4">
-//                 {exam.examPattern.map((pattern) => (
-//                   <div
-//                     key={pattern.stage}
-//                     className="rounded-xl border border-gray-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-900"
-//                   >
-//                     <div className="flex justify-between items-center mb-2">
-//                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-//                         {pattern.stage}
-//                       </h3>
-//                       <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
-//                         {pattern.mode}
-//                       </span>
-//                     </div>
-//                     <p className="text-sm text-gray-500 dark:text-gray-400">
-//                       Duration: {pattern.duration} • Marks: {pattern.totalMarks}
-//                     </p>
-//                     <p className="text-sm text-gray-500 dark:text-gray-400">
-//                       Subjects: {pattern.subjects.join(", ")}
-//                     </p>
-//                   </div>
-//                 ))}
-//               </div>
-//             ),
-//           },
-//           {
-//             title: `Career Paths After ${exam.name}`,
-//             content: (
-//               <div className="grid md:grid-cols-2 gap-4">
-//                 {exam.careerPaths.map((path) => (
-//                   <div
-//                     key={path.role}
-//                     className="rounded-xl border border-gray-200 dark:border-slate-700 p-4"
-//                   >
-//                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-//                       {path.role}
-//                     </h3>
-//                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-//                       Sector: {path.sector}
-//                     </p>
-//                     <p className="text-sm text-gray-500 dark:text-gray-400">
-//                       Starting Package: {path.avgStartingPackage}
-//                     </p>
-//                   </div>
-//                 ))}
-//               </div>
-//             ),
-//           },
-//         ].map((section) => (
-//           <div
-//             key={section.title}
-//             className="rounded-2xl border border-gray-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-900 transition-colors"
-//           >
-//             <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
-//               {section.title}
-//             </h2>
-//             {section.content}
-//           </div>
-//         ))}
-
-//       </div>
-
-//       {/* Sidebar */}
-//       <aside className="space-y-6">
-
-//         <div className="rounded-2xl border border-gray-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-900 transition-colors">
-//           <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-//             Important Dates
-//           </h3>
-
-//           <div className="space-y-3">
-//             {exam.importantDates.map((item) => (
-//               <div
-//                 key={`${item.label}-${item.month}`}
-//                 className="rounded-lg border border-gray-200 dark:border-slate-700 p-3"
-//               >
-//                 <p className="font-medium text-gray-900 dark:text-white">
-//                   {item.label}
-//                 </p>
-//                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-//                   {item.month}
-//                 </p>
-//                 <span className="inline-block mt-2 text-xs px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
-//                   {item.status}
-//                 </span>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-
-//       </aside>
-//     </div>
-
-//     {/* Related Colleges */}
-//     {relatedColleges.length > 0 && (
-//       <div className="mt-12">
-//         <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
-//           Related <span className="text-primary">Colleges</span>
-//         </h2>
-
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-//           {relatedColleges.map((college) => (
-//             <CollegeCard key={college.id} college={college} />
-//           ))}
-//         </div>
-//       </div>
-//     )}
-
-//   </div>
-// </section>
-//   );
-// }
-
-
-
 "use client";
 
 import Link from "next/link";
@@ -236,182 +9,165 @@ type Props = {
   relatedColleges: any[];
 };
 
+function formatDate(value?: string) {
+  if (!value) return "TBA";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function sectionText(value: unknown, fallback: string) {
+  if (typeof value === "string" && value.trim()) {
+    return value;
+  }
+
+  if (Array.isArray(value) && value.length > 0) {
+    return value.join(", ");
+  }
+
+  return fallback;
+}
+
+function StatItem({ icon, label, value }: { icon: string; label: string; value?: string }) {
+  return (
+    <div className="rounded-2xl border border-primary/10 bg-white/90 p-4 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
+      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+        <Icon icon={icon} className="h-4 w-4 text-secondary" />
+        {label}
+      </p>
+      <p className="mt-2 text-sm font-semibold text-primary dark:text-white">{value || "-"}</p>
+    </div>
+  );
+}
+
+function DetailCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] dark:border-white/10 dark:bg-slate-900/80">
+      <h3 className="text-24 font-extrabold text-primary dark:text-white">{title}</h3>
+      <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{text}</p>
+    </div>
+  );
+}
+
+function DateItem({ label, value }: { label: string; value?: string }) {
+  return (
+    <div className="rounded-xl border border-primary/10 bg-white/85 p-4 dark:border-white/10 dark:bg-slate-950/70">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-2 text-sm font-semibold text-primary dark:text-white">{formatDate(value)}</p>
+    </div>
+  );
+}
+
 export default function ExamDetailsView({ exam, relatedColleges }: Props) {
   return (
-    <section className="py-14 min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-      <div className="container mx-auto px-4 sm:px-6">
+    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f5fbff_0%,#ffffff_34%,#f0fdfa_100%)] py-16 transition-colors duration-300 dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_40%,#05111b_100%)] sm:py-20">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] overflow-hidden">
+        <div className="animate-gradient-shift absolute left-[-6rem] top-10 h-72 w-72 rounded-full bg-secondary/20 blur-3xl" />
+        <div className="animate-float absolute right-[-4rem] top-8 h-80 w-80 rounded-full bg-primary/15 blur-3xl" />
+      </div>
 
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm mb-8 text-gray-500 dark:text-gray-400">
-          <Link href="/exam" className="hover:text-primary transition-colors">
+      <div className="container relative mx-auto px-4 sm:px-6">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+          <Link href="/exam" className="font-medium transition-colors hover:text-primary">
             Exams
           </Link>
-
-          <Icon icon="mdi:chevron-right" />
-
-          <span className="text-gray-900 dark:text-white">
-            {exam.name}
-          </span>
+          <Icon icon="mdi:chevron-right" className="h-4 w-4" />
+          <span className="font-semibold text-primary dark:text-white">{exam.name}</span>
         </div>
 
-        {/* HERO CARD */}
-        <div className="rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 md:p-8 mb-8">
+        <div className="relative mt-6 overflow-hidden rounded-[2rem] border border-primary/10 bg-white/85 p-6 shadow-[0_30px_80px_rgba(10,24,58,0.10)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-8 lg:p-10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(48,216,201,0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(23,30,76,0.10),transparent_32%)]" />
+          <div className="relative">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span className="rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary dark:bg-white/10 dark:text-secondary">
+                {exam.level || "Exam"}
+              </span>
+              {exam.popular && (
+                <span className="rounded-full bg-emerald-100 px-4 py-2 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
+                  Popular Exam
+                </span>
+              )}
+            </div>
 
-          <h1 className="text-4xl font-semibold text-gray-900 dark:text-white mb-4">
-            {exam.name}
-          </h1>
+            <h1 className="mt-6 text-35 font-extrabold leading-tight text-primary dark:text-white sm:text-48">
+              {exam.name}
+            </h1>
 
-          <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-4xl">
-            {exam.overview}
-          </p>
+            <p className="mt-4 max-w-4xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg">
+              {sectionText(exam.overview, "Detailed exam information will be updated shortly.")}
+            </p>
 
-          {/* INFO GRID */}
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 text-sm">
-
-            <Info label="Conducting Body" value={exam.conductingBody} />
-            <Info label="Level" value={exam.level} />
-            <Info label="Mode" value={exam.examMode} />
-            <Info label="Frequency" value={exam.frequency} />
-            <Info label="Duration" value={exam.duration} />
-            <Info label="Application Fee" value={exam.applicationFee} />
-
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <StatItem icon="mdi:office-building-outline" label="Conducting Body" value={exam.conductingBody} />
+              <StatItem icon="mdi:refresh" label="Frequency" value={exam.frequency} />
+              <StatItem icon="mdi:head-cog-outline" label="Mode" value={exam.examMode} />
+              <StatItem icon="mdi:clock-outline" label="Duration" value={exam.duration} />
+              <StatItem icon="mdi:currency-inr" label="Application Fee" value={sectionText(exam.applicationFee, "N/A")} />
+              <StatItem icon="mdi:book-open-page-variant-outline" label="Category" value={exam.category} />
+            </div>
           </div>
         </div>
 
-        {/* MAIN GRID */}
-        <div className="grid lg:grid-cols-3 gap-8">
-
-          {/* LEFT CONTENT */}
-          <div className="lg:col-span-2 space-y-8">
-
-            <Card title="Eligibility">
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
-                {exam.eligibility}
-              </p>
-            </Card>
-
-            <Card title="Exam Pattern">
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
-                {exam.examPattern}
-              </p>
-            </Card>
-
-            <Card title="Syllabus">
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
-                {exam.syllabus}
-              </p>
-            </Card>
-
-            <Card title="Application Process">
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
-                {exam.applicationProcess}
-              </p>
-            </Card>
-
+        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(20rem,0.9fr)]">
+          <div className="space-y-6">
+            <DetailCard title="Eligibility" text={sectionText(exam.eligibility, "Eligibility details will be shared soon.")} />
+            <DetailCard title="Exam Pattern" text={sectionText(exam.examPattern, "Exam pattern details will be shared soon.")} />
+            <DetailCard title="Syllabus" text={sectionText(exam.syllabus, "Syllabus details will be shared soon.")} />
+            <DetailCard title="Application Process" text={sectionText(exam.applicationProcess, "Application process details will be shared soon.")} />
           </div>
 
-          {/* SIDEBAR */}
           <aside className="space-y-6">
+            <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] dark:border-white/10 dark:bg-slate-900/80">
+              <h3 className="text-24 font-extrabold text-primary dark:text-white">Important Dates</h3>
+              <div className="mt-4 space-y-3">
+                <DateItem label="Application Start" value={exam.importantDates?.applicationStart} />
+                <DateItem label="Application End" value={exam.importantDates?.applicationEnd} />
+                <DateItem label="Exam Date" value={exam.importantDates?.examDate} />
+                <DateItem label="Result Date" value={exam.importantDates?.resultDate} />
+              </div>
+            </div>
 
-            <Card title="Important Dates">
-
-              <DateItem
-                label="Application Start"
-                value={exam.importantDates?.applicationStart}
-              />
-
-              <DateItem
-                label="Application End"
-                value={exam.importantDates?.applicationEnd}
-              />
-
-              <DateItem
-                label="Exam Date"
-                value={exam.importantDates?.examDate}
-              />
-
-              <DateItem
-                label="Result Date"
-                value={exam.importantDates?.resultDate}
-              />
-
-            </Card>
-
-            <Card title="Official Website">
-              <a
-                href={exam.officialWebsite}
-                target="_blank"
-                className="text-primary underline text-sm"
-              >
-                Visit Official Website
-              </a>
-            </Card>
-
+            <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] dark:border-white/10 dark:bg-slate-900/80">
+              <h3 className="text-24 font-extrabold text-primary dark:text-white">Official Website</h3>
+              {exam.officialWebsite ? (
+                <a
+                  href={exam.officialWebsite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
+                >
+                  Visit Website
+                  <Icon icon="solar:alt-arrow-right-linear" className="h-4 w-4" />
+                </a>
+              ) : (
+                <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Official website link is not available right now.</p>
+              )}
+            </div>
           </aside>
-
         </div>
 
-        {/* RELATED COLLEGES (empty for now) */}
         {relatedColleges.length > 0 && (
           <div className="mt-12">
-
-            <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
-              Related <span className="text-primary">Colleges</span>
+            <h2 className="text-28 font-extrabold text-primary dark:text-white sm:text-35">
+              Related <span className="text-secondary">Colleges</span>
             </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {relatedColleges.map((college) => (
                 <CollegeCard key={college.id} college={college} />
               ))}
             </div>
-
           </div>
         )}
-
       </div>
     </section>
-  );
-}
-
-/* ----------------------------- COMPONENTS ----------------------------- */
-
-function Card({ title, children }: any) {
-  return (
-    <div className="rounded-2xl border border-gray-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-900">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
-        {title}
-      </h2>
-      {children}
-    </div>
-  );
-}
-
-function Info({ label, value }: any) {
-  return (
-    <div className="border border-gray-200 dark:border-slate-700 rounded-xl p-3">
-      <p className="text-gray-500 dark:text-gray-400">
-        {label}
-      </p>
-
-      <p className="font-medium text-gray-900 dark:text-white">
-        {value || "-"}
-      </p>
-    </div>
-  );
-}
-
-function DateItem({ label, value }: any) {
-  return (
-    <div className="rounded-lg border border-gray-200 dark:border-slate-700 p-3 mb-2">
-
-      <p className="font-medium text-gray-900 dark:text-white">
-        {label}
-      </p>
-
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-        {value || "TBA"}
-      </p>
-
-    </div>
   );
 }

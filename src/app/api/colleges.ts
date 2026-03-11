@@ -1,17 +1,4 @@
-// export async function getAllColleges() {
-//   try {
-//     const res = await fetch("https://saarthi4u-backend-test.onrender.com/api/college/all");
-
-//     const json = await res.json();
-
-//     return json.data || [];
-//   } catch (error) {
-//     console.error(error);
-//     return [];
-//   }
-// }
-
-const BASE_URL = "https://saarthi4u-backend-test.onrender.com/api";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function fetchAPI(endpoint: string) {
   try {

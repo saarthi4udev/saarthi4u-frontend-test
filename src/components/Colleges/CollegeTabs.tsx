@@ -1,185 +1,3 @@
-// "use client";
-
-// import { useState } from "react";
-// import Image from "next/image";
-// import { motion } from "motion/react";
-// import { Icon } from "@iconify/react";
-
-// interface Props {
-//   college: any;
-// }
-
-// const tabs = [
-//   { key: "overview", label: "Overview" },
-//   { key: "courses", label: "Courses & Fees" },
-//   { key: "placements", label: "Placements" },
-//   { key: "facilities", label: "Facilities" },
-//   { key: "gallery", label: "Gallery" },
-// ];
-
-// export default function CollegeTabs({ college }: Props) {
-//   const [active, setActive] = useState("overview");
-
-//   return (
-//     <div className="transition-colors duration-300 space-y-8">
-
-//       {/* Tabs Header */}
-//       <div className="rounded-2xl border border-gray-200 dark:border-slate-700 p-2 bg-gray-50 dark:bg-slate-900/60">
-//         <div className="flex gap-2 flex-wrap">
-//           {tabs.map((tab) => (
-//             <button
-//               key={tab.key}
-//               onClick={() => setActive(tab.key)}
-//               className={`px-4 py-2 rounded-xl font-medium text-sm md:text-base transition-all duration-200 ${
-//                 active === tab.key
-//                   ? "bg-primary/10 text-primary"
-//                   : "text-gray-500 dark:text-gray-400 hover:text-primary hover:bg-white dark:hover:bg-slate-800"
-//               }`}
-//             >
-//               {tab.label}
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* Tab Content */}
-
-//       {active === "overview" && (
-//         <div className="space-y-6 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 bg-white dark:bg-slate-900">
-//           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-//             {college.description}
-//           </p>
-
-//           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-//             <InfoCard title="Established" value={college.established} />
-//             <InfoCard title="Campus Size" value={college.campusSize} />
-//             <InfoCard
-//               title="Accreditation"
-//               value={college.accreditation?.join(", ")}
-//             />
-//             <InfoCard
-//               title="NIRF Ranking"
-//               value={college.nirfRanking ? `#${college.nirfRanking}` : "N/A"}
-//             />
-//             <InfoCard title="Type" value={college.type} />
-//             <InfoCard title="Category" value={college.category} />
-//           </div>
-//         </div>
-//       )}
-
-//       {active === "courses" && (
-//         <div className="space-y-4 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 bg-white dark:bg-slate-900">
-//           {college.courses?.map((course: any, i: number) => (
-//             <div
-//               key={i}
-//               className="
-//                 p-5 rounded-xl flex justify-between items-center
-//                 border border-gray-200 dark:border-slate-700
-//                 bg-white dark:bg-slate-900
-//                 transition
-//               "
-//             >
-//               <div>
-//                 <p className="font-semibold text-gray-900 dark:text-white">
-//                   {course.name}
-//                 </p>
-//                 <p className="text-sm text-gray-500 dark:text-gray-400">
-//                   Duration: {course.duration}
-//                 </p>
-//               </div>
-//               <p className="font-semibold text-primary">
-//                 {course.fees}
-//               </p>
-//             </div>
-//           ))}
-//         </div>
-//       )}
-
-//       {active === "placements" && (
-//         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 bg-white dark:bg-slate-900">
-//           <InfoCard title="Average Package" value={college.avgPackage} />
-//           <InfoCard title="Highest Package" value={college.highestPackage} />
-//         </div>
-//       )}
-
-//       {active === "facilities" && (
-//         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 bg-white dark:bg-slate-900">
-//           {college.facilities?.map((f: string, i: number) => (
-//             <li
-//               key={i}
-//               className="
-//                 p-4 rounded-lg
-//                 border border-gray-200 dark:border-slate-700
-//                 bg-white dark:bg-slate-900
-//                 text-gray-800 dark:text-gray-200
-//                 transition
-//               "
-//             >
-//               {f}
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-
-//       {active === "gallery" && (
-//         <div className="grid grid-cols-2 md:grid-cols-3 gap-6 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 bg-white dark:bg-slate-900">
-//           {college.gallery?.map((img: string, i: number) => (
-//             <Image
-//               key={i}
-//               src={img}
-//               alt="Gallery"
-//               width={400}
-//               height={300}
-//               className="rounded-xl object-cover h-48 w-full"
-//             />
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// /* ---------- Info Card Component ---------- */
-
-// function InfoCard({ title, value }: any) {
-//   const iconMap: Record<string, string> = {
-//     Established: "mdi:calendar",
-//     "Campus Size": "mdi:map-marker-radius",
-//     Accreditation: "mdi:certificate-outline",
-//     "NIRF Ranking": "mdi:trophy-outline",
-//     Type: "mdi:school-outline",
-//     Category: "mdi:domain",
-//     "Average Package": "mdi:currency-inr",
-//     "Highest Package": "mdi:trending-up",
-//   };
-
-//   return (
-//     <motion.div
-//       whileHover={{ y: -4, scale: 1.01 }}
-//       transition={{ duration: 0.2, ease: "easeOut" }}
-//       className="
-//         p-5 rounded-xl shadow-sm
-//         border border-gray-200 dark:border-slate-700
-//         bg-gradient-to-br from-white to-primary/5 dark:from-slate-900 dark:to-slate-900
-//         transition
-//       "
-//     >
-//       <div className="flex items-center gap-2">
-//         <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary">
-//           <Icon icon={iconMap[title] || "mdi:information-outline"} width="16" height="16" />
-//         </span>
-//         <p className="text-gray-500 dark:text-gray-400 text-sm">{title}</p>
-//       </div>
-//       <p className="text-lg font-semibold mt-1 text-gray-900 dark:text-white">
-//         {value}
-//       </p>
-//     </motion.div>
-//   );
-// }
-
-
-
-
 "use client";
 
 import { useState, useRef } from "react";
@@ -210,6 +28,9 @@ const navItems = [
   { key: "faq", label: "FAQs", icon: "solar:chat-round-dots-bold-duotone" },
   { key: "reviews", label: "Reviews", icon: "solar:star-bold-duotone" },
 ];
+
+const base = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function CollegeTabs({
   college,
@@ -384,7 +205,7 @@ export default function CollegeTabs({
                       className="flex items-center justify-center rounded-lg border border-border/25 bg-white px-4 py-2.5 shadow-sm dark:border-dark_border dark:bg-midnight_text"
                     >
                       {r.logo ? (
-                        <Image src={`https://saarthi4u-backend-test.onrender.com${r.logo}`} alt={r.name} width={80} height={40} className="h-7 w-auto object-contain" />
+                        <Image src={`${base}${r.logo}`} alt={r.name} width={80} height={40} className="h-7 w-auto object-contain" />
                       ) : (
                         <span className="text-[0.75rem] font-semibold text-slate-600 dark:text-white/60">{r.name || "Recruiter"}</span>
                       )}

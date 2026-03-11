@@ -29,7 +29,7 @@ export default function RootLayout({
             <Header />
             <Toaster position="top-center" reverseOrder={false} />
             {/* offset for fixed header */}
-            <main className="pt-20">{children}</main>
+            <main className="min-w-0 overflow-x-clip pt-[4.5rem] sm:pt-20">{children}</main>
             <Footer />
             <AIChatbot />
             <WhatsAppFloat />

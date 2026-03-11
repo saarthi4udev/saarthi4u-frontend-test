@@ -4,12 +4,33 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 const Hero = () => {
+  const [collegeCount, setCollegeCount] = useState<string>("1,200+");
+
+  useEffect(() => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    fetch(`${baseUrl}/college/all`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        const list: unknown[] = data?.data ?? (Array.isArray(data) ? data : []);
+        const count = list.length;
+        if (count > 0) {
+          setCollegeCount(
+            count >= 1000
+              ? `${(count / 1000).toFixed(1).replace(/\.0$/, "")}K+`
+              : `${count}+`
+          );
+        }
+      })
+      .catch(() => { });
+  }, []);
+
   const leftAnimation = {
     initial: { x: -50, opacity: 0 },
     animate: { x: 0, opacity: 1 },
@@ -51,7 +72,7 @@ const Hero = () => {
 
   const stats = [
     { value: "50K+", label: "students guided" },
-    { value: "1,200+", label: "colleges listed" },
+    { value: collegeCount, label: "colleges listed" },
     { value: "95%", label: "satisfaction rate" },
   ];
 

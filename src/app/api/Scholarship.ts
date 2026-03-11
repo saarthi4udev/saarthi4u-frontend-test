@@ -1,4 +1,6 @@
-const BASE_URL = "https://saarthi4u-backend-test.onrender.com/api/Scholarship";
+const base = process.env.NEXT_PUBLIC_API_URL;
+
+const BASE_URL = base + "/scholarship";
 
 /* ---------------- GET ALL SCHOLARSHIPS ---------------- */
 
