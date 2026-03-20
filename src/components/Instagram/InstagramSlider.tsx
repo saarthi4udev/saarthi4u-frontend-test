@@ -54,9 +54,11 @@ const PostCard = ({ post, index }: { post: InstagramPost; index: number }) => {
           <Image
             src={imgSrc}
             alt={post.caption?.slice(0, 80) || "Instagram post"}
-            fill
-            sizes="(max-width: 480px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 16vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            width={500}
+            height={500}
+            quality={85}
+            priority={false}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-500/15 dark:to-purple-600/15">
