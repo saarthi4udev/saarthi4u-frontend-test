@@ -57,14 +57,20 @@ export default function ExamsSection() {
   const [streamFilter, setStreamFilter] = useState(ALL.stream);
   const [popularOnly, setPopularOnly] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const limit = 6;
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     async function loadExams() {
-      const data = await getAllExams();
-      setExams(data);
+      const res = await getAllExams(page, limit);
+      console.log("API RESPONSE:", res);
+      setExams(res.data || []);
+      setTotalPages(res.totalPages || 1);
     }
 
     loadExams();
-  }, []);
+  }, [page]);
 
   const { categories, levels, bodies, modes, frequencies, streams } =
     getUniqueExamFilters(exams);
@@ -156,12 +162,12 @@ export default function ExamsSection() {
       <div className="container relative mx-auto px-4 sm:px-6">
         <div className="relative overflow-hidden rounded-[2rem] border border-primary/10 bg-white/85 p-6 shadow-[0_30px_80px_rgba(10,24,58,0.10)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-8 lg:p-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(48,216,201,0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(23,30,76,0.10),transparent_32%)]" />
-          <div className="relative space-y-4">
+          <div className="relative space-y-4 text-center sm:text-left">
             <div className="inline-flex w-fit items-center gap-2 rounded-full border border-secondary/25 bg-secondary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-primary">
               Exam Explorer
             </div>
             <h1 className="text-35 font-extrabold leading-tight text-primary dark:text-white sm:text-48 lg:text-[3.4rem]">
-              Compare exams faster,
+              Explore exams faster,
               <span className="ml-3 inline-block text-secondary">decide smarter</span>
             </h1>
             <p className="max-w-3xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg">
@@ -170,7 +176,7 @@ export default function ExamsSection() {
           </div>
         </div>
 
-        <div className="mt-10 rounded-[2rem] border border-primary/10 bg-white/90 p-5 shadow-[0_24px_60px_rgba(10,24,58,0.08)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-6">
+        <div className="mt-8 rounded-[1.8rem] border border-primary/10 bg-white/90 p-5 shadow-[0_22px_56px_rgba(10,24,58,0.08)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-6">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
             <div className="flex h-14 items-center gap-3 rounded-2xl border border-primary/10 bg-white px-4 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
               <Icon icon="mdi:magnify" className="h-5 w-5 text-secondary" />
@@ -301,6 +307,43 @@ export default function ExamsSection() {
             </Link>
           ))}
         </div>
+
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex justify-center items-center gap-3">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => p - 1)}
+              className="px-4 py-2 rounded-lg border border-primary/20 disabled:opacity-50"
+            >
+              Prev
+            </button>
+
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i + 1)}
+                className={`px-4 py-2 rounded-lg border ${page === i + 1
+                    ? "bg-primary text-white"
+                    : "border-primary/20"
+                  }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => p + 1)}
+              className="px-4 py-2 rounded-lg border border-primary/20 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
+
 
         {filteredExams.length === 0 && (
           <div className="mt-10 rounded-[2rem] border border-primary/10 bg-white/90 px-6 py-12 text-center shadow-[0_24px_60px_rgba(10,24,58,0.08)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80">

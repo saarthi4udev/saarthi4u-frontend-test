@@ -206,6 +206,7 @@ const DiscoverMore = () => {
                   src={activeItem.image}
                   alt={activeItem.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 58vw, 720px"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent" />

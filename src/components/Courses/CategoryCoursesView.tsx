@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { CourseCategory, DegreeLevel, DiscoveryCourse } from "@/types/courseDiscovery";
-import { formatFees } from "@/app/api/courseDiscovery";
+import { formatFeeRange } from "@/app/api/exam";
 
 type Props = {
   category: CourseCategory;
@@ -81,6 +81,7 @@ export default function CategoryCoursesView({
     setModeFilter(ALL_MODES);
     setPopularOnly(false);
   };
+
 
   return (
     <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f5fbff_0%,#ffffff_34%,#f0fdfa_100%)] py-16 transition-colors duration-300 dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_40%,#05111b_100%)] sm:py-20">
@@ -223,7 +224,7 @@ export default function CategoryCoursesView({
                 </p>
                 <p className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                   <Icon icon="mdi:currency-inr" className="h-4 w-4 text-secondary" />
-                  {formatFees(course.feesRange)}
+                  {formatFeeRange(course.feesRange)}
                 </p>
                 <p className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                   <Icon icon="mdi:map-marker-outline" className="h-4 w-4 text-secondary" />

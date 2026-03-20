@@ -332,3 +332,61 @@
     font-size: 16px;
   }
 }
+
+:global(.dark) .overlay {
+  background: rgba(8, 16, 30, 0.76);
+}
+
+:global(.dark) .modal {
+  background: linear-gradient(170deg, #0d1530 0%, #12213a 100%);
+  border-color: rgba(48, 216, 201, 0.7);
+  box-shadow: 0 24px 70px rgba(2, 6, 18, 0.7), 0 0 40px rgba(48, 216, 201, 0.2);
+}
+
+:global(.dark) .closeButton {
+  color: #d2dff4;
+  background: linear-gradient(135deg, rgba(48, 216, 201, 0.2) 0%, rgba(245, 166, 35, 0.14) 100%);
+  border-color: rgba(48, 216, 201, 0.8);
+}
+
+:global(.dark) .title {
+  background: linear-gradient(135deg, #f8fbff 0%, #30d8c9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:global(.dark) .description,
+:global(.dark) .label,
+:global(.dark) .helperText {
+  color: #d2dff4;
+}
+
+:global(.dark) .input,
+:global(.dark) .select {
+  background: #172845;
+  border-color: #2a4f74;
+  color: #f5f9ff;
+}
+
+:global(.dark) .input::placeholder,
+:global(.dark) .select {
+  color: #9ec8e2;
+}
+
+:global(.dark) .input:hover,
+:global(.dark) .select:hover {
+  background: #1a2f50;
+  border-color: #30d8c9;
+}
+
+:global(.dark) .input:focus,
+:global(.dark) .select:focus {
+  border-color: #30d8c9;
+  box-shadow: 0 0 0 4px rgba(48, 216, 201, 0.2);
+  background: #1a2f50;
+}
+
+:global(.dark) .footerNote {
+  color: #b8c8df;
+}

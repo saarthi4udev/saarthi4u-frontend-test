@@ -9,17 +9,26 @@ const partners = [
   {
     name: "Physics Wallah",
     logo: "/images/Education/pw.png",
-    description: "Leading EdTech Platform",
+    description: "Trusted for exam preparation with structured learning paths.",
+    support: "JEE/NEET and foundation prep",
   },
   {
     name: "Amity University",
     logo: "/images/Education/amity.png",
-    description: "Leading EdTech Platform",
+    description: "Industry-oriented university programs with strong academic support.",
+    support: "UG and PG admission guidance",
   },
   {
     name: "IDP",
     logo: "/images/Education/idp.png",
-    description: "Leading EdTech Platform",
+    description: "Global study-abroad counseling with application and visa support.",
+    support: "International admission assistance",
+  },
+  {
+    name: "LIT",
+    logo: "/images/Education/lit.JPG",
+    description: "Focused finance, taxation, and digital marketing career programs.",
+    support: "Skill-based certification tracks",
   },
 ];
 
@@ -72,7 +81,7 @@ const EducationalPartners = () => {
 
         <motion.h2
           {...titleAnimation}
-          className="text-center text-28 font-bold text-midnight_text dark:text-white md:text-35"
+          className="text-center text-24 font-bold text-midnight_text dark:text-white sm:text-28 md:text-35 lg:text-50"
         >
           Our Educational <span className="text-secondary">Partners</span>
         </motion.h2>
@@ -81,10 +90,11 @@ const EducationalPartners = () => {
           {...descriptionAnimation}
           className="mx-auto mt-3 max-w-3xl text-center text-16 leading-relaxed text-muted dark:text-white/70"
         >
-          Collaborating with top institutions to provide quality education
+          We collaborate with trusted institutions to provide clear guidance,
+          quality programs, and better career outcomes.
         </motion.p>
 
-        <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
           {partners.map((partner, index) => (
             <motion.div key={partner.name} {...itemAnimation(index)} className="h-full">
               <motion.div
@@ -107,13 +117,19 @@ const EducationalPartners = () => {
                     animate={{ y: [0, -3, 0], scale: [1, 1.02, 1] }}
                     transition={{ duration: 3 + index * 0.5, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    <Image
-                      src={partner.logo}
-                      alt={partner.name}
-                      width={140}
-                      height={100}
-                      className="h-auto max-h-[90px] w-auto max-w-[150px] object-contain"
-                    />
+                    {partner.logo ? (
+                      <Image
+                        src={partner.logo}
+                        alt={partner.name}
+                        width={180}
+                        height={130}
+                        className="h-auto max-h-[120px] w-auto max-w-[190px] object-contain"
+                      />
+                    ) : (
+                      <div className="flex h-[92px] w-[150px] items-center justify-center rounded-2xl border border-primary/20 bg-white text-35 font-extrabold tracking-widest text-primary dark:border-white/20 dark:bg-white/10 dark:text-white">
+                        LIT
+                      </div>
+                    )}
                   </motion.div>
                 </motion.div>
 
@@ -127,12 +143,21 @@ const EducationalPartners = () => {
                     {partner.name}
                   </motion.h3>
                   <motion.p
-                    className="mt-2 text-15 text-muted dark:text-white/75"
+                    className="mt-2 text-16 text-muted dark:text-white/75"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.15 }}
                   >
                     {partner.description}
+                  </motion.p>
+
+                  <motion.p
+                    className="mt-3 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-13 font-medium text-primary dark:border-white/15 dark:bg-white/10 dark:text-white/85"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    {partner.support}
                   </motion.p>
                 </motion.div>
 

@@ -14,8 +14,8 @@ const contactCards = [
   },
   {
     title: "Call Support",
-    value: "+91 9930718925",
-    href: "tel:+919930718925",
+    value: "+91 9958989150",
+    href: "tel:+919958989150",
     icon: "mdi:phone-outline",
     description: "Talk directly with our student guidance team.",
   },

@@ -4,9 +4,9 @@ const BASE_URL = base + "/scholarship";
 
 /* ---------------- GET ALL SCHOLARSHIPS ---------------- */
 
-export async function getAllScholarships() {
+export async function getAllScholarships(page = 1, limit = 6) {
   try {
-    const res = await fetch(`${BASE_URL}/all`, {
+    const res = await fetch(`${BASE_URL}/all?page=${page}&limit=${limit}`, {
       cache: "no-store",
     });
 
@@ -16,10 +16,10 @@ export async function getAllScholarships() {
 
     const json = await res.json();
 
-    return json.data || [];
+    return json;
   } catch (error) {
     console.error("Error fetching scholarships:", error);
-    return [];
+    return { data: [], pagination: {} };
   }
 }
 

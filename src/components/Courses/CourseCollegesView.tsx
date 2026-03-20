@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { College } from "@/types/college";
-import { CourseCategory, DiscoveryCourse } from "@/types/courseDiscovery";
-import { formatFees } from "@/app/api/courseDiscovery";
+
 import CollegeCard from "@/components/Home/ExploreColleges/CollegeCard";
+import { CourseCategory, DiscoveryCourse } from "@/types/courseDiscovery";
+import { formatFeeRange } from "@/app/api/exam";
 
 type Props = {
   category: CourseCategory;
@@ -71,7 +72,7 @@ export default function CourseCollegesView({
             {course.name} <span className="text-primary">Colleges</span>
           </h1>
           <p className="text-muted mt-3 max-w-4xl">
-            Degree level: {course.degreeLevel} • Duration: {course.duration} • Mode: {course.mode} • Estimated Fees: {formatFees(course.feesRange)}
+            Degree level: {course.degreeLevel} • Duration: {course.duration} • Mode: {course.mode} • Estimated Fees: {formatFeeRange(course.feesRange)}
           </p>
         </div>
 

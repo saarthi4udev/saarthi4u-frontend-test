@@ -9,7 +9,9 @@ import ExploreColleges from "@/components/Home/ExploreColleges";
 import CareerCoaches from "@/components/Home/CareerCoaches";
 import EducationalPartners from "@/components/Educationpatner/EducationalPartners";
 import ResultsPromo from "@/components/Home/ResultsPromo";
+import Testimonials from "@/components/Home/Testimonials";
 import LeadershipCorner from "@/components/LeadershipCorner/LeadershipCorner";
+import InstagramSection from "@/components/Instagram/InstagramSection";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 
 export default function HomeClient() {
@@ -30,7 +32,9 @@ export default function HomeClient() {
       <ExploreColleges />
       <EducationalPartners />
       <ResultsPromo />
+      <Testimonials />
       <LeadershipCorner />
+      <InstagramSection />
 
       {showDialog && (
         <UpdateProfileDialog onClose={() => setShowDialog(false)} />

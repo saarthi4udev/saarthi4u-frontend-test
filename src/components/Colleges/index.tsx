@@ -15,6 +15,7 @@ const ALL_STATES = "All States";
 const ALL_TYPES = "All Types";
 const ALL_OWNERSHIP = "All Ownership";
 
+
 type CollegeFilterKey = "state" | "type" | "ownership";
 
 type CompareCollege = {
@@ -94,12 +95,11 @@ const Dropdown = ({
     <button
       onClick={() => setOpen(open === keyName ? null : keyName)}
       className="
-          w-full h-14 px-6 flex justify-between items-center text-sm font-semibold
-          rounded-xl border shadow-sm
-          bg-white dark:bg-slate-900
-          border-gray-200 dark:border-slate-700
-          text-gray-800 dark:text-gray-100
-          hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-primary/40
+          w-full h-12 px-4 flex justify-between items-center text-sm font-semibold
+          rounded-xl border border-primary/10 shadow-sm
+          bg-white dark:bg-slate-950/70
+          text-primary dark:text-white
+          hover:border-secondary/40
           transition-all duration-200
         "
     >
@@ -117,7 +117,7 @@ const Dropdown = ({
         className="
             absolute z-50 mt-2 w-full max-h-64 overflow-auto rounded-xl shadow-xl
             bg-white dark:bg-slate-900
-            border border-gray-200 dark:border-slate-700
+            border border-primary/10 dark:border-white/10
           "
       >
         {options.map((opt) => (
@@ -130,7 +130,7 @@ const Dropdown = ({
             className="
                 block w-full text-left px-5 py-3 text-sm
                 text-gray-800 dark:text-gray-100
-                hover:bg-primary/10 dark:hover:bg-slate-800
+                hover:bg-primary/10
                 transition-colors duration-200
               "
           >
@@ -145,10 +145,16 @@ const Dropdown = ({
 /* ---------------- MAIN SECTION ---------------- */
 
 export default function CollegesSection() {
+
+  const [page, setPage] = useState(1);
+  const limit = 4;
+  const [totalPages, setTotalPages] = useState(1);
+
   const [collegesData, setCollegesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const stateOptions = useMemo(
     () => [
@@ -161,18 +167,18 @@ export default function CollegesSection() {
   );
 
   const typeOptions = useMemo(
-  () => [
-    ALL_TYPES,
-    ...Array.from(
-      new Set(
-        collegesData
-          .map((college) => college.category)
-          .filter(Boolean)
-      )
-    ),
-  ],
-  [collegesData]
-);
+    () => [
+      ALL_TYPES,
+      ...Array.from(
+        new Set(
+          collegesData
+            .map((college) => college.category)
+            .filter(Boolean)
+        )
+      ),
+    ],
+    [collegesData]
+  );
 
   // const ownershipOptions = useMemo(
   //   () => [
@@ -216,52 +222,96 @@ export default function CollegesSection() {
   //   return () => document.removeEventListener("mousedown", close);
   // }, []);
 
+  //   useEffect(() => {
+  //   const fetchColleges = async () => {
+  //     try {
+  //       const raw = await getAllColleges();
+
+  //       /**
+  //        * Normalize new API → old UI structure
+  //        * So your entire existing logic keeps working
+  //        */
+  //       const normalized = raw.map((college: any) => ({
+  //         ...college,
+
+  //         // category used in filters
+  //         category: college?.Category?.name || "",
+
+  //         // used in card + compare
+  //         established: college?.establishedYear || null,
+
+  //         // location used in compare table
+  //         location: [college?.city, college?.state]
+  //           .filter(Boolean)
+  //           .join(", "),
+
+  //         // remove html from overview
+  //         description: college?.overview
+  //           ? college.overview.replace(/<[^>]*>?/gm, "")
+  //           : "",
+
+  //         // ensure logo exists
+  //         logo: college?.logo || "",
+
+  //         // ensure type always exists
+  //         type: college?.type || "College",
+  //       }));
+
+  //       setCollegesData(normalized);
+  //     } catch (error) {
+  //       console.error("Error fetching colleges:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchColleges();
+  // }, []);
+
   useEffect(() => {
-  const fetchColleges = async () => {
-    try {
-      const raw = await getAllColleges();
+    const fetchColleges = async () => {
+      try {
+        setLoading(true);
 
-      /**
-       * Normalize new API → old UI structure
-       * So your entire existing logic keeps working
-       */
-      const normalized = raw.map((college: any) => ({
-        ...college,
+        const res = await getAllColleges(page, limit);
 
-        // category used in filters
-        category: college?.Category?.name || "",
+        console.log("API RESPONSE:", res);
 
-        // used in card + compare
-        established: college?.establishedYear || null,
+        const raw = res?.data || [];
+        console.log("CURRENT PAGE:", page);
+        setTotalPages(res?.pagination?.totalPages || 1);
 
-        // location used in compare table
-        location: [college?.city, college?.state]
-          .filter(Boolean)
-          .join(", "),
+        const normalized = raw.map((college: any) => ({
+          ...college,
+          category: college?.Category?.name || "",
+          established: college?.establishedYear || null,
+          location: [college?.city, college?.state].filter(Boolean).join(", "),
+          description: college?.overview
+            ? college.overview.replace(/<[^>]*>?/gm, "")
+            : "",
+          logo: college?.logo || "",
+          type: college?.type || "College",
+        }));
 
-        // remove html from overview
-        description: college?.overview
-          ? college.overview.replace(/<[^>]*>?/gm, "")
-          : "",
+        setCollegesData(normalized);
 
-        // ensure logo exists
-        logo: college?.logo || "",
+      } catch (error) {
+        console.error("Error fetching colleges:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        // ensure type always exists
-        type: college?.type || "College",
-      }));
+    fetchColleges();
+  }, [page]);
 
-      setCollegesData(normalized);
-    } catch (error) {
-      console.error("Error fetching colleges:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  fetchColleges();
-}, []);
-
+  useEffect(() => {
+  gridRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}, [page]);
   /* -------- Reset -------- */
 
   const handleReset = () => {
@@ -298,20 +348,20 @@ export default function CollegesSection() {
     selectedCollegeOneId !== selectedCollegeTwoId;
 
   const selectedCollegeOne = useMemo(
-  () =>
-    collegesData.find(
-      (college) => String(college.id) === String(selectedCollegeOneId)
-    ),
-  [selectedCollegeOneId, collegesData]
-);
+    () =>
+      collegesData.find(
+        (college) => String(college.id) === String(selectedCollegeOneId)
+      ),
+    [selectedCollegeOneId, collegesData]
+  );
 
-const selectedCollegeTwo = useMemo(
-  () =>
-    collegesData.find(
-      (college) => String(college.id) === String(selectedCollegeTwoId)
-    ),
-  [selectedCollegeTwoId, collegesData]
-);
+  const selectedCollegeTwo = useMemo(
+    () =>
+      collegesData.find(
+        (college) => String(college.id) === String(selectedCollegeTwoId)
+      ),
+    [selectedCollegeTwoId, collegesData]
+  );
 
   const getFallbackCompare = (collegeIds: string[]): CompareResult => {
     // Normalise id comparison to avoid type mismatch (API ids may be numbers while selections are strings)
@@ -607,25 +657,28 @@ const selectedCollegeTwo = useMemo(
   });
 
   return (
-    <section className="relative overflow-hidden bg-white py-24 transition-colors dark:bg-slate-950">
+    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7fbff_0%,#ffffff_34%,#f1faf8_100%)] py-16 transition-colors dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_42%,#05111b_100%)] sm:py-20">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -left-16 top-6 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute -right-16 bottom-10 h-72 w-72 rounded-full bg-secondary/10 blur-3xl" />
+        <div className="absolute -left-16 top-6 h-64 w-64 rounded-full bg-primary/12 blur-3xl" />
+        <div className="absolute -right-16 bottom-10 h-72 w-72 rounded-full bg-secondary/14 blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* HEADER */}
-        <div className="text-center mb-12">
-          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-white/90 px-4 py-2 text-sm font-semibold text-primary shadow-sm dark:border-primary/35 dark:bg-slate-800">
-            <Icon icon="mdi:school-outline" className="w-4 h-4" />
+        <div className="relative mb-6 overflow-hidden rounded-lg border border-primary/10 bg-white/85 p-4 text-center shadow-md backdrop-blur sm:rounded-2xl sm:p-6 md:rounded-[2rem] md:p-8 lg:p-10 dark:border-white/10 dark:bg-slate-900/80">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(48,216,201,0.16),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(23,30,76,0.08),transparent_31%)]" />
+          <div className="relative mx-auto max-w-3xl">
+            <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-secondary/25 bg-secondary/10 px-3 py-1.5 text-10 font-semibold uppercase tracking-[0.2em] text-primary shadow-sm dark:text-secondary sm:mb-4 sm:px-4 sm:py-2 sm:text-xs">
+            <Icon icon="mdi:school-outline" className="w-3 h-3 sm:w-4 sm:h-4" />
             College Discovery
-          </span>
-          <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white md:text-5xl">
-            Explore <span className="text-primary">Colleges</span>
-          </h2>
-          <p className="mt-3 text-base font-medium text-gray-500 dark:text-gray-400">
-            Filter colleges by state, type, and ownership
-          </p>
+            </span>
+            <h2 className="text-24 font-extrabold text-primary dark:text-white sm:text-28 md:text-35 lg:text-40">
+              Explore <span className="text-secondary">Colleges</span>
+            </h2>
+            <p className="mt-2 text-13 font-medium leading-6 text-slate-600 dark:text-slate-300 sm:mt-3 sm:text-14 md:text-16">
+              Filter colleges by state, type, and ownership with a cleaner comparison-first layout.
+            </p>
+          </div>
         </div>
 
         {/* COMPARE SECTION */}
@@ -649,8 +702,8 @@ const selectedCollegeTwo = useMemo(
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
 
-          <div className="px-5 md:px-6 py-4 border-b border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div className="px-4 sm:px-5 md:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-3">
               <div>
                 <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <motion.span
@@ -677,12 +730,12 @@ const selectedCollegeTwo = useMemo(
             </div>
           </div>
 
-          <div className="p-5 md:p-6 flex flex-col gap-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-3 items-end">
+          <div className="p-3 sm:p-5 md:p-6 flex flex-col gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-end gap-3 xl:grid-cols-12 xl:gap-3">
               <div className="xl:col-span-4">
                 <label
                   htmlFor="compare-college-one"
-                  className="block text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300 mb-1.5"
+                  className="block text-10 sm:text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300 mb-1 sm:mb-1.5"
                 >
                   College 1
                 </label>
@@ -713,7 +766,7 @@ const selectedCollegeTwo = useMemo(
               <div className="xl:col-span-4">
                 <label
                   htmlFor="compare-college-two"
-                  className="block text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300 mb-1.5"
+                  className="block text-10 sm:text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300 mb-1 sm:mb-1.5"
                 >
                   College 2
                 </label>
@@ -741,12 +794,12 @@ const selectedCollegeTwo = useMemo(
                 </select>
               </div>
 
-              <div className="md:col-span-2 xl:col-span-4 flex items-center justify-start xl:justify-end gap-2 flex-wrap">
+              <div className="sm:col-span-2 xl:col-span-4 flex items-center justify-start xl:justify-end gap-2 flex-wrap">
                 <button
                   onClick={handleCompare}
                   disabled={!canCompare || compareLoading}
                   className="
-                      h-10 px-4 rounded-lg font-medium whitespace-nowrap text-sm
+                      h-9 sm:h-10 px-3 sm:px-4 rounded-lg font-medium whitespace-nowrap text-xs sm:text-sm
                       bg-primary text-white shadow-sm shadow-primary/30
                       disabled:opacity-50 disabled:cursor-not-allowed
                       hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition
@@ -761,7 +814,7 @@ const selectedCollegeTwo = useMemo(
                   onClick={handleSwap}
                   disabled={!canCompare}
                   className="
-                      h-10 px-3.5 rounded-lg font-medium whitespace-nowrap text-sm
+                      h-9 sm:h-10 px-3 sm:px-3.5 rounded-lg font-medium whitespace-nowrap text-xs sm:text-sm
                       border border-primary/25 dark:border-primary/30
                       text-primary
                       bg-primary/5
@@ -777,7 +830,7 @@ const selectedCollegeTwo = useMemo(
                 <button
                   onClick={handleCompareReset}
                   className="
-                      h-10 px-3.5 rounded-lg font-medium whitespace-nowrap text-sm
+                      h-9 sm:h-10 px-3 sm:px-3.5 rounded-lg font-medium whitespace-nowrap text-xs sm:text-sm
                       border border-rose-200 dark:border-rose-400/30
                       text-rose-600 dark:text-rose-300
                       bg-rose-50/60 dark:bg-rose-500/10
@@ -801,7 +854,7 @@ const selectedCollegeTwo = useMemo(
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 text-sm">
+            <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
               <span className="text-gray-500 dark:text-gray-400">Selected:</span>
               <span className="inline-flex items-center px-3 py-1 rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/40 text-gray-800 dark:text-gray-100">
                 <Icon icon="mdi:school-outline" width="14" height="14" className="mr-1.5 text-primary" />
@@ -834,7 +887,7 @@ const selectedCollegeTwo = useMemo(
                     </div>
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-3 md:p-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-900/50">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2 sm:p-3 md:p-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-900/50">
                     <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900">
                       {compareMeta.first?.logo ? (
                         <Image
@@ -933,11 +986,11 @@ const selectedCollegeTwo = useMemo(
         <div
           ref={barRef}
           className="
-              flex items-center gap-4 flex-wrap md:flex-nowrap
-              border rounded-2xl p-4 mb-8
-              bg-white dark:bg-slate-900
-              border-gray-200 dark:border-slate-700
-              shadow-sm
+              mt-6 sm:mt-8 flex flex-col sm:flex-wrap items-center gap-3 sm:gap-4 md:flex-nowrap
+              rounded-2xl sm:rounded-[1.8rem] border border-primary/10 p-3 sm:p-5 md:p-6 mb-6 sm:mb-8
+              bg-white/90 dark:bg-slate-900/80
+              shadow-[0_22px_56px_rgba(10,24,58,0.08)] backdrop-blur
+              dark:border-white/10
             "
         >
           <div className="flex flex-1 gap-4">
@@ -974,12 +1027,11 @@ const selectedCollegeTwo = useMemo(
           <button
             onClick={handleReset}
             className="
-                h-14 px-6 rounded-xl font-medium whitespace-nowrap
-                border border-primary
-                text-primary
-                hover:bg-primary/10
-                dark:hover:bg-primary/20
-                transition
+                h-12 px-6 rounded-xl font-semibold whitespace-nowrap text-sm
+                border border-primary bg-white
+                text-primary transition-all duration-200
+                hover:bg-primary hover:text-white
+                dark:bg-transparent dark:text-secondary
               "
           >
             Reset Filters
@@ -988,7 +1040,13 @@ const selectedCollegeTwo = useMemo(
 
         {/* GRID */}
         {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6"
+        >
+
 
           {/* Loading State */}
           {loading && (
@@ -1009,6 +1067,31 @@ const selectedCollegeTwo = useMemo(
             </div>
           )}
         </div>
+
+        <div className="flex justify-center items-center gap-3 mt-10">
+
+          <button
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+            className="rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary disabled:opacity-40 dark:text-white"
+          >
+            Prev
+          </button>
+
+          <span className="text-sm font-semibold text-primary dark:text-white">
+            Page {page} of {totalPages}
+          </span>
+
+          <button
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+            className="rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary disabled:opacity-40 dark:text-white"
+          >
+            Next
+          </button>
+
+        </div>
+
       </div>
     </section>
   );

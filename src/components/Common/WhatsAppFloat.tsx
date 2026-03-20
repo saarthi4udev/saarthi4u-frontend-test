@@ -9,20 +9,20 @@ const WhatsAppFloat: React.FC = () => {
   const href = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
-    <div className="fixed bottom-14 right-4 z-[9999] sm:bottom-20 sm:right-6">
+    <div className="fixed bottom-14 right-4 z-[980] sm:bottom-20 sm:right-6">
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="group flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 shadow-lg transition-transform hover:scale-105 sm:h-14 sm:w-14"
+        className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-emerald-500/95 text-white shadow-[0_10px_20px_rgba(16,185,129,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-[0_14px_24px_rgba(16,185,129,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-dark_border dark:ring-offset-darkmode sm:h-12 sm:w-12"
         title="Chat on WhatsApp"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="white"
-          className="h-6 w-6 sm:h-7 sm:w-7"
+          className="h-5 w-5 sm:h-6 sm:w-6"
           aria-hidden
         >
           <path d="M20.52 3.48A11.9 11.9 0 0012.01.01C6.1.01 1.1 4.98 1.02 10.86c-.02 1.94.48 3.84 1.43 5.52L.01 23l6.83-1.77a11.9 11.9 0 005.17 1.22h.01c5.92 0 10.95-4.92 11.01-10.83.06-2.96-1.02-5.74-2.21-7.14zM12.01 20.06c-1.6 0-3.18-.36-4.6-1.05l-.33-.17-4.06 1.05 1.08-3.98-.21-.35A8.14 8.14 0 013.83 10.9c0-4.57 3.7-8.28 8.28-8.28 2.21 0 4.28.86 5.84 2.43 1.55 1.56 2.41 3.63 2.36 5.84-.05 4.58-3.79 8.28-8.3 8.28z" />

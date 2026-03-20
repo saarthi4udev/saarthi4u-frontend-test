@@ -9,7 +9,7 @@ async function fetchAPI(endpoint: string) {
     if (!res.ok) return null;
 
     const data = await res.json();
-    return data?.data ?? data;
+    return data;
   } catch (err) {
     console.error("API ERROR:", err);
     return null;
@@ -18,7 +18,10 @@ async function fetchAPI(endpoint: string) {
 
 /* COLLEGE */
 
-export const getAllColleges = () => fetchAPI("/college/all");
+// export const getAllColleges = () => fetchAPI("/college/all");
+
+export const getAllColleges = (page: number = 1, limit: number = 4) =>
+  fetchAPI(`/college/all?page=${page}&limit=${limit}`);
 
 export const getCollegeBySlug = (slug: string) =>
   fetchAPI(`/college/${slug}`);

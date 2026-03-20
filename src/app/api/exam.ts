@@ -1,11 +1,10 @@
 const base = process.env.NEXT_PUBLIC_API_URL;
-
 const BASE_URL = base + "/exam";
 
-//  Get all exams
-export async function getAllExams() {
+// Get all exams with pagination
+export async function getAllExams(page = 1, limit = 1) {
   try {
-    const res = await fetch(`${BASE_URL}/all`, {
+    const res = await fetch(`${BASE_URL}/all?page=${page}&limit=${limit}`, {
       cache: "no-store",
     });
 
@@ -14,10 +13,17 @@ export async function getAllExams() {
     }
 
     const data = await res.json();
-    return data.data;
+
+    return data; 
+    // expect:
+    // {
+    //   data: [],
+    //   pagination: { page, limit, totalPages, totalItems }
+    // }
+
   } catch (error) {
     console.error("Error fetching exams:", error);
-    return [];
+    return { data: [], pagination: {} };
   }
 }
 

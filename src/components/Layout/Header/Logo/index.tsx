@@ -9,7 +9,7 @@ const Logo: React.FC = () => {
         alt="logo"
         width={140}
         height={30}
-        quality={100}
+        priority
         sizes="(max-width: 640px) 120px, (max-width: 1024px) 132px, 140px"
         className="h-auto w-[120px] dark:hidden sm:w-[132px] lg:w-[140px]"
       />
@@ -19,7 +19,7 @@ const Logo: React.FC = () => {
         alt="logo"
         width={140}
         height={30}
-        quality={100}
+        priority
         sizes="(max-width: 640px) 120px, (max-width: 1024px) 132px, 140px"
         className="hidden h-auto w-[120px] dark:block sm:w-[132px] lg:w-[140px]"
       />

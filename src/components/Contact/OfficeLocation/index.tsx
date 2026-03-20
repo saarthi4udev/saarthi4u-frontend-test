@@ -8,7 +8,7 @@ const offices = [
   {
     title: "Delhi NCR Head Office",
     address: "1st Floor, G-69, Sector-63, Noida - 201301",
-    phone: "+91 9930718925",
+    phone: "+91 9958989150",
     hours: "Mon - Sat • 9:30 AM - 7:00 PM",
   },
   {
@@ -20,7 +20,7 @@ const offices = [
   {
     title: "Virtual Counselling Desk",
     address: "Pan India (Online Consultation)",
-    phone: "+91 9930718925",
+    phone: "+91 9930718925 / +91 9958989150",
     hours: "Daily Slots • Subject to Availability",
   },
 ];
@@ -71,7 +71,11 @@ const Location = () => {
                 </p>
                 <p className="flex items-start gap-2">
                   <Icon icon="mdi:phone-outline" className="w-4 h-4 text-primary mt-0.5" />
-                  <Link href={`tel:${office.phone.replace(/\s+/g, "")}`} className="hover:text-primary">{office.phone}</Link>
+                  {office.title === "Virtual Counselling Desk" ? (
+                    <span>{office.phone}</span>
+                  ) : (
+                    <Link href={`tel:${office.phone.replace(/\s+/g, "")}`} className="hover:text-primary">{office.phone}</Link>
+                  )}
                 </p>
                 <p className="flex items-start gap-2">
                   <Icon icon="mdi:email-outline" className="w-4 h-4 text-primary mt-0.5" />

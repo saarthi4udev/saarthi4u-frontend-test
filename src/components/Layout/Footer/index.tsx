@@ -78,7 +78,8 @@ const Footer = () => {
                 alt="Saarthi4u logo"
                 width={170}
                 height={38}
-                quality={100}
+                sizes="170px"
+                className="h-auto w-auto"
               />
             </Link>
             <p className="mb-5 max-w-md text-16 text-foottext">
@@ -172,7 +173,8 @@ const Footer = () => {
                   alt="Google Play"
                   width={140}
                   height={46}
-                  className="rounded-lg opacity-90 transition-opacity duration-200 hover:opacity-100"
+                  sizes="140px"
+                  className="h-auto w-auto rounded-lg opacity-90 transition-opacity duration-200 hover:opacity-100"
                 />
               </Link>
               <Link href="/contact" className="inline-block transition-transform duration-200 hover:-translate-y-0.5">
@@ -181,7 +183,8 @@ const Footer = () => {
                   alt="App Store"
                   width={140}
                   height={46}
-                  className="rounded-lg opacity-90 transition-opacity duration-200 hover:opacity-100"
+                  sizes="140px"
+                  className="h-auto w-auto rounded-lg opacity-90 transition-opacity duration-200 hover:opacity-100"
                 />
               </Link>
             </div>

@@ -137,7 +137,7 @@ const Hero = () => {
                 <Icon icon="ph:sparkle-fill" className="text-secondary text-sm" />
               </motion.div>
 
-              <h1 className="mb-4 text-32 leading-tight font-extrabold text-midnight_text dark:text-white sm:text-44 md:text-50">
+              <h1 className="mb-4 text-28 leading-tight font-extrabold text-midnight_text dark:text-white sm:text-35 md:text-40 lg:text-50">
                 Build your future with the
                 <span className="mt-1 block bg-linear-to-r from-secondary via-secondary/80 to-accent bg-clip-text text-transparent">
                   right college and course choices
@@ -145,15 +145,15 @@ const Hero = () => {
               </h1>
             </div>
 
-            <p className="max-w-2xl text-17 text-muted dark:text-white/70 sm:text-19">
+            <p className="max-w-2xl text-14 text-muted dark:text-white/70 sm:text-16 lg:text-18">
               Saarthi4U helps students and families discover options, compare outcomes,
               and move from confusion to confident admission decisions.
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3 sm:gap-4">
+            <div className="mt-7 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 lg:gap-4">
               <Link
                 href="/signup"
-                className="group relative flex h-12 items-center gap-2 overflow-hidden rounded-lg border border-accent bg-accent px-6 text-15 font-semibold text-primary transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
+                className="group relative flex h-11 items-center justify-center gap-2 overflow-hidden rounded-lg border border-accent bg-accent px-6 text-14 font-semibold text-primary transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25 sm:h-12 sm:text-16"
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 Start Your Journey
@@ -162,36 +162,36 @@ const Hero = () => {
 
               <Link
                 href="/college"
-                className="flex h-12 items-center rounded-lg border border-secondary/40 px-6 text-15 font-semibold text-secondary transition hover:bg-secondary hover:text-white"
+                className="flex h-11 items-center justify-center rounded-lg border border-secondary/40 px-6 text-14 font-semibold text-secondary transition hover:bg-secondary hover:text-white sm:h-12 sm:text-16"
               >
                 Explore Colleges
               </Link>
 
               <Link
                 href="/course"
-                className="flex h-12 items-center rounded-lg px-2 text-15 font-semibold text-muted transition hover:text-secondary dark:text-white/80"
+                className="flex h-11 items-center justify-center rounded-lg px-2 text-14 font-semibold text-muted transition hover:text-secondary dark:text-white/80 sm:h-12 sm:text-16"
               >
                 Explore Courses
               </Link>
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
+            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 sm:gap-x-6 sm:gap-y-3">
               {trustPoints.map((point) => (
                 <p
                   key={point}
-                  className="inline-flex items-center gap-1.5 text-14 font-medium text-muted dark:text-white/75"
+                  className="inline-flex items-center gap-1.5 text-13 font-medium text-muted dark:text-white/75 sm:text-14"
                 >
-                  <Icon icon="solar:verified-check-bold" className="text-secondary" />
+                  <Icon icon="solar:verified-check-bold" className="text-secondary text-sm" />
                   {point}
                 </p>
               ))}
             </div>
 
-            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
               {stats.map((item) => (
-                <div key={item.label} className="group rounded-xl border border-border bg-white px-4 py-3 text-center transition-all duration-300 hover:border-secondary/40 hover:shadow-md hover:shadow-secondary/10 dark:border-dark_border dark:bg-darkHeroBg">
-                  <p className="text-22 font-bold text-secondary transition-transform duration-300 group-hover:scale-105">{item.value}</p>
-                  <p className="text-13 text-muted dark:text-white/70">{item.label}</p>
+                <div key={item.label} className="group rounded-lg border border-border bg-white px-3 py-2.5 text-center transition-all duration-300 hover:border-secondary/40 hover:shadow-md hover:shadow-secondary/10 dark:border-dark_border dark:bg-darkHeroBg sm:rounded-xl sm:px-4 sm:py-3">
+                  <p className="text-18 font-bold text-secondary transition-transform duration-300 group-hover:scale-105 sm:text-20">{item.value}</p>
+                  <p className="text-13 text-muted dark:text-white/70 sm:text-13">{item.label}</p>
                 </div>
               ))}
             </div>
@@ -201,7 +201,7 @@ const Hero = () => {
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-              className="mx-auto w-full max-w-2xl rounded-3xl border border-border bg-white/80 p-4 shadow-xl backdrop-blur-sm dark:border-dark_border dark:bg-darkHeroBg/70"
+              className="mx-auto w-full max-w-2xl rounded-xl border border-border bg-white/80 p-3 shadow-lg backdrop-blur-sm dark:border-dark_border dark:bg-darkHeroBg/70 sm:rounded-2xl sm:p-4 lg:rounded-3xl lg:p-5"
             >
               <Swiper
                 modules={[Autoplay]}
@@ -211,10 +211,10 @@ const Hero = () => {
               >
                 {heroVisuals.map((slide, index) => (
                   <SwiperSlide key={slide.src}>
-                    <div className={`rounded-2xl border border-border bg-linear-to-br p-5 dark:border-dark_border ${slide.gradient}`}>
-                      <div className="mb-4">
-                        <p className="text-16 font-semibold text-midnight_text dark:text-white">{slide.title}</p>
-                        <p className="text-14 text-muted dark:text-white/70">{slide.subtitle}</p>
+                    <div className={`rounded-lg border border-border bg-linear-to-br p-3 dark:border-dark_border sm:rounded-xl sm:p-4 lg:rounded-2xl lg:p-5 ${slide.gradient}`}>
+                      <div className="mb-3 sm:mb-4">
+                        <p className="text-14 font-semibold text-midnight_text dark:text-white sm:text-16">{slide.title}</p>
+                        <p className="text-13 text-muted dark:text-white/70 sm:text-14">{slide.subtitle}</p>
                       </div>
                       <Image
                         src={slide.src}
@@ -222,7 +222,7 @@ const Hero = () => {
                         width={680}
                         height={560}
                         priority={index === 0}
-                        className="mx-auto h-[300px] w-full max-w-xl object-contain"
+                        className="mx-auto h-[240px] w-full max-w-xl object-contain sm:h-[280px] lg:h-[300px]"
                       />
                     </div>
                   </SwiperSlide>
@@ -230,8 +230,8 @@ const Hero = () => {
               </Swiper>
             </motion.div>
 
-            <div className="mx-auto mt-3 w-full max-w-2xl rounded-xl border border-border bg-white px-4 py-2.5 dark:border-dark_border dark:bg-darkHeroBg">
-              <p className="text-center text-14 font-medium text-muted dark:text-white/75">
+            <div className="mx-auto mt-2 w-full max-w-2xl rounded-lg border border-border bg-white px-3 py-2 dark:border-dark_border dark:bg-darkHeroBg sm:rounded-xl sm:px-4 sm:py-2.5 lg:rounded-xl lg:px-4 lg:py-3">
+              <p className="text-center text-13 font-medium text-muted dark:text-white/75 sm:text-14">
                 Guidance, discovery, and admission support in one place.
               </p>
             </div>

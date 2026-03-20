@@ -113,7 +113,7 @@ export default function ResultsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.55 }}
-          className="mb-8 rounded-3xl border border-border bg-white/85 px-6 py-10 text-center shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-dark_border dark:bg-midnight_text/70"
+          className="mb-8 rounded-3xl border border-border bg-white/85 px-6 py-10 text-center shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-dark_border dark:bg-darkheader/80"
         >
           <span className="mb-4 inline-flex h-9 items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-4 text-13 font-bold uppercase tracking-[0.08em] text-primary dark:border-primary/35 dark:bg-primary/15">
             <Icon icon="solar:medal-ribbons-star-outline" className="text-16" />
@@ -171,7 +171,7 @@ export default function ResultsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="mb-8 rounded-2xl border border-border bg-white p-4 shadow-sm dark:border-dark_border dark:bg-midnight_text"
+            className="mb-8 rounded-2xl border border-border bg-white p-4 shadow-sm dark:border-dark_border dark:bg-darkheader"
           >
             <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
               <div className="relative">
@@ -259,7 +259,7 @@ export default function ResultsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="rounded-2xl border border-border bg-white p-8 text-center shadow-sm dark:border-dark_border dark:bg-midnight_text"
+                className="rounded-2xl border border-border bg-white p-8 text-center shadow-sm dark:border-dark_border dark:bg-darkheader"
           >
             <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-primary/10 text-primary">
               <Icon icon="solar:document-text-search-linear" className="text-24" />
@@ -287,7 +287,7 @@ export default function ResultsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.18 }}
                 transition={{ duration: 0.5, delay: boardIndex * 0.06 }}
-                className="rounded-3xl border border-border bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg dark:border-dark_border dark:bg-midnight_text"
+                className="rounded-3xl border border-border bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg dark:border-dark_border dark:bg-darkheader"
               >
                 <div className="mb-4 flex flex-wrap items-center gap-2.5">
                   <h2 className="text-24 font-extrabold text-midnight_text dark:text-white">
@@ -308,16 +308,16 @@ export default function ResultsSection() {
                       whileHover={{ y: -4, scale: 1.01 }}
                       viewport={{ once: true, amount: 0.2 }}
                       transition={{ duration: 0.45, delay: resultIndex * 0.06 }}
-                      className="group relative overflow-hidden rounded-2xl border border-border bg-hero-bg/50 p-4 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-md dark:border-dark_border dark:bg-dark_b/60"
+                      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-hero-bg/60 p-4 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-md dark:border-dark_border dark:bg-dark_b/75"
                     >
                       <div className="pointer-events-none absolute right-0 top-0 h-20 w-20 rounded-full bg-primary/10 blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-60" />
 
-                      <h3 className="relative text-18 font-bold text-midnight_text transition-colors duration-300 group-hover:text-primary dark:text-white dark:group-hover:text-primary">
+                      <h3 className="relative min-h-[3rem] text-18 font-bold text-midnight_text transition-colors duration-300 group-hover:text-primary dark:text-white dark:group-hover:text-primary">
                         {result.resultName}
                       </h3>
 
                       {result.description && (
-                        <p className="relative mt-2 text-15 text-muted dark:text-white/70">
+                        <p className="relative mt-2 min-h-[2.7rem] text-15 text-muted dark:text-white/70">
                           {result.description}
                         </p>
                       )}
@@ -328,7 +328,7 @@ export default function ResultsSection() {
                         rel="noopener noreferrer"
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className="relative mt-4 inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-14 font-semibold text-white transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
+                        className="relative mt-auto inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-14 font-semibold text-white transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
                       >
                         View Official Result
                         <Icon
@@ -351,7 +351,7 @@ export default function ResultsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.45 }}
-              className="rounded-2xl border border-border bg-white p-6 shadow-sm transition-all duration-300 hover:border-primary/35 hover:shadow-md dark:border-dark_border dark:bg-midnight_text"
+              className="rounded-2xl border border-border bg-white p-6 shadow-sm transition-all duration-300 hover:border-primary/35 hover:shadow-md dark:border-dark_border dark:bg-darkheader"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>

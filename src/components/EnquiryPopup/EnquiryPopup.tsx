@@ -20,7 +20,7 @@ export default function EnquiryPopup() {
     otherDetails: '',
   });
 
-  // Show popup after 3 seconds on every page load
+  // Show popup almost instantly on every page load
   useEffect(() => {
     setMounted(true);
     
@@ -28,11 +28,7 @@ export default function EnquiryPopup() {
     const hasClosedThisSession = sessionStorage.getItem('enquiryPopupClosed');
 
     if (!hasClosedThisSession) {
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, 3000);
-
-      return () => clearTimeout(timer);
+      setIsVisible(true);
     }
   }, []);
 

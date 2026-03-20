@@ -91,7 +91,7 @@ const CareerCoaches = () => {
   const [canScrollRight, setCanScrollRight] = useState(true);
 
   const cardClass =
-    "group relative flex h-full min-w-[280px] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-lg hover:shadow-secondary/10 dark:border-dark_border dark:bg-darkHeroBg md:min-w-[320px]";
+    "group relative flex h-full min-h-[575px] min-w-[280px] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-lg hover:shadow-secondary/10 dark:border-dark_border dark:bg-darkHeroBg md:min-w-[320px]";
 
   const updateScrollState = () => {
     const el = scrollerRef.current;
@@ -280,10 +280,10 @@ const CareerCoaches = () => {
                     </div>
 
                     <div className="min-w-0 flex-1 pt-1">
-                      <h3 className="text-17 font-bold leading-tight text-midnight_text dark:text-white">
+                      <h3 className="line-clamp-2 min-h-[2.8rem] text-17 font-bold leading-tight text-midnight_text dark:text-white">
                         {coach.name}
                       </h3>
-                      <p className="mt-0.5 text-13 font-semibold text-secondary">
+                      <p className="mt-0.5 line-clamp-2 min-h-[2.4rem] text-13 font-semibold text-secondary">
                         {coach.title}
                       </p>
                       <div className="mt-1.5 flex items-center gap-2">
@@ -303,11 +303,11 @@ const CareerCoaches = () => {
                 </div>
 
                 <div className="flex flex-1 flex-col px-5 py-4">
-                  <p className="text-13 leading-relaxed text-muted dark:text-white/65 line-clamp-4">
+                  <p className="min-h-[4.9rem] text-13 leading-relaxed text-muted dark:text-white/65 line-clamp-4">
                     {coach.bio}
                   </p>
 
-                  <div className="mt-4 flex flex-wrap gap-1.5">
+                  <div className="mt-4 flex min-h-[4.7rem] flex-wrap content-start gap-1.5">
                     {coach.specialties.map((s) => (
                       <span
                         key={s}
@@ -329,10 +329,10 @@ const CareerCoaches = () => {
                     </div>
                   </div>
 
-                  <div className="mt-5">
+                  <div className="mt-auto pt-5">
                     <Link
                       href="/contact#contact-form"
-                      className="group/btn relative block w-full overflow-hidden rounded-xl bg-secondary py-2.5 text-center text-14 font-semibold text-white transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
+                      className="group/btn relative block h-11 w-full overflow-hidden rounded-xl bg-secondary py-2.5 text-center text-14 font-semibold text-white transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
                     >
                       <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
                       <span className="flex items-center justify-center gap-2">
