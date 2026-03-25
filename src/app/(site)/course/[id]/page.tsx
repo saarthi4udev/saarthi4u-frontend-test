@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 };
 
 const normalizeSlug = (value: string) =>
@@ -30,13 +30,10 @@ const sectionClassName =
   "rounded-[2rem] border border-primary/10 bg-white/90 p-6 shadow-[0_24px_60px_rgba(10,24,58,0.08)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-8";
 
 export default async function CategoryDetailPage({ params }: Props) {
-  const { slug } = await params;
+  const { id } = await params;
 
   const categories = await getAllCategories();
-
-  const category = categories?.find(
-    (c: any) => c.slug === slug.toLowerCase() || normalizeSlug(c.name) === slug.toLowerCase(),
-  );
+  const category = categories?.find((c: any) => String(c.id) === id);
 
   if (!category) return notFound();
 

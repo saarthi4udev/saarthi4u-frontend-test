@@ -1,6 +1,6 @@
 const base = process.env.NEXT_PUBLIC_API_URL;
 
-const BASE_URL = base + "/scholarship";
+const BASE_URL = base + "/Scholarship";
 
 /* ---------------- GET ALL SCHOLARSHIPS ---------------- */
 
@@ -26,11 +26,20 @@ export async function getAllScholarships(page = 1, limit = 6) {
 /* ---------------- GET SCHOLARSHIP BY SLUG ---------------- */
 
 export async function getScholarshipBySlug(slug: string) {
-  const scholarships = await getAllScholarships();
+  try {
+    const res = await fetch(`${BASE_URL}/Scholarship/${slug}`, {
+      cache: "no-store",
+    });
 
-  const scholarship = scholarships.find(
-    (item: any) => item.slug === slug
-  );
+    if (!res.ok) {
+      throw new Error("Scholarship not found");
+    }
 
-  return scholarship || null;
+    const data = await res.json();
+
+    return data?.data || null;
+  } catch (error) {
+    console.error("Error fetching scholarship:", error);
+    return null;
+  }
 }

@@ -110,6 +110,10 @@ const Header: React.FC = () => {
           : "bg-white/95 backdrop-blur-sm shadow-none dark:bg-darkheader/95"
         }`}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-full overflow-hidden">
+        <div className="absolute -left-16 -top-14 h-28 w-28 rounded-full bg-secondary/15 blur-2xl" />
+        <div className="absolute -right-16 -top-14 h-28 w-28 rounded-full bg-accent/20 blur-2xl" />
+      </div>
       <div
         className={`container mx-auto flex items-center justify-between gap-2 transition-all duration-300 sm:gap-3 ${sticky ? "py-3" : "py-4"
           }`}
@@ -117,7 +121,7 @@ const Header: React.FC = () => {
         <div className="flex items-center gap-6 xl:gap-8">
           <Logo />
 
-          <nav className="hidden xl:flex items-center gap-1 rounded-full border border-primary/15 bg-primary/5 p-1.5 backdrop-blur-sm dark:border-dark_border/80 dark:bg-dark_b/70">
+          <nav className="site-glass-card hidden xl:flex items-center gap-1 rounded-full p-1.5">
             {headerData.map((item, index) => (
               <HeaderLink key={index} item={item} />
             ))}
@@ -143,7 +147,7 @@ const Header: React.FC = () => {
           <button
             aria-label="Toggle theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="grid h-10 w-10 place-items-center rounded-full border border-border bg-gray-50 text-primary transition-all duration-300 hover:border-secondary/45 hover:text-secondary dark:border-dark_border dark:bg-dark_b dark:text-white"
+            className="site-glass-card grid h-10 w-10 place-items-center rounded-full text-primary transition-all duration-300 hover:border-secondary/45 hover:text-secondary dark:text-white"
           >
             <Icon
               icon={theme === "dark" ? "solar:sun-bold" : "solar:moon-stars-bold"}
@@ -153,7 +157,7 @@ const Header: React.FC = () => {
 
           <Link
             href="/contact"
-            className="group relative hidden xl:flex h-10 items-center gap-2 overflow-hidden rounded-full bg-accent px-4 text-14 font-semibold text-primary transition-all duration-300 hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
+            className="site-cta group relative hidden xl:flex h-10 items-center gap-2 overflow-hidden rounded-full bg-accent px-4 text-14 font-semibold text-primary transition-all duration-300 hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
           >
             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             Get Consultation
@@ -169,7 +173,7 @@ const Header: React.FC = () => {
             <div className="hidden xl:flex items-center">
               <Link
                 href="/signin"
-                className="flex h-10 items-center gap-2 rounded-full border border-secondary bg-secondary px-4 text-14 font-semibold text-white"
+                className="site-cta flex h-10 items-center gap-2 rounded-full border border-secondary bg-secondary px-4 text-14 font-semibold text-white"
               >
                 Get Started
               </Link>
@@ -226,7 +230,7 @@ const Header: React.FC = () => {
 
       <div
         ref={mobileMenuRef}
-        className={`fixed right-0 top-0 z-50 flex h-[100dvh] w-[min(88vw,24rem)] transform flex-col border-l border-border/70 bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-300 dark:border-dark_border/70 dark:bg-darkheader xl:hidden ${navbarOpen ? "translate-x-0" : "translate-x-full"
+        className={`site-glass-card fixed right-0 top-0 z-50 flex h-[100dvh] w-[min(88vw,24rem)] transform flex-col border-l border-border/70 bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-300 dark:border-dark_border/70 dark:bg-darkheader xl:hidden ${navbarOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
         <div className="flex items-center justify-between pb-4">
@@ -296,6 +300,7 @@ const Header: React.FC = () => {
           ) : null}
         </div>
       </div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-secondary/70 to-transparent" />
     </header>
   );
 };

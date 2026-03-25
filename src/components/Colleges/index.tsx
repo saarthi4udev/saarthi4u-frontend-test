@@ -11,12 +11,20 @@ import { AnimatePresence, motion } from "motion/react";
 
 /* ---------------- CONSTANTS ---------------- */
 
-const ALL_STATES = "All States";
+const ALL_LOCATIONS = "All Locations";
 const ALL_TYPES = "All Types";
 const ALL_OWNERSHIP = "All Ownership";
+const NATIONAL_LISTING = "national";
+const INTERNATIONAL_LISTING = "international";
 
-
-type CollegeFilterKey = "state" | "type" | "ownership";
+const INTERNATIONAL_KEYWORDS = [
+  "international",
+  "abroad",
+  "overseas",
+  "global",
+  "foreign",
+  "study abroad",
+];
 
 type CompareCollege = {
   id: string;
@@ -64,107 +72,84 @@ type CompareResult = {
   verdict?: CompareVerdict;
 };
 
-/* ---------------- DROPDOWN ---------------- */
+const isInternationalCollege = (college: any) => {
+  const haystack = [
+    college?.country,
+    college?.location,
+    college?.state,
+    college?.city,
+    college?.type,
+    college?.category,
+    college?.name,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 
-type DropdownProps = {
-  label: string;
-  value: string;
-  options: string[];
-  keyName: CollegeFilterKey;
-  open: string | null;
-  setOpen: (value: string | null) => void;
-  setFilters: React.Dispatch<
-    React.SetStateAction<{
-      state: string;
-      type: string;
-      ownership: string;
-    }>
-  >;
+  const country = String(college?.country || "").toLowerCase().trim();
+  if (country && country !== "india") {
+    return true;
+  }
+
+  return INTERNATIONAL_KEYWORDS.some((keyword) => haystack.includes(keyword));
 };
 
-const Dropdown = ({
-  label,
-  value,
-  options,
-  keyName,
-  open,
-  setOpen,
-  setFilters,
-}: DropdownProps) => (
-  <div className="relative flex-1">
-    <button
-      onClick={() => setOpen(open === keyName ? null : keyName)}
-      className="
-          w-full h-12 px-4 flex justify-between items-center text-sm font-semibold
-          rounded-xl border border-primary/10 shadow-sm
-          bg-white dark:bg-slate-950/70
-          text-primary dark:text-white
-          hover:border-secondary/40
-          transition-all duration-200
-        "
-    >
-      <span>
-        <span className="text-gray-500 dark:text-gray-400">
-          {label}:
-        </span>{" "}
-        {value}
-      </span>
-      <span className="text-gray-500 dark:text-gray-400">▾</span>
-    </button>
+const getCollegeLocationValues = (college: any) => {
+  return Array.from(
+    new Set(
+      [college?.location, college?.city, college?.state, college?.country]
+        .filter(Boolean)
+        .flatMap((value) =>
+          String(value)
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean)
+        )
+    )
+  );
+};
 
-    {open === keyName && (
-      <div
-        className="
-            absolute z-50 mt-2 w-full max-h-64 overflow-auto rounded-xl shadow-xl
-            bg-white dark:bg-slate-900
-            border border-primary/10 dark:border-white/10
-          "
-      >
-        {options.map((opt) => (
-          <button
-            key={opt}
-            onClick={() => {
-              setFilters((prev) => ({ ...prev, [keyName]: opt }));
-              setOpen(null);
-            }}
-            className="
-                block w-full text-left px-5 py-3 text-sm
-                text-gray-800 dark:text-gray-100
-                hover:bg-primary/10
-                transition-colors duration-200
-              "
-          >
-            {opt}
-          </button>
-        ))}
-      </div>
-    )}
-  </div>
-);
+const getVisiblePageItems = (current: number, total: number) => {
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  if (current <= 2) {
+    return [1, 2, "...", total];
+  }
+
+  if (current >= total - 1) {
+    return [1, "...", total - 1, total];
+  }
+
+  if (current === 3) {
+    return [1, 2, 3, "...", total];
+  }
+
+  return [1, 2, "...", current, "...", total];
+};
 
 /* ---------------- MAIN SECTION ---------------- */
 
 export default function CollegesSection() {
 
   const [page, setPage] = useState(1);
-  const limit = 4;
+  const limit = 8;
   const [totalPages, setTotalPages] = useState(1);
 
   const [collegesData, setCollegesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState<string | null>(null);
-  const barRef = useRef<HTMLDivElement>(null);
+  const [listingType, setListingType] = useState<"national" | "international">(NATIONAL_LISTING);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const stateOptions = useMemo(
-    () => [
-      ALL_STATES,
-      ...Array.from(
-        new Set(collegesData.map((c) => c.state).filter(Boolean))
-      ).sort(),
-    ],
-    [collegesData]
-  );
+  const stateOptions = useMemo(() => {
+    const values = collegesData.flatMap((college) => getCollegeLocationValues(college));
+
+    return [
+      ALL_LOCATIONS,
+      ...Array.from(new Set(values)).sort((a, b) => String(a).localeCompare(String(b))),
+    ];
+  }, [collegesData]);
 
   const typeOptions = useMemo(
     () => [
@@ -198,7 +183,7 @@ export default function CollegesSection() {
   ];
 
   const [filters, setFilters] = useState({
-    state: ALL_STATES,
+    state: ALL_LOCATIONS,
     type: ALL_TYPES,
     ownership: ALL_OWNERSHIP,
   });
@@ -209,18 +194,6 @@ export default function CollegesSection() {
   const [compareError, setCompareError] = useState<string | null>(null);
   const [compareResult, setCompareResult] = useState<CompareResult | null>(null);
   const [showCompareDetails, setShowCompareDetails] = useState(false);
-
-  /* -------- Close Dropdown Outside Click -------- */
-
-  // useEffect(() => {
-  //   const close = (e: MouseEvent) => {
-  //     if (barRef.current && !barRef.current.contains(e.target as Node)) {
-  //       setOpen(null);
-  //     }
-  //   };
-  //   document.addEventListener("mousedown", close);
-  //   return () => document.removeEventListener("mousedown", close);
-  // }, []);
 
   //   useEffect(() => {
   //   const fetchColleges = async () => {
@@ -285,7 +258,7 @@ export default function CollegesSection() {
           ...college,
           category: college?.Category?.name || "",
           established: college?.establishedYear || null,
-          location: [college?.city, college?.state].filter(Boolean).join(", "),
+          location: [college?.city, college?.state, college?.country].filter(Boolean).join(", "),
           description: college?.overview
             ? college.overview.replace(/<[^>]*>?/gm, "")
             : "",
@@ -312,15 +285,24 @@ export default function CollegesSection() {
     block: "start"
   });
 }, [page]);
+
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      state: ALL_LOCATIONS,
+    }));
+  }, [listingType]);
+
   /* -------- Reset -------- */
 
   const handleReset = () => {
     setFilters({
-      state: ALL_STATES,
+      state: ALL_LOCATIONS,
       type: ALL_TYPES,
       ownership: ALL_OWNERSHIP,
     });
-    setOpen(null);
+    setListingType(NATIONAL_LISTING);
+    setPage(1);
   };
 
   // const collegeOptions = useMemo(
@@ -641,9 +623,16 @@ export default function CollegesSection() {
   }, [compareHighlights, compareResult]);
 
   const filteredColleges = collegesData.filter((college) => {
+    const isInternational = isInternationalCollege(college);
+    const listingMatch =
+      listingType === INTERNATIONAL_LISTING ? isInternational : !isInternational;
+
+    const selectedRegion = filters.state;
+    const collegeLocations = getCollegeLocationValues(college);
+
     const stateMatch =
-      filters.state === ALL_STATES ||
-      college.state === filters.state;
+      selectedRegion === ALL_LOCATIONS ||
+      collegeLocations.includes(selectedRegion);
 
     const typeMatch =
       filters.type === ALL_TYPES ||
@@ -653,11 +642,19 @@ export default function CollegesSection() {
       filters.ownership === ALL_OWNERSHIP ||
       college.ownership === filters.ownership;
 
-    return stateMatch && typeMatch && ownershipMatch;
+    return listingMatch && stateMatch && typeMatch && ownershipMatch;
   });
 
+  const currentTotalLabel = `${filteredColleges.length} college${filteredColleges.length === 1 ? "" : "s"}`;
+  const pageItems = getVisiblePageItems(page, totalPages);
+
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7fbff_0%,#ffffff_34%,#f1faf8_100%)] py-16 transition-colors dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_42%,#05111b_100%)] sm:py-20">
+    <motion.section
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className="relative overflow-hidden bg-[linear-gradient(180deg,#f7fbff_0%,#ffffff_34%,#f1faf8_100%)] py-16 transition-colors dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_42%,#05111b_100%)] sm:py-20"
+    >
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -left-16 top-6 h-64 w-64 rounded-full bg-primary/12 blur-3xl" />
         <div className="absolute -right-16 bottom-10 h-72 w-72 rounded-full bg-secondary/14 blur-3xl" />
@@ -668,7 +665,7 @@ export default function CollegesSection() {
         <div className="relative mb-6 overflow-hidden rounded-lg border border-primary/10 bg-white/85 p-4 text-center shadow-md backdrop-blur sm:rounded-2xl sm:p-6 md:rounded-[2rem] md:p-8 lg:p-10 dark:border-white/10 dark:bg-slate-900/80">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(48,216,201,0.16),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(23,30,76,0.08),transparent_31%)]" />
           <div className="relative mx-auto max-w-3xl">
-            <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-secondary/25 bg-secondary/10 px-3 py-1.5 text-10 font-semibold uppercase tracking-[0.2em] text-primary shadow-sm dark:text-secondary sm:mb-4 sm:px-4 sm:py-2 sm:text-xs">
+            <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#FAFA33]/45 bg-[#FAFA33]/20 px-3 py-1.5 text-10 font-semibold uppercase tracking-[0.2em] text-primary shadow-sm dark:bg-[#FAFA33]/30 dark:text-primary sm:mb-4 sm:px-4 sm:py-2 sm:text-xs">
             <Icon icon="mdi:school-outline" className="w-3 h-3 sm:w-4 sm:h-4" />
             College Discovery
             </span>
@@ -676,10 +673,128 @@ export default function CollegesSection() {
               Explore <span className="text-secondary">Colleges</span>
             </h2>
             <p className="mt-2 text-13 font-medium leading-6 text-slate-600 dark:text-slate-300 sm:mt-3 sm:text-14 md:text-16">
-              Filter colleges by state, type, and ownership with a cleaner comparison-first layout.
+              Filter colleges by location, category, and ownership to find the right institute faster.
             </p>
           </div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="mb-5 rounded-2xl border border-primary/10 bg-white/95 p-4 shadow-[0_18px_44px_rgba(10,24,58,0.08)] backdrop-blur dark:border-white/10 dark:bg-slate-900/85 sm:p-5"
+        >
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300">Browse by Destination</p>
+                <h3 className="mt-1 text-lg font-bold text-primary dark:text-white">College Filters</h3>
+              </div>
+              <div className="inline-flex w-full items-center rounded-xl border border-primary/15 bg-primary/5 p-1 dark:border-white/10 dark:bg-slate-950/70 xl:w-auto">
+                <button
+                  onClick={() => {
+                    setListingType(NATIONAL_LISTING);
+                    setPage(1);
+                  }}
+                  className={`flex h-10 flex-1 items-center justify-center rounded-lg px-4 text-xs font-semibold transition-all sm:text-sm xl:flex-none ${
+                    listingType === NATIONAL_LISTING
+                      ? "bg-primary text-white shadow-sm ring-2 ring-[#FAFA33]/60"
+                      : "text-primary hover:bg-primary/10 dark:text-white dark:hover:bg-white/10"
+                  }`}
+                >
+                  National Colleges
+                </button>
+                <button
+                  onClick={() => {
+                    setListingType(INTERNATIONAL_LISTING);
+                    setPage(1);
+                  }}
+                  className={`flex h-10 flex-1 items-center justify-center rounded-lg px-4 text-xs font-semibold transition-all sm:text-sm xl:flex-none ${
+                    listingType === INTERNATIONAL_LISTING
+                      ? "bg-primary text-white shadow-sm ring-2 ring-[#FAFA33]/60"
+                      : "text-primary hover:bg-primary/10 dark:text-white dark:hover:bg-white/10"
+                  }`}
+                >
+                  International / Abroad
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_1x] xl:items-stretch">
+              <div className="flex min-h-[4.4rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3.5 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300" htmlFor="college-location-filter">Location</label>
+                <select
+                  id="college-location-filter"
+                  value={filters.state}
+                  onChange={(event) => {
+                    setFilters((prev) => ({ ...prev, state: event.target.value }));
+                    setPage(1);
+                  }}
+                  className="h-8 w-full bg-transparent text-sm font-medium text-primary outline-none dark:text-white"
+                >
+                  {stateOptions.map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex min-h-[4.4rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3.5 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">Type</label>
+                <select
+                  value={filters.type}
+                  onChange={(event) => {
+                    setFilters((prev) => ({ ...prev, type: event.target.value }));
+                    setPage(1);
+                  }}
+                  className="h-8 w-full bg-transparent text-sm font-medium text-primary outline-none dark:text-white"
+                >
+                  {typeOptions.map((type) => (
+                    <option key={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex min-h-[4.4rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3.5 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">Ownership</label>
+                <select
+                  value={filters.ownership}
+                  onChange={(event) => {
+                    setFilters((prev) => ({ ...prev, ownership: event.target.value }));
+                    setPage(1);
+                  }}
+                  className="h-8 w-full bg-transparent text-sm font-medium text-primary outline-none dark:text-white"
+                >
+                  {ownershipOptions.map((ownership) => (
+                    <option key={ownership}>{ownership}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-stretch xl:justify-end">
+                <button
+                  onClick={handleReset}
+                  className="inline-flex h-full min-h-[4.4rem] w-full items-center justify-center gap-1.5 rounded-xl border border-primary/15 bg-primary/5 px-3 text-sm font-semibold text-primary transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-primary/10 dark:border-white/10 dark:bg-slate-950/70 dark:text-white xl:w-[150px]"
+                >
+                  <Icon icon="solar:restart-bold-duotone" className="text-sm text-secondary" />
+                  Reset Filters
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/10 bg-primary/5 px-3.5 py-2 text-sm dark:border-white/10 dark:bg-slate-950/60">
+              <p className="font-semibold text-primary dark:text-white">
+                <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[#FAFA33] align-middle" />
+                Showing {currentTotalLabel} on this page
+              </p>
+              <p className="rounded-full bg-white/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-900/70 dark:text-slate-300">
+                {listingType === NATIONAL_LISTING ? "National Colleges" : "International / Abroad Colleges"}
+              </p>
+            </div>
+          </div>
+        </motion.div>
 
         {/* COMPARE SECTION */}
         <motion.div
@@ -687,7 +802,7 @@ export default function CollegesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="relative mb-6 rounded-2xl border border-primary/20 dark:border-primary/30 bg-gradient-to-br from-white via-white to-primary/5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 shadow-sm overflow-hidden"
+          className="relative mb-4 overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-white via-white to-primary/5 shadow-[0_18px_44px_rgba(10,24,58,0.08)] dark:border-primary/25 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
         >
           <motion.div
             aria-hidden
@@ -702,12 +817,12 @@ export default function CollegesSection() {
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
 
-          <div className="px-4 sm:px-5 md:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-3">
+          <div className="border-b border-gray-200 bg-white/75 px-4 py-3 dark:border-slate-700 dark:bg-slate-900/72">
+            <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
               <div>
-                <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
                   <motion.span
-                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
                     animate={{ rotate: [0, 8, -8, 0] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                   >
@@ -715,27 +830,24 @@ export default function CollegesSection() {
                   </motion.span>
                   Compare Colleges
                 </h3>
-                <p className="mt-1 text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">
                   Pick two colleges, compare fast, and open detailed results only when needed.
                 </p>
               </div>
-              <div className="hidden md:flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary">1</span>
-                Select
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary">2</span>
-                Compare
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary">3</span>
-                Decide
+              <div className="hidden xl:flex items-center gap-2 self-start text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-2 py-1 text-primary">1 Select</span>
+                <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-2 py-1 text-primary">2 Compare</span>
+                <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-2 py-1 text-primary">3 Decide</span>
               </div>
             </div>
           </div>
 
-          <div className="p-3 sm:p-5 md:p-6 flex flex-col gap-3 sm:gap-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 items-end gap-3 xl:grid-cols-12 xl:gap-3">
-              <div className="xl:col-span-4">
+          <div className="flex flex-col gap-2.5 p-3.5 sm:p-4">
+            <div className="grid grid-cols-1 gap-2.5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] xl:items-stretch">
+              <div className="flex min-h-[4.25rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
                 <label
                   htmlFor="compare-college-one"
-                  className="block text-10 sm:text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300 mb-1 sm:mb-1.5"
+                  className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300"
                 >
                   College 1
                 </label>
@@ -746,13 +858,7 @@ export default function CollegesSection() {
                     setSelectedCollegeOneId(event.target.value);
                     setCompareError(null);
                   }}
-                  className="
-                      w-full h-11 rounded-lg px-3
-                      border border-gray-300 dark:border-slate-700
-                      bg-white dark:bg-slate-900
-                      text-sm text-gray-900 dark:text-gray-100
-                      focus:outline-none focus:ring-2 focus:ring-primary/30
-                    "
+                  className="h-8 w-full bg-transparent text-sm font-medium text-gray-900 outline-none dark:text-gray-100"
                 >
                   <option value="">Select first college</option>
                   {collegeOptions.map((college) => (
@@ -763,10 +869,10 @@ export default function CollegesSection() {
                 </select>
               </div>
 
-              <div className="xl:col-span-4">
+              <div className="flex min-h-[4.25rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
                 <label
                   htmlFor="compare-college-two"
-                  className="block text-10 sm:text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300 mb-1 sm:mb-1.5"
+                  className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300"
                 >
                   College 2
                 </label>
@@ -777,13 +883,7 @@ export default function CollegesSection() {
                     setSelectedCollegeTwoId(event.target.value);
                     setCompareError(null);
                   }}
-                  className="
-                      w-full h-11 rounded-lg px-3
-                      border border-gray-300 dark:border-slate-700
-                      bg-white dark:bg-slate-900
-                      text-sm text-gray-900 dark:text-gray-100
-                      focus:outline-none focus:ring-2 focus:ring-primary/40
-                    "
+                  className="h-8 w-full bg-transparent text-sm font-medium text-gray-900 outline-none dark:text-gray-100"
                 >
                   <option value="">Select second college</option>
                   {collegeOptions.map((college) => (
@@ -794,16 +894,11 @@ export default function CollegesSection() {
                 </select>
               </div>
 
-              <div className="sm:col-span-2 xl:col-span-4 flex items-center justify-start xl:justify-end gap-2 flex-wrap">
+              <div className="flex flex-wrap items-center gap-2 xl:justify-end xl:self-stretch">
                 <button
                   onClick={handleCompare}
                   disabled={!canCompare || compareLoading}
-                  className="
-                      h-9 sm:h-10 px-3 sm:px-4 rounded-lg font-medium whitespace-nowrap text-xs sm:text-sm
-                      bg-primary text-white shadow-sm shadow-primary/30
-                      disabled:opacity-50 disabled:cursor-not-allowed
-                      hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition
-                    "
+                  className="h-10 rounded-lg bg-primary px-4 text-xs font-semibold whitespace-nowrap text-white shadow-sm shadow-primary/30 transition hover:-translate-y-0.5 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
                 >
                   <span className="inline-flex items-center gap-1.5">
                     <Icon icon="mdi:scale-balance" width="16" height="16" />
@@ -813,14 +908,7 @@ export default function CollegesSection() {
                 <button
                   onClick={handleSwap}
                   disabled={!canCompare}
-                  className="
-                      h-9 sm:h-10 px-3 sm:px-3.5 rounded-lg font-medium whitespace-nowrap text-xs sm:text-sm
-                      border border-primary/25 dark:border-primary/30
-                      text-primary
-                      bg-primary/5
-                      disabled:opacity-50 disabled:cursor-not-allowed
-                      hover:bg-primary/10 hover:-translate-y-0.5 active:translate-y-0 transition
-                    "
+                  className="h-10 rounded-lg border border-primary/25 bg-primary/5 px-3 text-xs font-semibold whitespace-nowrap text-primary transition hover:-translate-y-0.5 hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-50 dark:border-primary/30 sm:text-sm"
                 >
                   <span className="inline-flex items-center gap-1.5">
                     <Icon icon="mdi:swap-horizontal" width="16" height="16" />
@@ -829,13 +917,7 @@ export default function CollegesSection() {
                 </button>
                 <button
                   onClick={handleCompareReset}
-                  className="
-                      h-9 sm:h-10 px-3 sm:px-3.5 rounded-lg font-medium whitespace-nowrap text-xs sm:text-sm
-                      border border-rose-200 dark:border-rose-400/30
-                      text-rose-600 dark:text-rose-300
-                      bg-rose-50/60 dark:bg-rose-500/10
-                      hover:bg-rose-100/70 dark:hover:bg-rose-500/20 hover:-translate-y-0.5 active:translate-y-0 transition
-                    "
+                  className="h-10 rounded-lg border border-rose-200 bg-rose-50/60 px-3 text-xs font-semibold whitespace-nowrap text-rose-600 transition hover:-translate-y-0.5 hover:bg-rose-100/70 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20 sm:text-sm"
                 >
                   <span className="inline-flex items-center gap-1.5">
                     <Icon icon="mdi:close-circle-outline" width="16" height="16" />
@@ -846,7 +928,7 @@ export default function CollegesSection() {
                 {compareResult && compareResult.colleges.length >= 2 && (
                   <button
                     onClick={() => setShowCompareDetails((prev) => !prev)}
-                    className="h-10 px-3.5 rounded-lg border border-primary/30 text-primary text-sm font-medium hover:bg-primary/10 hover:-translate-y-0.5 active:translate-y-0 transition"
+                    className="h-10 rounded-lg border border-primary/30 px-3 text-xs font-semibold text-primary transition hover:-translate-y-0.5 hover:bg-primary/10 sm:text-sm"
                   >
                     {showCompareDetails ? "Hide Details" : "View Details"}
                   </button>
@@ -854,14 +936,14 @@ export default function CollegesSection() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
-              <span className="text-gray-500 dark:text-gray-400">Selected:</span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/40 text-gray-800 dark:text-gray-100">
+            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-primary/10 bg-primary/5 px-3 py-1.5 text-xs sm:text-sm dark:border-white/10 dark:bg-slate-950/55">
+              <span className="font-medium text-gray-500 dark:text-gray-400">Selected:</span>
+              <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 dark:border-slate-700 dark:bg-slate-800/40 text-gray-800 dark:text-gray-100">
                 <Icon icon="mdi:school-outline" width="14" height="14" className="mr-1.5 text-primary" />
                 {selectedCollegeOne?.name || "College 1"}
               </span>
               <span className="text-primary font-semibold">vs</span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/40 text-gray-800 dark:text-gray-100">
+              <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 dark:border-slate-700 dark:bg-slate-800/40 text-gray-800 dark:text-gray-100">
                 <Icon icon="mdi:school-outline" width="14" height="14" className="mr-1.5 text-primary" />
                 {selectedCollegeTwo?.name || "College 2"}
               </span>
@@ -982,63 +1064,6 @@ export default function CollegesSection() {
           </div>
         </motion.div>
 
-        {/* FILTER BAR */}
-        <div
-          ref={barRef}
-          className="
-              mt-6 sm:mt-8 flex flex-col sm:flex-wrap items-center gap-3 sm:gap-4 md:flex-nowrap
-              rounded-2xl sm:rounded-[1.8rem] border border-primary/10 p-3 sm:p-5 md:p-6 mb-6 sm:mb-8
-              bg-white/90 dark:bg-slate-900/80
-              shadow-[0_22px_56px_rgba(10,24,58,0.08)] backdrop-blur
-              dark:border-white/10
-            "
-        >
-          <div className="flex flex-1 gap-4">
-            <Dropdown
-              label="State"
-              value={filters.state}
-              options={stateOptions}
-              keyName="state"
-              open={open}
-              setOpen={setOpen}
-              setFilters={setFilters}
-            />
-            <Dropdown
-              label="Type"
-              value={filters.type}
-              options={typeOptions}
-              keyName="type"
-              open={open}
-              setOpen={setOpen}
-              setFilters={setFilters}
-            />
-            <Dropdown
-              label="Ownership"
-              value={filters.ownership}
-              options={ownershipOptions}
-              keyName="ownership"
-              open={open}
-              setOpen={setOpen}
-              setFilters={setFilters}
-            />
-          </div>
-
-          {/* RESET BUTTON */}
-          <button
-            onClick={handleReset}
-            className="
-                h-12 px-6 rounded-xl font-semibold whitespace-nowrap text-sm
-                border border-primary bg-white
-                text-primary transition-all duration-200
-                hover:bg-primary hover:text-white
-                dark:bg-transparent dark:text-secondary
-              "
-          >
-            Reset Filters
-          </button>
-        </div>
-
-        {/* GRID */}
         {/* GRID */}
 
 
@@ -1056,43 +1081,74 @@ export default function CollegesSection() {
           )}
 
           {/* Colleges */}
-          {!loading && filteredColleges.map((college) => (
-            <CollegeCard key={college.id} college={college} />
+          {!loading && filteredColleges.map((college, index) => (
+            <motion.div
+              key={college.id}
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.32, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
+            >
+              <CollegeCard college={college} />
+            </motion.div>
           ))}
 
           {/* No Data */}
           {!loading && filteredColleges.length === 0 && (
-            <div className="col-span-full text-center py-10 text-gray-500 dark:text-gray-400">
-              No colleges found for selected filters
+            <div className="col-span-full rounded-2xl border border-primary/10 bg-white/80 py-12 text-center text-gray-500 dark:border-white/10 dark:bg-slate-900/70 dark:text-gray-300">
+              No colleges found for the selected destination and filters.
             </div>
           )}
         </div>
 
-        <div className="flex justify-center items-center gap-3 mt-10">
-
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary disabled:opacity-40 dark:text-white"
+        {totalPages > 1 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.8 }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"
           >
-            Prev
-          </button>
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((prev) => prev - 1)}
+              className="rounded-lg border border-primary/20 px-3 py-1.5 text-xs font-medium text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:text-white dark:hover:bg-primary sm:text-sm"
+            >
+              Previous
+            </button>
 
-          <span className="text-sm font-semibold text-primary dark:text-white">
-            Page {page} of {totalPages}
-          </span>
+            {pageItems.map((item, index) => (
+              <button
+                key={`${item}-${index}`}
+                disabled={item === "..."}
+                onClick={() => {
+                  if (typeof item === "number") {
+                    setPage(item);
+                  }
+                }}
+                className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all sm:text-sm ${
+                  item === page
+                    ? "border-primary bg-primary text-white ring-2 ring-[#FAFA33]/65"
+                    : item === "..."
+                      ? "cursor-default border-transparent bg-transparent text-slate-500"
+                      : "border-primary/20 bg-white text-primary hover:-translate-y-0.5 hover:border-primary hover:bg-primary/10 dark:border-white/15 dark:bg-slate-900/70 dark:text-white"
+                }`}
+              >
+                {item}
+              </button>
+            ))}
 
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
-            className="rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary disabled:opacity-40 dark:text-white"
-          >
-            Next
-          </button>
-
-        </div>
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage((prev) => prev + 1)}
+              className="rounded-lg border border-primary/20 px-3 py-1.5 text-xs font-medium text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:text-white dark:hover:bg-primary sm:text-sm"
+            >
+              Next
+            </button>
+          </motion.div>
+        )}
 
       </div>
-    </section>
+    </motion.section>
   );
 }

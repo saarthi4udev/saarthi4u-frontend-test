@@ -59,10 +59,10 @@
 }
 
 .closeButton:hover {
-  background: linear-gradient(135deg, #30d8c9 0%, #F5A623 100%);
+  background: linear-gradient(135deg, #30d8c9 0%, #FAFA33 100%);
   color: white;
   transform: rotate(90deg) scale(1.1);
-  border-color: #F5A623;
+  border-color: #FAFA33;
   box-shadow: 0 8px 20px rgba(48, 216, 201, 0.3);
 }
 
@@ -145,7 +145,7 @@
 .input:focus,
 .select:focus {
   outline: none;
-  border-color: #F5A623;
+  border-color: #FAFA33;
   box-shadow: 0 0 0 4px rgba(245, 166, 35, 0.15);
   background: #fffafb;
 }
@@ -163,7 +163,7 @@
 .select {
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23F5A623' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23FAFA33' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
@@ -172,7 +172,7 @@
 /* Submit Button */
 .submitButton {
   padding: 14px 20px;
-  background: linear-gradient(135deg, #F5A623 0%, #D4900E 100%);
+  background: linear-gradient(135deg, #FAFA33 0%, #D4900E 100%);
   color: #ffffff;
   border: none;
   border-radius: 10px;

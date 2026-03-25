@@ -100,7 +100,7 @@ const PostCard = ({ post, index }: { post: InstagramPost; index: number }) => {
   );
 };
 
-const InstagramSlider = ({ limit = 9 }: InstagramSliderProps) => {
+const InstagramSlider = ({ limit = 15 }: InstagramSliderProps) => {
   const [posts, setPosts] = useState<InstagramPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

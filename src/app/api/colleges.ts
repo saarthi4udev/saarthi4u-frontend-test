@@ -8,8 +8,10 @@ async function fetchAPI(endpoint: string) {
 
     if (!res.ok) return null;
 
-    const data = await res.json();
-    return data;
+    const json = await res.json();
+
+    return json?.data ?? null;
+
   } catch (err) {
     console.error("API ERROR:", err);
     return null;
@@ -19,9 +21,63 @@ async function fetchAPI(endpoint: string) {
 /* COLLEGE */
 
 // export const getAllColleges = () => fetchAPI("/college/all");
+export const getAllColleges = async (page: number = 1, limit: number = 8) => {
+  try {
+    const res = await fetch(`${BASE_URL}/college/all?page=${page}&limit=${limit}`, {
+      cache: "no-store",
+    });
 
-export const getAllColleges = (page: number = 1, limit: number = 4) =>
-  fetchAPI(`/college/all?page=${page}&limit=${limit}`);
+    if (!res.ok) return null;
+
+    const json = await res.json();
+
+    // ✅ return FULL response (no sanitization)
+    return json;
+
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return null;
+  }
+};
+
+
+export const getAllCollegeshomepage = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/college/all`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return null;
+
+    const json = await res.json();
+
+    // ✅ return FULL response (no sanitization)
+    return json;
+
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return null;
+  }
+};
+
+
+export const getCollegeCount = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/college/all?page=1&limit=1`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return 0;
+
+    const json = await res.json();
+
+    return json?.pagination?.totalItems || 0;
+
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return 0;
+  }
+};
 
 export const getCollegeBySlug = (slug: string) =>
   fetchAPI(`/college/${slug}`);
@@ -75,28 +131,24 @@ export const getFAQsByCollege = (collegeId: number) =>
 
 export const getCoursesWithFees = async (collegeId: number) => {
 
-  const courses = await getCoursesByCollege(collegeId);
+  const response = await getCoursesByCollege(collegeId);
+  const courses = response?.data?.Courses || [];
 
-  if (!courses || courses.length === 0) return [];
+  if (!Array.isArray(courses) || courses.length === 0) return [];
 
   const coursesWithFees = await Promise.all(
-
     courses.map(async (course: any) => {
-
       const fees = await getFeesByCourse(course.id);
 
       return {
         ...course,
         fees: fees || [],
       };
-
     })
-
   );
 
   return coursesWithFees;
 };
-
 
 
 /* GALLERY */
@@ -122,106 +174,3 @@ export const getPlacementsByCollege = (collegeId: number) =>
 export const getRecruitersByCollege = (collegeId: number) =>
   fetchAPI(`/recruiter/college/${collegeId}`);
 
-// /* GENERIC FETCH */
-
-// async function fetchData(url: string) {
-//   try {
-//     const res = await fetch(url, { cache: "no-store" });
-
-//     if (!res.ok) return [];
-
-//     const json = await res.json();
-
-//     return json?.data || [];
-//   } catch (error) {
-//     console.error(error);
-//     return [];
-//   }
-// }
-
-// /* COLLEGES */
-
-// export async function getAllColleges() {
-//   return fetchData(`/api/college/all`);
-// }
-
-// export async function getCollegeBySlug(slug: string) {
-//   try {
-//     const res = await fetch('/api/college/${slug}', {
-//       cache: "no-store",
-//     });
-
-//     if (!res.ok) return null;
-
-//     const json = await res.json();
-
-//     return json?.data ?? null;
-//   } catch {
-//     return null;
-//   }
-// }
-
-// /* COURSES */
-
-// export async function getCoursesByCollege(collegeId: number) {
-//   return fetchData('api/course/college/${collegeId}');
-// }
-
-// /* FEES */
-
-// export async function getFeesByCourse(courseId: number) {
-//   return fetchData('/api/fee/course/${courseId}');
-// }
-
-// /* ADMISSIONS */
-
-// export async function getAdmissionsByCollege(collegeId: number) {
-//   return fetchData('/api/admission/college/${collegeId}');
-// }
-
-// /* CUTOFF */
-
-// export async function getCutoffsByCollege(collegeId: number) {
-//   return fetchData('/api/cutoff/college/${collegeId}');
-// }
-
-// /* FACILITIES */
-
-// export async function getFacilitiesByCollege(collegeId: number) {
-//   return fetchData('/api/facility/college/${collegeId}');
-// }
-
-// /* FACULTY */
-
-// export async function getFacultiesByCollege(collegeId: number) {
-//   return fetchData('/api/faculty/college/${collegeId}');
-// }
-
-// /* FAQ */
-
-// export async function getFAQsByCollege(collegeId: number) {
-//   return fetchData('/api/faq/college/${collegeId}');
-// }
-
-// /* GALLERY */
-
-// export async function getGalleryByCollege(collegeId: number) {
-//   return fetchData('/api/gallery/college/${collegeId}');
-// }
-
-// /* REVIEWS */
-
-// export async function getReviewsByCollege(collegeId: number) {
-//   return fetchData('/api/review/college/${collegeId}');
-// }
-
-// /* PLACEMENTS */
-
-// export async function getPlacementsByCollege(collegeId: number) {
-//   return fetchData('/api/placement/college/${collegeId}');
-// }
-
-// /* RECRUITERS */
-
-// export async function getRecruitersByCollege(collegeId: number) {
-//   return fetchData('/api/recruiter/college/${collegeId}')}

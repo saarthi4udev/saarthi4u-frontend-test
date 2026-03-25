@@ -26,15 +26,15 @@ export default function HomeClient() {
 
   return (
     <>
-      <Hero />
-      <DiscoverMore />
-        <CareerCoaches />
-      <ExploreColleges />
-      <EducationalPartners />
-      <ResultsPromo />
-      <Testimonials />
-      <LeadershipCorner />
-      <InstagramSection />
+      <div className="site-reveal"><Hero /></div>
+      <div className="site-reveal"><DiscoverMore /></div>
+      <div className="site-reveal"><CareerCoaches /></div>
+      <div className="site-reveal"><ExploreColleges /></div>
+      <div className="site-reveal"><EducationalPartners /></div>
+      <div className="site-reveal"><ResultsPromo /></div>
+      <div className="site-reveal"><Testimonials /></div>
+      <div className="site-reveal"><LeadershipCorner /></div>
+      <div className="site-reveal"><InstagramSection /></div>
 
       {showDialog && (
         <UpdateProfileDialog onClose={() => setShowDialog(false)} />

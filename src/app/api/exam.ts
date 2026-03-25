@@ -30,17 +30,22 @@ export async function getAllExams(page = 1, limit = 1) {
 // Get exam by slug
 export async function getExamBySlug(slug: string) {
   try {
-    const exams = await getAllExams();
+    const res = await fetch(`${BASE_URL}/exam/${slug}`, {
+      cache: "no-store",
+    });
 
-    const exam = exams.find((e: any) => e.slug === slug);
+    if (!res.ok) {
+      throw new Error("Exam not found");
+    }
 
-    return exam || null;
+    const data = await res.json();
+
+    return data?.data || null;
   } catch (error) {
-    console.error("Error finding exam:", error);
+    console.error("Error fetching exam:", error);
     return null;
   }
 }
-
 
 /* ---------------- FORMAT FEE ---------------- */
 

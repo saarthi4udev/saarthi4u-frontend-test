@@ -39,24 +39,39 @@ const CollegeCard: React.FC<CollegeCardProps> = ({ college }) => {
     ? college.overview.replace(/<[^>]*>?/gm, "")
     : "No description available.";
 
+  const quickMeta = [
+    college.type ? { icon: "mdi:domain", label: college.type } : null,
+    college.establishedYear
+      ? { icon: "mdi:calendar", label: `Est. ${college.establishedYear}` }
+      : null,
+    college.affiliation
+      ? { icon: "mdi:school-outline", label: college.affiliation }
+      : null,
+  ].filter(Boolean) as Array<{ icon: string; label: string }>;
+
   return (
     <motion.div
       whileHover={{ y: -6 }}
       transition={{ duration: 0.25 }}
       className="
-        bg-white dark:bg-slate-900
-        border border-gray-200 dark:border-slate-700
-        rounded-2xl p-6
+        group relative overflow-hidden
+        rounded-[1.5rem]
+        border border-primary/10 dark:border-white/10
+        bg-white/95 dark:bg-slate-900/85
+        p-5 sm:p-6
         flex flex-col
-        shadow-sm hover:shadow-lg
-        transition
-        h-full min-h-[24rem]
+        shadow-[0_20px_44px_rgba(10,24,58,0.08)]
+        transition-all duration-300
+        hover:-translate-y-1 hover:border-secondary/35 hover:shadow-[0_26px_60px_rgba(10,24,58,0.14)]
+        h-full min-h-[23rem]
       "
     >
-      {/* Logo + Category */}
-      <div className="flex items-start justify-between mb-4">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#171e4c_0%,#30d8c9_100%)]" />
 
-        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-lg flex items-center justify-center overflow-hidden">
+      {/* Logo + Category */}
+      <div className="mb-4 flex items-start justify-between gap-3">
+
+        <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border border-primary/10 bg-white shadow-sm dark:border-white/10 dark:bg-slate-800">
 
           {college.logo ? (
             <Image
@@ -76,7 +91,7 @@ const CollegeCard: React.FC<CollegeCardProps> = ({ college }) => {
         </div>
 
         {college.Category?.name && (
-          <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary">
+          <span className="rounded-full border border-secondary/20 bg-secondary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary dark:text-secondary">
             {college.Category.name}
           </span>
         )}
@@ -84,55 +99,43 @@ const CollegeCard: React.FC<CollegeCardProps> = ({ college }) => {
       </div>
 
       {/* Name */}
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+      <h3 className="mb-2 line-clamp-2 text-[1.02rem] font-bold leading-6 text-primary dark:text-white">
         {college.name}
       </h3>
 
       {/* Location */}
-      <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-3">
+      <div className="mb-3 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-300">
         <Icon icon="mdi:map-marker-outline" width="16" height="16" />
-        <span>{location}</span>
+        <span className="line-clamp-1">{location}</span>
       </div>
 
-      {/* Type */}
-      {college.type && (
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mb-2">
-          <Icon icon="mdi:domain" width="16" height="16" />
-          <span>
-            Type: <span className="font-medium capitalize">{college.type}</span>
-          </span>
-        </div>
-      )}
-
-      {/* Established */}
-      {college.establishedYear && (
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mb-2">
-          <Icon icon="mdi:calendar" width="16" height="16" />
-          <span>Established: {college.establishedYear}</span>
-        </div>
-      )}
-
-      {/* Affiliation */}
-      {college.affiliation && (
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mb-3">
-          <Icon icon="mdi:school-outline" width="16" height="16" />
-          <span>{college.affiliation}</span>
+      {quickMeta.length > 0 && (
+        <div className="mb-3 flex flex-wrap gap-1.5">
+          {quickMeta.map((item) => (
+            <span
+              key={item.label}
+              className="inline-flex items-center gap-1 rounded-md border border-primary/10 bg-primary/5 px-2.5 py-1 text-[11px] font-semibold text-primary/90 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
+            >
+              <Icon icon={item.icon} width="13" height="13" className="text-secondary" />
+              <span className="line-clamp-1">{item.label}</span>
+            </span>
+          ))}
         </div>
       )}
 
       {/* Description */}
-      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 flex-grow">
+      <p className="flex-grow border-t border-primary/10 pt-3 text-sm leading-6 text-slate-500 dark:border-white/10 dark:text-slate-300 line-clamp-3">
         {cleanOverview}
       </p>
 
       {/* Explore Button */}
-      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-slate-700">
+      <div className="mt-5">
         <Link
           href={`/college/${college.slug}`}
-          className="flex items-center gap-2 text-primary hover:text-primary/80 text-sm font-semibold transition"
+          className="inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3.5 py-2 text-sm font-semibold text-primary transition-all hover:border-secondary/35 hover:bg-secondary/10 dark:border-white/10 dark:bg-white/5 dark:text-white"
         >
           <Icon icon="mdi:eye-outline" width="18" height="18" />
-          Explore
+          View College
           <Icon icon="solar:alt-arrow-right-linear" width="14" height="14" />
         </Link>
       </div>

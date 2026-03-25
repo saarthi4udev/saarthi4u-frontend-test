@@ -5,7 +5,22 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useMemo } from "react";
-import { Testimonial } from "@/app/api/testimonials";
+import { useEffect } from "react";
+import { getAllTestimonials } from "@/app/api/testimonials";
+import type { Testimonial } from "@/types/testimonial";
+import { DEMO_TESTIMONIALS } from "@/types/testimonial";
+
+function mapApiToTestimonial(item: any, fallbackId: number): Testimonial {
+  return {
+    id: String(item?._id || item?.id || fallbackId),
+    name: item?.name || item?.fullName || "Student",
+    role: item?.role || "Student",
+    city: item?.city || "",
+    quote: item?.message || item?.quote || "Great mentoring and support.",
+    rating: Number(item?.rating || 5),
+    avatarUrl: item?.avatarUrl || item?.image || "/avatar.png",
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Star rating helper
@@ -21,8 +36,8 @@ function StarRating({ rating, size = "md" }: Readonly<{ rating: number; size?: "
             star <= Math.floor(rating)
               ? "ph:star-fill"
               : star - 0.5 <= rating
-              ? "ph:star-half-fill"
-              : "ph:star"
+                ? "ph:star-half-fill"
+                : "ph:star"
           }
           className={`${cls} text-amber-400`}
         />
@@ -89,6 +104,10 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
 // Stats bar
 // ---------------------------------------------------------------------------
 function StatsBar({ testimonials }: { testimonials: Testimonial[] }) {
+  if (testimonials.length === 0) {
+    return null;
+  }
+
   const avg = testimonials.reduce((s, t) => s + t.rating, 0) / testimonials.length;
   const fiveStarCount = testimonials.filter((t) => t.rating === 5).length;
 
@@ -132,8 +151,28 @@ export default function TestimonialsPage({
 
   // Filter state: 0 = all
   const [activeFilter, setActiveFilter] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
+  const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(
+    testimonials && testimonials.length > 0 ? testimonials : DEMO_TESTIMONIALS
+  );
 
-  const testimonialsList = testimonials ?? [];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getAllTestimonials();
+        const dataArray = Array.isArray(res) ? res : (res as any)?.data || [];
+        if (dataArray.length > 0) {
+          const mapped = dataArray.map((item: any, index: number) =>
+            mapApiToTestimonial(item, index + 1)
+          );
+          setTestimonialsList(mapped);
+        }
+      } catch {
+        // Keep current list if API fails
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const filtered = useMemo(
     () =>
@@ -236,22 +275,20 @@ export default function TestimonialsPage({
               <button
                 key={opt.value}
                 onClick={() => setActiveFilter(opt.value as 0 | 1 | 2 | 3 | 4 | 5)}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-13 font-semibold transition-all duration-200 ${
-                  activeFilter === opt.value
+                className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-13 font-semibold transition-all duration-200 ${activeFilter === opt.value
                     ? "border-secondary bg-secondary text-white shadow-sm"
                     : "border-border bg-white text-midnight_text hover:border-secondary/40 hover:bg-secondary/8 dark:border-dark_border dark:bg-midnight_text dark:text-white/80"
-                }`}
+                  }`}
               >
                 {opt.value !== 0 && (
                   <Icon icon="ph:star-fill" className="h-3 w-3 text-amber-400" />
                 )}
                 {opt.label}
                 <span
-                  className={`ml-0.5 rounded-full px-1.5 py-0.5 text-11 ${
-                    activeFilter === opt.value
+                  className={`ml-0.5 rounded-full px-1.5 py-0.5 text-11 ${activeFilter === opt.value
                       ? "bg-white/25 text-white"
                       : "bg-secondary/10 text-secondary dark:bg-secondary/15"
-                  }`}
+                    }`}
                 >
                   {opt.value === 0
                     ? testimonialsList.length

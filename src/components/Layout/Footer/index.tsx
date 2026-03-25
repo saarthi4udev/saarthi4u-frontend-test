@@ -8,8 +8,19 @@ const Footer = () => {
 
   return (
     <footer className="relative overflow-hidden bg-gradient-to-b from-darkheader via-darkmode to-darkheader pt-16">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-24 top-12 h-56 w-56 rounded-full bg-secondary/12 blur-3xl" />
+        <div className="absolute -right-20 top-24 h-44 w-44 rounded-full bg-accent/10 blur-3xl" />
+      </div>
 
       <div className="container relative mx-auto px-4 lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md)">
+        <div className="site-glass-card mb-6 rounded-2xl border border-dark_border/80 px-4 py-3 text-center sm:text-left">
+          <p className="text-13 font-semibold tracking-[0.14em] text-secondary uppercase">Your Journey, Our Passion</p>
+          <p className="mt-1 text-16 font-semibold text-white sm:text-18">
+            Build your future with the right college and the right career at the right time.
+          </p>
+        </div>
+
         <div className="mb-10 grid gap-4 rounded-2xl border border-dark_border/90 bg-darkmode/70 p-4 shadow-[0_12px_34px_rgba(0,0,0,0.32)] backdrop-blur-sm sm:grid-cols-2 lg:grid-cols-4 lg:p-5">
           <div className="flex items-start gap-3">
             <Icon icon="weui:location-outlined" className="mt-0.5 text-2xl text-secondary" />
@@ -24,7 +35,7 @@ const Footer = () => {
           >
             <Icon icon="majesticons:phone-retro-line" className="mt-0.5 text-2xl text-secondary" />
             <span className="text-14 text-foottext transition-colors duration-200 group-hover:text-white">
-              +91 9930718925
+              +91  9958989150
             </span>
           </Link>
 
@@ -70,7 +81,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mb-12 grid grid-cols-12 gap-8 border-b border-dark_border pb-12">
+        <div className="mb-12 grid grid-cols-12 gap-7 border-b border-dark_border pb-12 sm:gap-8">
           <div className="col-span-12 lg:col-span-4">
             <Link href="/" className="mb-4 inline-block">
               <Image
@@ -85,6 +96,10 @@ const Footer = () => {
             <p className="mb-5 max-w-md text-16 text-foottext">
               AI-powered guidance platform helping students discover colleges,
               courses, scholarships, and exams with confidence.
+            </p>
+
+            <p className="site-gradient-title mb-5 text-18 font-bold sm:text-20">
+              From confusion to confident admission decisions.
             </p>
 
             <div className="mb-5 flex flex-wrap gap-2">
@@ -116,7 +131,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="col-span-6 sm:col-span-4 lg:col-span-2">
+          <div className="col-span-12 sm:col-span-4 lg:col-span-2">
             <h4 className="mb-4 text-18 font-semibold text-white">Features</h4>
             <ul className="space-y-2.5">
               {footerLinks.features.map((item, i) => (
@@ -132,7 +147,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-span-6 sm:col-span-4 lg:col-span-2">
+          <div className="col-span-12 sm:col-span-4 lg:col-span-2">
             <h4 className="mb-4 text-18 font-semibold text-white">Resources</h4>
             <ul className="space-y-2.5">
               {footerLinks.resources.map((item, i) => (
@@ -148,7 +163,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-span-6 sm:col-span-4 lg:col-span-2">
+          <div className="col-span-12 sm:col-span-4 lg:col-span-2">
             <h4 className="mb-4 text-18 font-semibold text-white">Platform</h4>
             <ul className="space-y-2.5">
               {footerLinks.platform.map((item, i) => (
@@ -164,10 +179,11 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-span-12 sm:col-span-8 lg:col-span-2">
-            <p className="mb-4 text-18 font-semibold text-white">Get App</p>
-            <div className="space-y-3">
-              <Link href="/contact" className="inline-block transition-transform duration-200 hover:-translate-y-0.5">
+          <div className="col-span-12 lg:col-span-2">
+            <div className="mx-auto max-w-[180px] text-center lg:mx-0 lg:max-w-none lg:text-left">
+              <p className="mb-4 text-18 font-semibold text-white">Get App</p>
+              <div className="space-y-3">
+                <Link href="/contact" className="inline-block transition-transform duration-200 hover:-translate-y-0.5">
                 <Image
                   src="/images/footer/play.png"
                   alt="Google Play"
@@ -176,8 +192,8 @@ const Footer = () => {
                   sizes="140px"
                   className="h-auto w-auto rounded-lg opacity-90 transition-opacity duration-200 hover:opacity-100"
                 />
-              </Link>
-              <Link href="/contact" className="inline-block transition-transform duration-200 hover:-translate-y-0.5">
+                </Link>
+                <Link href="/contact" className="inline-block transition-transform duration-200 hover:-translate-y-0.5">
                 <Image
                   src="/images/footer/store.png"
                   alt="App Store"
@@ -186,9 +202,10 @@ const Footer = () => {
                   sizes="140px"
                   className="h-auto w-auto rounded-lg opacity-90 transition-opacity duration-200 hover:opacity-100"
                 />
-              </Link>
+                </Link>
+              </div>
+              <p className="mt-3 text-13 text-foottext">Coming soon on Android & iOS</p>
             </div>
-            <p className="mt-3 text-13 text-foottext">Coming soon on Android & iOS</p>
           </div>
         </div>
 

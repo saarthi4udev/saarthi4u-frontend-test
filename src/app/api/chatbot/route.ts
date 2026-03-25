@@ -1,9 +1,9 @@
 
 import { NextResponse } from "next/server";
-import { scholarships } from "@/app/api/scholarshipDiscovery";
 import { footerLinks } from "@/app/api/data";
 import { headerData } from "@/components/Layout/Header/Navigation/menuData";
-import { exams } from "../examDiscovery";
+import { getAllExams } from "@/app/api/exam";
+import { getAllScholarships } from "@/app/api/Scholarship";
 
 type Intent =
   | "general"
@@ -134,57 +134,86 @@ const navigationEntries: KnowledgeEntry[] = navigationLinks.map((link) => ({
   searchable: `${link.label} ${link.href}`,
 }));
 
-const examEntries: KnowledgeEntry[] = exams.flatMap((exam) => {
-  const examOverview: KnowledgeEntry = {
-    question: exam.name,
-    answer: `${exam.name}: ${exam.description}`,
-    links: [
-      { label: "Explore Exams", href: "/exam" },
-      { label: "Related Colleges", href: "/college" },
-    ],
-    intent: "exams",
-    searchable: `${exam.name} ${exam.category} ${exam.stream} ${exam.description}`,
-  };
+async function getExamEntries(): Promise<KnowledgeEntry[]> {
+  const res = await getAllExams(1, 500);
+  const exams = Array.isArray(res?.data) ? res.data : [];
 
-  const faqs = exam.faqs.map((faq) => ({
-    question: faq.question,
-    answer: `${faq.answer} (${exam.name})`,
-    links: [
-      { label: `${exam.name} Details`, href: `/exam/${exam.slug}` },
-      { label: "Explore Exams", href: "/exam" },
-    ],
-    intent: "exams" as Intent,
-    searchable: `${faq.question} ${faq.answer} ${exam.name} ${exam.category}`,
-  }));
+  return exams.flatMap((exam: any) => {
+    const name = (exam?.name ?? "").toString();
+    const slug = (exam?.slug ?? "").toString();
+    const description = (exam?.overview ?? exam?.description ?? "").toString();
+    const category = (exam?.category ?? "").toString();
+    const stream = (exam?.stream ?? "").toString();
 
-  return [examOverview, ...faqs];
-});
+    const examOverview: KnowledgeEntry = {
+      question: name,
+      answer: `${name}: ${description}`,
+      links: [
+        { label: "Explore Exams", href: "/exam" },
+        { label: "Related Colleges", href: "/college" },
+      ],
+      intent: "exams",
+      searchable: `${name} ${category} ${stream} ${description}`,
+    };
 
-const scholarshipEntries: KnowledgeEntry[] = scholarships.flatMap((item) => {
-  const overview: KnowledgeEntry = {
-    question: item.name,
-    answer: `${item.name}: ${item.shortDescription}`,
-    links: [
-      { label: "Explore Scholarships", href: "/scholarships" },
-      { label: "Eligibility Help", href: "/help" },
-    ],
-    intent: "finance",
-    searchable: `${item.name} ${item.shortDescription} ${item.provider} ${item.level} ${item.stream}`,
-  };
+    const examFaqs = Array.isArray(exam?.faq) ? exam.faq : [];
+    const faqs = examFaqs
+      .filter((faq: any) => faq?.question && faq?.answer)
+      .map((faq: any) => ({
+        question: faq.question,
+        answer: `${faq.answer} (${name})`,
+        links: [
+          { label: `${name} Details`, href: `/exam/${slug}` },
+          { label: "Explore Exams", href: "/exam" },
+        ],
+        intent: "exams" as Intent,
+        searchable: `${faq.question} ${faq.answer} ${name} ${category}`,
+      }));
 
-  const faqs = item.faqs.map((faq) => ({
-    question: faq.question,
-    answer: `${faq.answer} (${item.name})`,
-    links: [
-      { label: `${item.name} Details`, href: `/scholarships/${item.slug}` },
-      { label: "Explore Scholarships", href: "/scholarships" },
-    ],
-    intent: "finance" as Intent,
-    searchable: `${faq.question} ${faq.answer} ${item.name} ${item.provider}`,
-  }));
+    return [examOverview, ...faqs];
+  });
+}
 
-  return [overview, ...faqs];
-});
+async function getScholarshipEntries(): Promise<KnowledgeEntry[]> {
+  const res = await getAllScholarships(1, 500);
+  const scholarships = Array.isArray(res?.data) ? res.data : [];
+
+  return scholarships.flatMap((item: any) => {
+    const name = (item?.name ?? "").toString();
+    const slug = (item?.slug ?? "").toString();
+    const shortDescription = (item?.overview ?? item?.shortDescription ?? "").toString();
+    const provider = (item?.provider ?? "").toString();
+    const level = (item?.level ?? "").toString();
+    const stream = (item?.stream ?? "").toString();
+
+    const overview: KnowledgeEntry = {
+      question: name,
+      answer: `${name}: ${shortDescription}`,
+      links: [
+        { label: "Explore Scholarships", href: "/scholarships" },
+        { label: "Eligibility Help", href: "/help" },
+      ],
+      intent: "finance",
+      searchable: `${name} ${shortDescription} ${provider} ${level} ${stream}`,
+    };
+
+    const scholarshipFaqs = Array.isArray(item?.faq) ? item.faq : [];
+    const faqs = scholarshipFaqs
+      .filter((faq: any) => faq?.question && faq?.answer)
+      .map((faq: any) => ({
+        question: faq.question,
+        answer: `${faq.answer} (${name})`,
+        links: [
+          { label: `${name} Details`, href: `/scholarships/${slug}` },
+          { label: "Explore Scholarships", href: "/scholarships" },
+        ],
+        intent: "finance" as Intent,
+        searchable: `${faq.question} ${faq.answer} ${name} ${provider}`,
+      }));
+
+    return [overview, ...faqs];
+  });
+}
 
 const coreEntries: KnowledgeEntry[] = [
   {
@@ -219,7 +248,7 @@ const coreEntries: KnowledgeEntry[] = [
   },
 ];
 
-const knowledgeBase: KnowledgeEntry[] = [...coreEntries, ...navigationEntries, ...examEntries, ...scholarshipEntries];
+const baseKnowledgeEntries: KnowledgeEntry[] = [...coreEntries, ...navigationEntries];
 
 function scoreEntry(query: string, tokens: string[], entry: KnowledgeEntry) {
   const entryText = normalize(entry.searchable);
@@ -238,7 +267,7 @@ function scoreEntry(query: string, tokens: string[], entry: KnowledgeEntry) {
   return score;
 }
 
-function findBestKnowledgeReply(message: string): BotReply | null {
+function findBestKnowledgeReply(message: string, knowledgeBase: KnowledgeEntry[]): BotReply | null {
   const normalized = normalize(message);
   const tokens = tokenize(message);
 
@@ -348,7 +377,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const knowledgeReply = findBestKnowledgeReply(message);
+    const [examEntries, scholarshipEntries] = await Promise.all([
+      getExamEntries(),
+      getScholarshipEntries(),
+    ]);
+    const knowledgeBase = [...baseKnowledgeEntries, ...examEntries, ...scholarshipEntries];
+
+    const knowledgeReply = findBestKnowledgeReply(message, knowledgeBase);
     const reply = knowledgeReply ?? fallbackReply(message, lastIntent);
 
     return NextResponse.json(reply, { status: 200 });

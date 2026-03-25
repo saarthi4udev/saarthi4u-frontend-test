@@ -1,12 +1,4 @@
-export interface Testimonial {
-  id: string;
-  name: string;
-  role: string;
-  city?: string;
-  quote: string;
-  rating: number;
-  avatarUrl: string;
-}
+import type { Testimonial } from "@/types/testimonial";
 
 const base = process.env.NEXT_PUBLIC_API_URL;
 const BASE_URL = base + "/testimonial";

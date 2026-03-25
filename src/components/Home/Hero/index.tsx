@@ -137,17 +137,37 @@ const Hero = () => {
                 <Icon icon="ph:sparkle-fill" className="text-secondary text-sm" />
               </motion.div>
 
-              <h1 className="mb-4 text-28 leading-tight font-extrabold text-midnight_text dark:text-white sm:text-35 md:text-40 lg:text-50">
-                Build your future with the
-                <span className="mt-1 block bg-linear-to-r from-secondary via-secondary/80 to-accent bg-clip-text text-transparent">
-                  right college and course choices
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.08 }}
+                className="mb-2 inline-flex items-center rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-12 font-black tracking-[0.14em] text-secondary uppercase"
+              >
+                Your Journey, Our Passion
+              </motion.p>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: 0.12 }}
+                className="mb-4 text-28 leading-tight font-extrabold text-midnight_text dark:text-white sm:text-35 md:text-40 lg:text-50"
+              >
+                Build Your Future with the
+                <span className="mt-1 block bg-linear-to-r from-secondary via-accent to-secondary bg-[length:200%_200%] bg-clip-text text-transparent">
+                  Right College, Right Career at Right Time.
                 </span>
-              </h1>
+              </motion.h1>
+
+              <motion.div
+                animate={{ opacity: [0.4, 1, 0.4], scaleX: [0.92, 1, 0.92] }}
+                transition={{ duration: 2.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                className="mb-4 h-1.5 w-full max-w-[240px] rounded-full bg-linear-to-r from-secondary/35 via-accent/65 to-secondary/35"
+              />
             </div>
 
             <p className="max-w-2xl text-14 text-muted dark:text-white/70 sm:text-16 lg:text-18">
-              Saarthi4U helps students and families discover options, compare outcomes,
-              and move from confusion to confident admission decisions.
+              Saarthi4u helps students and parents discover options and move from
+              confusion to confident admission decisions.
             </p>
 
             <div className="mt-7 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 lg:gap-4">

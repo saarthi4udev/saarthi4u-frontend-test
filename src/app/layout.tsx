@@ -1,4 +1,4 @@
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Sora } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
@@ -11,6 +11,11 @@ import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 
 const dmsans = DM_Sans({ subsets: ["latin"] });
+const sora = Sora({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["600", "700", "800"],
+});
 
 export default function RootLayout({
   children,
@@ -19,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={dmsans.className}>
+      <body className={`${dmsans.className} ${sora.variable} site-body`}>
         <AuthProvider>
           <ThemeProvider
             attribute="class"
@@ -29,7 +34,7 @@ export default function RootLayout({
             <Header />
             <Toaster position="top-center" reverseOrder={false} />
             {/* offset for fixed header */}
-            <main className="min-w-0 overflow-x-clip pt-[4.5rem] sm:pt-20">{children}</main>
+            <main className="site-main min-w-0 overflow-x-clip pt-[4.5rem] sm:pt-20">{children}</main>
             <Footer />
             <AIChatbot />
             <WhatsAppFloat />
