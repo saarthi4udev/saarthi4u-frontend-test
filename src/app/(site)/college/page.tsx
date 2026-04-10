@@ -1,4 +1,4 @@
-import CollegesSection from "@/components/Colleges";
+import NationalColleges from "@/components/Colleges/NationalColleges";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <CollegesSection />;
+  return <NationalColleges />;
 }

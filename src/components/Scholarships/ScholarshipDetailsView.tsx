@@ -1,167 +1,3 @@
-// "use client";
-
-// import Link from "next/link";
-// import { Icon } from "@iconify/react";
-// import { ScholarshipItem } from "@/types/scholarshipDiscovery";
-// import { College } from "@/types/college";
-// import { formatScholarshipAmount } from "@/app/api/scholarshipDiscovery";
-// import CollegeCard from "@/components/Home/ExploreColleges/CollegeCard";
-
-// type Props = {
-//   scholarship: ScholarshipItem;
-//   relatedColleges: College[];
-// };
-
-// export default function ScholarshipDetailsView({ scholarship, relatedColleges }: Readonly<Props>) {
-//   return (
-//   <section className="py-14 min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-//   <div className="container mx-auto px-4 sm:px-6">
-
-//     {/* BREADCRUMB */}
-//     <div className="flex flex-wrap items-center gap-2 text-sm mb-8 text-gray-500 dark:text-gray-400">
-//       <Link href="/scholarships" className="hover:text-primary transition-colors">
-//         Scholarships
-//       </Link>
-//       <Icon icon="mdi:chevron-right" />
-//       <span className="text-gray-900 dark:text-white font-medium">
-//         {scholarship.name}
-//       </span>
-//     </div>
-
-//     {/* HERO CARD */}
-//     <div className="
-//       rounded-2xl border
-//       bg-white dark:bg-slate-900
-//       border-gray-200 dark:border-slate-800
-//       p-6 md:p-8 mb-8
-//       shadow-sm transition-colors
-//     ">
-//       <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-//         <h1 className="text-4xl font-semibold max-w-4xl text-gray-900 dark:text-white">
-//           {scholarship.name}
-//         </h1>
-
-//         {scholarship.popular && (
-//           <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 h-fit mt-1">
-//             Popular
-//           </span>
-//         )}
-//       </div>
-
-//       <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-4xl">
-//         {scholarship.shortDescription}
-//       </p>
-
-//       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 text-sm">
-//         {[
-//           { label: "Type", value: scholarship.scholarshipType },
-//           { label: "Provider", value: scholarship.provider },
-//           { label: "Level", value: scholarship.level },
-//           { label: "Funding", value: scholarship.amountType },
-//           { label: "Amount", value: formatScholarshipAmount(scholarship.amountRange) },
-//           { label: "Deadline", value: scholarship.deadlineMonth },
-//         ].map((item) => (
-//           <div
-//             key={item.label}
-//             className="rounded-xl border border-gray-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-800 transition-colors"
-//           >
-//             <p className="text-gray-500 dark:text-gray-400 text-xs">
-//               {item.label}
-//             </p>
-//             <p className="font-medium text-gray-900 dark:text-white mt-1">
-//               {item.value}
-//             </p>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-
-//     {/* MAIN GRID */}
-//     <div className="grid lg:grid-cols-3 gap-8">
-
-//       {/* LEFT CONTENT */}
-//       <div className="lg:col-span-2 space-y-8">
-
-//         {[
-//           {
-//             title: "Eligibility",
-//             content: (
-//               <ul className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
-//                 <li><span className="font-medium text-gray-900 dark:text-white">Education:</span> {scholarship.eligibility.education.join(", ")}</li>
-//                 <li><span className="font-medium text-gray-900 dark:text-white">Minimum Marks:</span> {scholarship.eligibility.minPercentage}</li>
-//                 <li><span className="font-medium text-gray-900 dark:text-white">Family Income:</span> {scholarship.eligibility.familyIncome}</li>
-//                 <li><span className="font-medium text-gray-900 dark:text-white">State Quota:</span> {scholarship.eligibility.stateQuota}</li>
-//                 <li><span className="font-medium text-gray-900 dark:text-white">Additional:</span> {scholarship.eligibility.additional.join(", ")}</li>
-//               </ul>
-//             ),
-//           },
-//           {
-//             title: "Required Documents",
-//             content: (
-//               <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-//                 {scholarship.requiredDocuments.map((doc) => (
-//                   <li key={doc} className="flex items-start gap-2">
-//                     <Icon icon="mdi:file-document-outline" className="w-4 h-4 text-primary mt-0.5" />
-//                     <span>{doc}</span>
-//                   </li>
-//                 ))}
-//               </ul>
-//             ),
-//           },
-//         ].map((section) => (
-//           <div
-//             key={section.title}
-//             className="rounded-2xl border border-gray-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-900 transition-colors"
-//           >
-//             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-//               {section.title}
-//             </h2>
-//             {section.content}
-//           </div>
-//         ))}
-
-//       </div>
-
-//       {/* RIGHT SIDEBAR */}
-//       <aside className="space-y-6">
-//         <div className="rounded-2xl border border-gray-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-900 transition-colors">
-//           <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-//             Quick Facts
-//           </h3>
-
-//           <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-//             <li><span className="font-medium text-gray-900 dark:text-white">Provider Type:</span> {scholarship.providerType}</li>
-//             <li><span className="font-medium text-gray-900 dark:text-white">Application Fee:</span> ₹{scholarship.applicationFee}</li>
-//             <li><span className="font-medium text-gray-900 dark:text-white">Mode:</span> {scholarship.mode}</li>
-//             <li><span className="font-medium text-gray-900 dark:text-white">Renewable:</span> {scholarship.renewable ? "Yes" : "No"}</li>
-//             <li><span className="font-medium text-gray-900 dark:text-white">Applicable States:</span> {scholarship.applicableStates.join(", ")}</li>
-//           </ul>
-//         </div>
-//       </aside>
-
-//     </div>
-
-//     {/* RELATED COLLEGES */}
-//     {relatedColleges.length > 0 && (
-//       <div className="mt-12">
-//         <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
-//           Related <span className="text-primary">Colleges</span>
-//         </h2>
-
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-//           {relatedColleges.map((college) => (
-//             <CollegeCard key={college.id} college={college} />
-//           ))}
-//         </div>
-//       </div>
-//     )}
-
-//   </div>
-// </section>
-//   );
-// }
-
-
 "use client";
 
 import Link from "next/link";
@@ -173,186 +9,52 @@ type Props = {
   relatedColleges: any[];
 };
 
-export default function ScholarshipDetailsView({
-  scholarship,
-  relatedColleges,
-}: Props) {
-  return (
-    <section className="py-14 min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-      <div className="container mx-auto px-4 sm:px-6">
+/* ---------------- HELPERS ---------------- */
 
-        {/* BREADCRUMB */}
-        <div className="flex flex-wrap items-center gap-2 text-sm mb-8 text-gray-500 dark:text-gray-400">
-          <Link href="/scholarships" className="hover:text-primary transition-colors">
-            Scholarships
-          </Link>
+function formatDate(value?: string) {
+  if (!value) return "TBA";
 
-          <Icon icon="mdi:chevron-right" />
+  const date = new Date(value);
 
-          <span className="text-gray-900 dark:text-white font-medium">
-            {scholarship.name}
-          </span>
-        </div>
+  if (Number.isNaN(date.getTime())) return value;
 
-        {/* HERO CARD */}
-        <div className="rounded-2xl border bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 p-6 md:p-8 mb-8 shadow-sm">
-
-          <h1 className="text-4xl font-semibold text-gray-900 dark:text-white mb-4">
-            {scholarship.name}
-          </h1>
-
-          <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-4xl">
-            {scholarship.overview}
-          </p>
-
-          {/* INFO GRID */}
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 text-sm">
-
-            <Info label="Type" value={scholarship.scholarshipType} />
-            <Info label="Provider" value={scholarship.provider} />
-            <Info label="Level" value={scholarship.level} />
-            <Info label="Amount" value={scholarship.amount} />
-            <Info label="Application Mode" value={scholarship.applicationMode} />
-            <Info label="Website" value={scholarship.officialWebsite} />
-
-          </div>
-
-        </div>
-
-        {/* MAIN GRID */}
-        <div className="grid lg:grid-cols-3 gap-8">
-
-          {/* LEFT CONTENT */}
-          <div className="lg:col-span-2 space-y-8">
-
-            {/* Eligibility */}
-            <Card title="Eligibility">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {scholarship.eligibility}
-              </p>
-            </Card>
-
-            {/* Benefits */}
-            <Card title="Benefits">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {scholarship.benefits}
-              </p>
-            </Card>
-
-            {/* Application Process */}
-            <Card title="Application Process">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {scholarship.applicationProcess}
-              </p>
-            </Card>
-
-            {/* Documents Required */}
-            <Card title="Documents Required">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {scholarship.documentsRequired}
-              </p>
-            </Card>
-
-            {/* Selection Process */}
-            <Card title="Selection Process">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {scholarship.selectionProcess}
-              </p>
-            </Card>
-
-            {/* Renewal Process */}
-            <Card title="Renewal Process">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {scholarship.renewalProcess}
-              </p>
-            </Card>
-
-          </div>
-
-          {/* RIGHT SIDEBAR */}
-          <aside className="space-y-6">
-
-            {/* Important Dates */}
-            <Card title="Important Dates">
-
-              <DateItem
-                label="Application Start"
-                value={scholarship.importantDates?.applicationStart}
-              />
-
-              <DateItem
-                label="Application End"
-                value={scholarship.importantDates?.applicationEnd}
-              />
-
-              <DateItem
-                label="Result Date"
-                value={scholarship.importantDates?.resultDate}
-              />
-
-            </Card>
-
-            {/* Official Website */}
-            <Card title="Official Website">
-              <a
-                href={scholarship.officialWebsite}
-                target="_blank"
-                className="text-primary underline text-sm"
-              >
-                Visit Official Website
-              </a>
-            </Card>
-
-          </aside>
-
-        </div>
-
-        {/* RELATED COLLEGES */}
-        {relatedColleges.length > 0 && (
-          <div className="mt-12">
-
-            <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
-              Related <span className="text-primary">Colleges</span>
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-              {relatedColleges.map((college) => (
-                <CollegeCard key={college.id} college={college} />
-              ))}
-
-            </div>
-
-          </div>
-        )}
-
-      </div>
-    </section>
-  );
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
-/* ---------------- COMPONENTS ---------------- */
+function sectionText(value: unknown, fallback: string) {
+  if (typeof value === "string" && value.trim()) return value;
+  if (Array.isArray(value) && value.length > 0) return value.join(", ");
+  return fallback;
+}
 
-function Card({ title, children }: any) {
+/* ---------------- UI COMPONENTS ---------------- */
+
+function StatItem({ icon, label, value }: any) {
   return (
-    <div className="rounded-2xl border border-gray-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-900">
-      <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-        {title}
-      </h2>
-      {children}
+    <div className="rounded-2xl border border-primary/10 bg-white/90 p-4 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
+      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+        <Icon icon={icon} className="h-4 w-4 text-secondary" />
+        {label}
+      </p>
+      <p className="mt-2 text-sm font-semibold text-primary dark:text-white">
+        {value || "-"}
+      </p>
     </div>
   );
 }
 
-function Info({ label, value }: any) {
+function DetailCard({ title, text }: any) {
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-800">
-      <p className="text-gray-500 dark:text-gray-400 text-xs">
-        {label}
-      </p>
-
-      <p className="font-medium text-gray-900 dark:text-white mt-1">
-        {value || "-"}
+    <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] dark:border-white/10 dark:bg-slate-900/80">
+      <h3 className="text-24 font-extrabold text-primary dark:text-white">
+        {title}
+      </h3>
+      <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+        {text}
       </p>
     </div>
   );
@@ -360,16 +62,141 @@ function Info({ label, value }: any) {
 
 function DateItem({ label, value }: any) {
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-slate-700 p-3 mb-2">
-
-      <p className="font-medium text-gray-900 dark:text-white">
+    <div className="rounded-xl border border-primary/10 bg-white/85 p-4 dark:border-white/10 dark:bg-slate-950/70">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
         {label}
       </p>
-
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-        {value || "TBA"}
+      <p className="mt-2 text-sm font-semibold text-primary dark:text-white">
+        {formatDate(value)}
       </p>
-
     </div>
+  );
+}
+
+/* ---------------- MAIN ---------------- */
+
+export default function ScholarshipDetailsView({
+  scholarship,
+  relatedColleges,
+}: Props) {
+  return (
+    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f5fbff_0%,#ffffff_34%,#f0fdfa_100%)] py-16 dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_40%,#05111b_100%)]">
+      
+      {/* BACKGROUND EFFECT */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[36rem]">
+        <div className="absolute left-[-6rem] top-10 h-72 w-72 rounded-full bg-secondary/20 blur-3xl" />
+        <div className="absolute right-[-4rem] top-8 h-80 w-80 rounded-full bg-primary/15 blur-3xl" />
+      </div>
+
+      <div className="container relative mx-auto px-4 sm:px-6">
+
+        {/* BREADCRUMB */}
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+          <Link href="/scholarships" className="hover:text-primary">
+            Scholarships
+          </Link>
+          <Icon icon="mdi:chevron-right" />
+          <span className="font-semibold text-primary dark:text-white">
+            {scholarship.name}
+          </span>
+        </div>
+
+        {/* HERO */}
+        <div className="mt-6 rounded-[2rem] border border-primary/10 bg-white/85 p-6 shadow-[0_30px_80px_rgba(10,24,58,0.10)] dark:border-white/10 dark:bg-slate-900/80">
+          
+          <h1 className="text-35 font-extrabold text-primary dark:text-white">
+            {scholarship.name}
+          </h1>
+
+          <p className="mt-4 text-slate-600 dark:text-slate-300 max-w-4xl">
+            {sectionText(
+              scholarship.overview,
+              "Scholarship details will be updated soon."
+            )}
+          </p>
+
+          {/* STATS */}
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <StatItem icon="mdi:tag-outline" label="Type" value={scholarship.scholarshipType} />
+            <StatItem icon="mdi:office-building-outline" label="Provider" value={scholarship.provider} />
+            <StatItem icon="mdi:school-outline" label="Level" value={scholarship.level} />
+            <StatItem icon="mdi:currency-inr" label="Amount" value={scholarship.amount} />
+            <StatItem icon="mdi:application-outline" label="Mode" value={scholarship.applicationMode} />
+            <StatItem icon="mdi:web" label="Website" value={scholarship.officialWebsite} />
+          </div>
+        </div>
+
+        {/* CONTENT */}
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1.5fr_0.9fr]">
+
+          {/* LEFT */}
+          <div className="space-y-6">
+            <DetailCard title="Eligibility" text={sectionText(scholarship.eligibility, "Details coming soon.")} />
+            <DetailCard title="Benefits" text={sectionText(scholarship.benefits, "Details coming soon.")} />
+            <DetailCard title="Application Process" text={sectionText(scholarship.applicationProcess, "Details coming soon.")} />
+            <DetailCard title="Documents Required" text={sectionText(scholarship.documentsRequired, "Details coming soon.")} />
+            <DetailCard title="Selection Process" text={sectionText(scholarship.selectionProcess, "Details coming soon.")} />
+            <DetailCard title="Renewal Process" text={sectionText(scholarship.renewalProcess, "Details coming soon.")} />
+          </div>
+
+          {/* RIGHT */}
+          <aside className="space-y-6">
+
+            {/* DATES */}
+            <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 dark:border-white/10 dark:bg-slate-900/80">
+              <h3 className="text-24 font-extrabold text-primary dark:text-white">
+                Important Dates
+              </h3>
+
+              <div className="mt-4 space-y-3">
+                <DateItem label="Application Start" value={scholarship.importantDates?.applicationStart} />
+                <DateItem label="Application End" value={scholarship.importantDates?.applicationEnd} />
+                <DateItem label="Result Date" value={scholarship.importantDates?.resultDate} />
+              </div>
+            </div>
+
+            {/* WEBSITE */}
+            <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 dark:border-white/10 dark:bg-slate-900/80">
+              <h3 className="text-24 font-extrabold text-primary dark:text-white">
+                Official Website
+              </h3>
+
+              {scholarship.officialWebsite ? (
+                <a
+                  href={scholarship.officialWebsite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90"
+                >
+                  Visit Website
+                  <Icon icon="solar:alt-arrow-right-linear" />
+                </a>
+              ) : (
+                <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                  Website not available.
+                </p>
+              )}
+            </div>
+
+          </aside>
+        </div>
+
+        {/* RELATED COLLEGES */}
+        {relatedColleges.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-28 font-extrabold text-primary dark:text-white">
+              Related <span className="text-secondary">Colleges</span>
+            </h2>
+
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {relatedColleges.map((college) => (
+                <CollegeCard key={college.id} college={college} />
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+    </section>
   );
 }

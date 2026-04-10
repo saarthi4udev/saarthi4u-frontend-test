@@ -63,21 +63,32 @@ export const getAllCollegeshomepage = async () => {
 
 export const getCollegeCount = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/college/all?page=1&limit=1`, {
+    const res = await fetch(`${BASE_URL}/college/count`, {
       cache: "no-store",
     });
 
-    if (!res.ok) return 0;
+    if (!res.ok) {
+      throw new Error("Failed to fetch college stats");
+    }
 
     const json = await res.json();
 
-    return json?.pagination?.totalItems || 0;
-
+    return {
+      total: json?.data?.total || 0,
+      universities: json?.data?.universities || 0,
+      colleges: json?.data?.colleges || 0,
+    };
   } catch (err) {
     console.error("API ERROR:", err);
-    return 0;
+
+    return {
+      total: 0,
+      universities: 0,
+      colleges: 0,
+    };
   }
 };
+
 
 export const getCollegeBySlug = (slug: string) =>
   fetchAPI(`/college/${slug}`);
@@ -174,3 +185,21 @@ export const getPlacementsByCollege = (collegeId: number) =>
 export const getRecruitersByCollege = (collegeId: number) =>
   fetchAPI(`/recruiter/college/${collegeId}`);
 
+
+export const getAllInternationalColleges = async (page: number = 1, limit: number = 8) => {
+  try {
+    const res = await fetch(`${BASE_URL}/international/all?page=${page}&limit=${limit}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return null;
+
+    const json = await res.json();
+
+    return json; // ✅ same as getAllColleges
+
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return null;
+  }
+};

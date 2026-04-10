@@ -45,6 +45,12 @@ const Hero = () => {
 
   const heroVisuals = [
     {
+      src: "/images/hero/hero-image.png",
+      title: "Campus Collage",
+      subtitle: "A vibrant preview of top universities in one view",
+      gradient: "from-secondary/15 via-heroBg to-primary/10 dark:from-primary/25 dark:via-darkHeroBg dark:to-midnight_text",
+    },
+    {
       src: "/images/hero/guidence.svg",
       title: "Personalized direction",
       subtitle: "Find paths that match your goals",
@@ -225,8 +231,9 @@ const Hero = () => {
             >
               <Swiper
                 modules={[Autoplay]}
-                autoplay={{ delay: 2400 }}
+                autoplay={{ delay: 2600, disableOnInteraction: false }}
                 loop
+                speed={800}
                 className="w-full"
               >
                 {heroVisuals.map((slide, index) => (

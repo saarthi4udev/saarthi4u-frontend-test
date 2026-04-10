@@ -5,71 +5,13 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { motion, useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { getAllMentors, Mentor } from "@/app/api/mentor";
 
-const coaches = [
-  {
-    name: "Ms. Deepika Prasad",
-    title: "Assistant Professor / HOD (Commerce)",
-    experience: "10 Yrs",
-    studentsGuided: "1,900+",
-    rating: 4.9,
-    reviews: 286,
-    specialties: ["MMS (HR)", "MCom (Management)", "Commerce", "Career Planning"],
-    bio: "Qualification: MMS (HR), MCom (Management). Experience: 10 years as Assistant Professor / HOD (Commerce).",
-    photo: "https://randomuser.me/api/portraits/women/44.jpg",
-    topBadge: "Verified Coach",
-  },
-  {
-    name: "Dr. Ajay Pillai",
-    title: "Economics, Law & Management Mentor",
-    experience: "21 Yrs",
-    studentsGuided: "3,400+",
-    rating: 4.8,
-    reviews: 412,
-    specialties: ["PhD Economics", "MPhil", "LLM", "LLB"],
-    bio: "Qualification: PhD in Economics, MPhil in Economics, MCom in Cost Accountancy, MA in Economics, LLM, LLB. Experience: 21 years, including 9 years at ICFAI (MBA & CFA lectures), NAAC Coordinator.",
-    photo: "https://randomuser.me/api/portraits/men/32.jpg",
-    topBadge: "Senior Advisor",
-  },
-  {
-    name: "Dr. Anita Patel",
-    title: "Medical Admissions Expert",
-    experience: "15 Yrs",
-    studentsGuided: "3,100+",
-    rating: 4.9,
-    reviews: 421,
-    specialties: ["NEET", "MBBS", "BDS", "Medical Colleges"],
-    bio: "Dedicated to guiding medical aspirants through NEET and securing seats in India's top medical institutions.",
-    photo: "https://randomuser.me/api/portraits/women/68.jpg",
-    topBadge: "Senior Advisor",
-  },
-  {
-    name: "Vikram Singh",
-    title: "Law & Social Sciences Advisor",
-    experience: "8 Yrs",
-    studentsGuided: "1,200+",
-    rating: 4.7,
-    reviews: 173,
-    specialties: ["CLAT", "LLB", "NLU", "Law Colleges"],
-    bio: "Specialized in CLAT strategy and NLU admissions counseling for aspiring legal professionals.",
-    photo: "https://randomuser.me/api/portraits/men/75.jpg",
-    topBadge: "Legal Expert",
-  },
-  {
-    name: "Kavya Reddy",
-    title: "Arts, Design & Architecture",
-    experience: "7 Yrs",
-    studentsGuided: "985+",
-    rating: 4.8,
-    reviews: 142,
-    specialties: ["NID", "NIFT", "Architecture", "Fine Arts"],
-    bio: "Passionate about helping creative students discover paths in design, arts, and architecture programs.",
-    photo: "https://randomuser.me/api/portraits/women/90.jpg",
-    topBadge: "Creative Mentor",
-  },
-];
+
+
 
 function StarRating({ rating }: { rating: number }) {
+
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
@@ -116,6 +58,46 @@ const CareerCoaches = () => {
       behavior: "smooth",
     });
   };
+
+  const [coaches, setCoaches] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchMentors = async () => {
+      const data = await getAllMentors();
+
+      const formatted = data.map((item: any) => {
+        // Ensure specialties is always an array
+        let specialties: string[] = [];
+        if (item.shortQualifications) {
+          if (Array.isArray(item.shortQualifications)) {
+            specialties = item.shortQualifications;
+          } else if (typeof item.shortQualifications === "string") {
+            specialties = item.shortQualifications
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter((s: string) => s.length > 0);
+          }
+        }
+
+        return {
+          name: item.name,
+          title: item.title,
+          experience: `${item.experienceYears} Yrs`,
+          studentsGuided: `${item.studentsGuided?.toLocaleString()}+`,
+          rating: item.rating,
+          reviews: item.totalReviews,
+          specialties,
+          bio: item.description,
+          photo: item.profileImage,
+          topBadge: item.role || "Mentor",
+        };
+      });
+
+      setCoaches(formatted);
+    };
+
+    fetchMentors();
+  }, []);
 
   useEffect(() => {
     updateScrollState();
@@ -254,97 +236,86 @@ const CareerCoaches = () => {
             onScroll={updateScrollState}
             className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-          {coaches.map((coach, index) => (
-            <motion.div
-              key={coach.name}
-              initial={{ opacity: 0, y: 32, scale: 0.96 }}
-              animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.96 }}
-              transition={{ duration: 0.55, delay: 0.35 + index * 0.1, type: "spring", stiffness: 140, damping: 18 }}
-              whileHover={{ y: -4, scale: 1.01 }}
-              className="w-[320px] shrink-0 snap-start"
-            >
-              <div className={cardClass}>
-                <div className="h-1.5 w-full bg-gradient-to-r from-secondary/70 via-secondary to-accent/70" />
+            {coaches.map((coach, index) => (
+              <motion.div
+                key={coach.name}
+                initial={{ opacity: 0, y: 32, scale: 0.96 }}
+                animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.96 }}
+                transition={{ duration: 0.55, delay: 0.35 + index * 0.1, type: "spring", stiffness: 140, damping: 18 }}
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="w-[320px] shrink-0 snap-start"
+              >
+                <div className={cardClass}>
+                  <div className="h-1.5 w-full bg-gradient-to-r from-secondary/70 via-secondary to-accent/70" />
 
-                <div className="relative bg-gradient-to-br from-secondary/12 via-white to-accent/5 px-5 pt-5 pb-4 dark:from-secondary/12 dark:via-darkHeroBg dark:to-secondary/8">
-                  <div className="flex items-start gap-4">
-                    <div className="relative shrink-0 rounded-full ring-4 ring-secondary/25 transition-transform duration-300 group-hover:scale-105">
-                      <Image
-                        src={coach.photo}
-                        alt={coach.name}
-                        width={76}
-                        height={76}
-                        className="h-[76px] w-[76px] rounded-full object-cover"
-                      />
-                      <span className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400 dark:border-darkHeroBg" />
-                    </div>
+                  <div className="relative bg-gradient-to-br from-secondary/12 via-white to-accent/5 px-5 pt-5 pb-4 dark:from-secondary/12 dark:via-darkHeroBg dark:to-secondary/8">
+                    <div className="flex items-start gap-4">
+                      <div className="relative shrink-0 rounded-full ring-4 ring-secondary/25 transition-transform duration-300 group-hover:scale-105">
+                        <Image
+                          src={coach.photo}
+                          alt={coach.name}
+                          width={76}
+                          height={76}
+                          className="h-[76px] w-[76px] rounded-full object-cover"
+                        />
+                        <span className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400 dark:border-darkHeroBg" />
+                      </div>
 
-                    <div className="min-w-0 flex-1 pt-1">
-                      <h3 className="line-clamp-2 min-h-[2.8rem] text-17 font-bold leading-tight text-midnight_text dark:text-white">
-                        {coach.name}
-                      </h3>
-                      <p className="mt-0.5 line-clamp-2 min-h-[2.4rem] text-13 font-semibold text-secondary">
-                        {coach.title}
-                      </p>
-                      <div className="mt-1.5 flex items-center gap-2">
-                        <StarRating rating={coach.rating} />
-                        <span className="text-13 font-bold text-midnight_text dark:text-white">{coach.rating}</span>
-                        <span className="text-12 text-muted dark:text-white/50">({coach.reviews})</span>
+                      <div className="min-w-0 flex-1 pt-1">
+                        <h3 className="line-clamp-2 min-h-[2.8rem] text-17 font-bold leading-tight text-midnight_text dark:text-white">
+                          {coach.name}
+                        </h3>
+                        <p className="mt-0.5 line-clamp-2 min-h-[2.4rem] text-13 font-semibold text-secondary">
+                          {coach.title}
+                        </p>
+                        <div className="mt-1.5 flex items-center gap-2">
+                          <StarRating rating={coach.rating} />
+                          <span className="text-13 font-bold text-midnight_text dark:text-white">{coach.rating}</span>
+                          <span className="text-12 text-muted dark:text-white/50">({coach.reviews})</span>
+                        </div>
                       </div>
                     </div>
+
+                    <div className="mt-3">
+                      <span className="inline-flex items-center gap-1 rounded-full border border-secondary/25 bg-secondary/10 px-3 py-1 text-11 font-semibold text-secondary">
+                        <Icon icon="ph:medal-bold" className="text-xs" />
+                        {coach.topBadge}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="mt-3">
-                    <span className="inline-flex items-center gap-1 rounded-full border border-secondary/25 bg-secondary/10 px-3 py-1 text-11 font-semibold text-secondary">
-                      <Icon icon="ph:medal-bold" className="text-xs" />
-                      {coach.topBadge}
-                    </span>
-                  </div>
-                </div>
+                  <div className="flex flex-1 flex-col px-5 py-4">
+                    <p className="min-h-[4.9rem] text-13 leading-relaxed text-muted dark:text-white/65 line-clamp-4">
+                      {coach.bio}
+                    </p>
 
-                <div className="flex flex-1 flex-col px-5 py-4">
-                  <p className="min-h-[4.9rem] text-13 leading-relaxed text-muted dark:text-white/65 line-clamp-4">
-                    {coach.bio}
-                  </p>
+                    <div className="mt-4 grid grid-cols-2 gap-3">
+                      <div className="rounded-xl border border-border bg-gray-50/80 px-3 py-2.5 text-center dark:border-dark_border dark:bg-black/30">
+                        <p className="text-17 font-bold text-secondary">{coach.experience}</p>
+                        <p className="text-11 text-muted dark:text-white/50">Experience</p>
+                      </div>
+                      <div className="rounded-xl border border-border bg-gray-50/80 px-3 py-2.5 text-center dark:border-dark_border dark:bg-black/30">
+                        <p className="text-17 font-bold text-secondary">{coach.studentsGuided}</p>
+                        <p className="text-11 text-muted dark:text-white/50">Students Guided</p>
+                      </div>
+                    </div>
 
-                  <div className="mt-4 flex min-h-[4.7rem] flex-wrap content-start gap-1.5">
-                    {coach.specialties.map((s) => (
-                      <span
-                        key={s}
-                        className="rounded-full bg-secondary/10 px-2.5 py-1 text-11 font-semibold text-secondary dark:bg-secondary/20"
+                    <div className="mt-auto pt-5">
+                      <Link
+                        href="/contact#contact-form"
+                        className="group/btn relative block h-11 w-full overflow-hidden rounded-xl bg-secondary py-2.5 text-center text-14 font-semibold text-white transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
                       >
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <div className="rounded-xl border border-border bg-gray-50/80 px-3 py-2.5 text-center dark:border-dark_border dark:bg-black/30">
-                      <p className="text-17 font-bold text-secondary">{coach.experience}</p>
-                      <p className="text-11 text-muted dark:text-white/50">Experience</p>
+                        <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
+                        <span className="flex items-center justify-center gap-2">
+                          <Icon icon="ph:chat-circle-dots-bold" className="h-4 w-4" />
+                          Book a Free Session
+                        </span>
+                      </Link>
                     </div>
-                    <div className="rounded-xl border border-border bg-gray-50/80 px-3 py-2.5 text-center dark:border-dark_border dark:bg-black/30">
-                      <p className="text-17 font-bold text-secondary">{coach.studentsGuided}</p>
-                      <p className="text-11 text-muted dark:text-white/50">Students Guided</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-auto pt-5">
-                    <Link
-                      href="/contact#contact-form"
-                      className="group/btn relative block h-11 w-full overflow-hidden rounded-xl bg-secondary py-2.5 text-center text-14 font-semibold text-white transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
-                    >
-                      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
-                      <span className="flex items-center justify-center gap-2">
-                        <Icon icon="ph:chat-circle-dots-bold" className="h-4 w-4" />
-                        Book a Free Session
-                      </span>
-                    </Link>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
           </div>
         </div>
 
@@ -369,3 +340,205 @@ const CareerCoaches = () => {
 };
 
 export default CareerCoaches;
+
+
+// "use client";
+
+// import Image from "next/image";
+// import Link from "next/link";
+// import { Icon } from "@iconify/react";
+// import { motion, useInView } from "motion/react";
+// import { useEffect, useRef, useState } from "react";
+// import { getAllMentors, Mentor } from "@/app/api/mentor";
+
+// /* ⭐ Star Component (PURE UI ONLY) */
+// function StarRating({ rating }: { rating: number }) {
+//   return (
+//     <div className="flex items-center gap-1">
+//       {[1, 2, 3, 4, 5].map((star) => (
+//         <Icon
+//           key={star}
+//           icon={
+//             star <= Math.floor(rating)
+//               ? "ph:star-fill"
+//               : star - 0.5 <= rating
+//               ? "ph:star-half-fill"
+//               : "ph:star"
+//           }
+//           className="h-3.5 w-3.5 text-amber-400"
+//         />
+//       ))}
+//     </div>
+//   );
+// }
+
+// const CareerCoaches = () => {
+//   const ref = useRef(null);
+//   const inView = useInView(ref, { once: true, amount: 0.1 });
+//   const scrollerRef = useRef<HTMLDivElement>(null);
+
+//   const [coaches, setCoaches] = useState<any[]>([]);
+//   const [visibleCount, setVisibleCount] = useState(4); // pagination control
+
+//   const [canScrollLeft, setCanScrollLeft] = useState(false);
+//   const [canScrollRight, setCanScrollRight] = useState(true);
+
+//   /* ✅ FETCH API */
+//   useEffect(() => {
+//     const fetchMentors = async () => {
+//       const data = await getAllMentors();
+
+//       const formatted = data.map((item: Mentor) => ({
+//         name: item.name,
+//         title: item.title,
+//         experience: `${item.experienceYears} Yrs`,
+//         studentsGuided: `${item.studentsGuided.toLocaleString()}+`,
+//         rating: item.rating,
+//         reviews: item.totalReviews,
+//         specialties: item.shortQualifications || [],
+//         bio: item.description,
+//         photo: item.profileImage,
+//         topBadge: item.role || "Mentor",
+//       }));
+
+//       setCoaches(formatted);
+//     };
+
+//     fetchMentors();
+//   }, []);
+
+//   /* ✅ SCROLL LOGIC */
+//   const updateScrollState = () => {
+//     const el = scrollerRef.current;
+//     if (!el) return;
+
+//     const maxScrollLeft = el.scrollWidth - el.clientWidth;
+//     setCanScrollLeft(el.scrollLeft > 4);
+//     setCanScrollRight(el.scrollLeft < maxScrollLeft - 4);
+//   };
+
+//   const scrollCoachesBy = (direction: "left" | "right") => {
+//     const el = scrollerRef.current;
+//     if (!el) return;
+
+//     const amount = Math.min(360, Math.round(el.clientWidth * 0.8));
+//     el.scrollBy({
+//       left: direction === "right" ? amount : -amount,
+//       behavior: "smooth",
+//     });
+//   };
+
+//   useEffect(() => {
+//     updateScrollState();
+//     window.addEventListener("resize", updateScrollState);
+//     return () => window.removeEventListener("resize", updateScrollState);
+//   }, []);
+
+//   /* ✅ LOAD MORE (Pagination style) */
+//   const handleLoadMore = () => {
+//     setVisibleCount((prev) => prev + 4);
+//   };
+
+//   const cardClass =
+//     "group relative flex h-full min-h-[575px] min-w-[280px] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-lg";
+
+//   return (
+//     <section ref={ref} className="py-12">
+//       <div className="container mx-auto px-4">
+
+//         {/* HEADER */}
+//         <h2 className="text-center text-3xl font-bold mb-6">
+//           Meet Your Career Guides
+//         </h2>
+
+//         {/* SCROLLER */}
+//         <div className="flex justify-between mb-3">
+//           <button onClick={() => scrollCoachesBy("left")} disabled={!canScrollLeft}>
+//             ◀
+//           </button>
+//           <button onClick={() => scrollCoachesBy("right")} disabled={!canScrollRight}>
+//             ▶
+//           </button>
+//         </div>
+
+//         <div
+//           ref={scrollerRef}
+//           onScroll={updateScrollState}
+//           className="flex gap-5 overflow-x-auto pb-3"
+//         >
+//           {coaches.slice(0, visibleCount).map((coach, index) => (
+//             <motion.div
+//               key={index}
+//               className="w-[320px] shrink-0"
+//               initial={{ opacity: 0, y: 30 }}
+//               animate={inView ? { opacity: 1, y: 0 } : {}}
+//             >
+//               <div className={cardClass}>
+
+//                 {/* IMAGE */}
+//                 <div className="flex justify-center mt-4">
+//                   <Image
+//                     src={coach.photo || "/images/default.png"}
+//                     alt={coach.name}
+//                     width={80}
+//                     height={80}
+//                     className="rounded-full"
+//                   />
+//                 </div>
+
+//                 {/* CONTENT */}
+//                 <div className="p-4 text-center">
+//                   <h3 className="font-bold">{coach.name}</h3>
+//                   <p className="text-sm text-secondary">{coach.title}</p>
+
+//                   <div className="flex justify-center mt-2">
+//                     <StarRating rating={coach.rating} />
+//                   </div>
+
+//                   <p className="text-xs mt-2">{coach.bio}</p>
+
+//                   {/* TAGS */}
+//                   <div className="flex flex-wrap justify-center gap-1 mt-2">
+//                     {coach.specialties.map((s: string) => (
+//                       <span key={s} className="text-xs bg-gray-200 px-2 py-1 rounded">
+//                         {s}
+//                       </span>
+//                     ))}
+//                   </div>
+
+//                   {/* STATS */}
+//                   <div className="flex justify-between mt-3 text-sm">
+//                     <span>{coach.experience}</span>
+//                     <span>{coach.studentsGuided}</span>
+//                   </div>
+
+//                   {/* CTA */}
+//                   <Link href="/contact">
+//                     <button className="mt-3 bg-secondary text-white px-4 py-2 rounded">
+//                       Book Session
+//                     </button>
+//                   </Link>
+//                 </div>
+//               </div>
+//             </motion.div>
+//           ))}
+//         </div>
+
+//         {/* LOAD MORE BUTTON */}
+//         {visibleCount < coaches.length && (
+//           <div className="text-center mt-6">
+//             <button
+//               onClick={handleLoadMore}
+//               className="px-6 py-2 bg-secondary text-white rounded"
+//             >
+//               Load More
+//             </button>
+//           </div>
+//         )}
+
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default CareerCoaches;

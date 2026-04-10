@@ -44,6 +44,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "instagram.fna.fbcdn.net",
       },
+      {
+        protocol: "https",
+        hostname: "test.com", // ✅ ADD THIS LINE
+      },
     ],
   },
 };

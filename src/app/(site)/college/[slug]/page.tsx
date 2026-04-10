@@ -108,7 +108,7 @@ export default async function CollegeDetailPage({ params }: Props) {
                   )}
                 </div>
 
-                <h1 className="text-[1.35rem] font-extrabold tracking-tight sm:text-2xl md:text-[1.75rem] leading-snug">
+                <h1 className="text-white text-[1.35rem] font-extrabold tracking-tight sm:text-2xl md:text-[1.75rem] leading-snug">
                   {college.name}
                 </h1>
 

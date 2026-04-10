@@ -134,24 +134,6 @@ const DiscoverMore = () => {
           direct expert support.
         </motion.p>
 
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          {[
-            "Real-time route navigation",
-            "Quick decision flow",
-            "Personalized support ready",
-          ].map((point, index) => (
-            <motion.span
-              key={point}
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-              transition={{ duration: 0.4, delay: 0.25 + index * 0.08 }}
-              className="rounded-full border border-secondary/20 bg-white/80 px-4 py-2 text-xs font-medium text-primary dark:border-secondary/30 dark:bg-slate-900 dark:text-secondary"
-            >
-              {point}
-            </motion.span>
-          ))}
-        </div>
-
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <div className="rounded-2xl border border-gray-200 bg-white/70 p-2 dark:border-gray-700 dark:bg-slate-900/60">

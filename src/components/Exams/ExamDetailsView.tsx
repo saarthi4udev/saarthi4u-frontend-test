@@ -98,7 +98,7 @@ export default function ExamDetailsView({ exam, relatedColleges }: Props) {
               )}
             </div>
 
-            <h1 className="mt-6 text-35 font-extrabold leading-tight text-primary dark:text-white sm:text-48">
+            <h1 className="mt-6 text-white text-35 font-extrabold leading-tight sm:text-48">
               {exam.name}
             </h1>
 

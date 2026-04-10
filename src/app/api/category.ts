@@ -19,9 +19,35 @@ export const getAllCategories = async () => {
 /**
  * Get category content by ID
  */
-export const getCategoryContent = async (id: number) => {
+export const getCategoryContent = async (
+  id: number,
+  {
+    page = 1,
+    limit = 10,
+    examPage = 1,
+    examLimit = 5,
+    blogPage = 1,
+    blogLimit = 5,
+    newsPage = 1,
+    newsLimit = 5,
+  } = {}
+) => {
   try {
-    const res = await api.get(`/category/content/${id}`);
+    const res = await api.get(`/category/content/${id}`, {
+      params: {
+        page,
+        limit,
+        examPage,
+        examLimit,
+        blogPage,
+        blogLimit,
+        newsPage,
+        newsLimit,
+      },
+    });
+
+    console.log("FULL RESPONSE:", res);
+    console.log("DATA:", res.data);
     return res.data;
   } catch (error: any) {
     console.error(

@@ -6,7 +6,14 @@ export const headerData: HeaderItem[] = [
     label: "Explore",
     href: "/college",
     submenu: [
-      { label: "Colleges", href: "/college" },
+      {
+        label: "Colleges",
+        href: "/college",
+        submenu: [
+          { label: "National Colleges", href: "/college" },
+          { label: "International Colleges", href: "/international-colleges" },
+        ],
+      },
       { label: "Category", href: "/course" },
       { label: "Exams", href: "/exam" },
       { label: "Scholarships", href: "/scholarships" },

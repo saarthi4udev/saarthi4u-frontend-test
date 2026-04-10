@@ -1,145 +1,94 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { footerLinks } from "@/app/api/data";
+
+const socialLinks = [
+  {
+    href: "https://www.facebook.com/Saarthi4uOfficial/",
+    icon: "fe:facebook",
+    label: "Facebook",
+  },
+  {
+    href: "https://www.instagram.com/saarthi4uofficial",
+    icon: "fa6-brands:square-instagram",
+    label: "Instagram",
+  },
+  {
+    href: "https://www.linkedin.com/company/saarthi4u",
+    icon: "fa6-brands:linkedin",
+    label: "LinkedIn",
+  },
+  {
+    href: "https://www.youtube.com/@saarthi4uofficial",
+    icon: "fa6-brands:youtube",
+    label: "YouTube",
+  },
+];
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-b from-darkheader via-darkmode to-darkheader pt-16">
+    <footer className="relative overflow-hidden border-t border-border/70 bg-gradient-to-b from-heroBg/70 via-white to-white py-6 dark:border-dark_border/80 dark:from-darkheader dark:via-darkmode dark:to-darkheader sm:py-8 lg:py-10">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-24 top-12 h-56 w-56 rounded-full bg-secondary/12 blur-3xl" />
-        <div className="absolute -right-20 top-24 h-44 w-44 rounded-full bg-accent/10 blur-3xl" />
+        <div className="absolute -left-20 top-8 h-40 w-40 rounded-full bg-secondary/15 blur-3xl dark:bg-secondary/10" />
+        <div className="absolute -right-20 top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl dark:bg-accent/10" />
       </div>
 
-      <div className="container relative mx-auto px-4 lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md)">
-        <div className="site-glass-card mb-6 rounded-2xl border border-dark_border/80 px-4 py-3 text-center sm:text-left">
-          <p className="text-13 font-semibold tracking-[0.14em] text-secondary uppercase">Your Journey, Our Passion</p>
-          <p className="mt-1 text-16 font-semibold text-white sm:text-18">
-            Build your future with the right college and the right career at the right time.
-          </p>
-        </div>
-
-        <div className="mb-10 grid gap-4 rounded-2xl border border-dark_border/90 bg-darkmode/70 p-4 shadow-[0_12px_34px_rgba(0,0,0,0.32)] backdrop-blur-sm sm:grid-cols-2 lg:grid-cols-4 lg:p-5">
-          <div className="flex items-start gap-3">
-            <Icon icon="weui:location-outlined" className="mt-0.5 text-2xl text-secondary" />
-            <p className="text-14 text-foottext">
-              1st Floor G-69, Sector-63, Noida – 201301
-            </p>
+      <div className="container relative mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md)">
+        {/* Contact Info Strip - Compact */}
+        <div className="mb-5 grid gap-2 rounded-lg border border-border/70 bg-white/60 p-2 shadow-sm dark:border-dark_border/70 dark:bg-darkmode/50 sm:grid-cols-2 sm:p-3 lg:mb-6 lg:grid-cols-4 lg:gap-3">
+          <div className="flex items-center gap-2">
+            <Icon icon="weui:location-outlined" className="text-lg text-secondary" />
+            <p className="text-13 font-medium text-muted dark:text-foottext">1st Floor G-69, Sector-63, Noida</p>
           </div>
 
-          <Link
-            href="tel:+919930718925"
-            className="group flex items-start gap-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:text-white"
-          >
-            <Icon icon="majesticons:phone-retro-line" className="mt-0.5 text-2xl text-secondary" />
-            <span className="text-14 text-foottext transition-colors duration-200 group-hover:text-white">
-              +91  9958989150
-            </span>
+          <Link href="tel:+919958989150" className="flex items-center gap-2 transition-colors duration-200 hover:text-primary dark:hover:text-white">
+            <Icon icon="majesticons:phone-retro-line" className="text-lg text-secondary" />
+            <span className="text-13 font-medium text-muted dark:text-foottext">+91 9958989150</span>
           </Link>
 
-          <Link
-            href="mailto:info@saarthi4u.com"
-            className="group flex items-start gap-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:text-white"
-          >
-            <Icon icon="clarity:email-line" className="mt-0.5 text-2xl text-secondary" />
-            <span className="text-14 text-foottext transition-colors duration-200 group-hover:text-white">
-              info@saarthi4u.com
-            </span>
+          <Link href="mailto:info@saarthi4u.com" className="flex items-center gap-2 transition-colors duration-200 hover:text-primary dark:hover:text-white">
+            <Icon icon="clarity:email-line" className="text-lg text-secondary" />
+            <span className="text-13 font-medium text-muted dark:text-foottext">info@saarthi4u.com</span>
           </Link>
 
-          <div className="flex items-center gap-2 sm:justify-end lg:justify-start">
-            <Link
-              href="https://www.facebook.com/Saarthi4uOfficial/"
-              target="_blank"
-              className="grid h-10 w-10 place-items-center rounded-full border border-dark_border bg-dark_b/55 text-foottext transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:text-secondary"
-            >
-              <Icon icon="fe:facebook" className="text-xl" />
-            </Link>
-            <Link
-              href="https://www.instagram.com/saarthi4uofficial"
-              target="_blank"
-              className="grid h-10 w-10 place-items-center rounded-full border border-dark_border bg-dark_b/55 text-foottext transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:text-secondary"
-            >
-              <Icon icon="fa6-brands:square-instagram" className="text-xl" />
-            </Link>
-            <Link
-              href="https://www.linkedin.com/company/saarthi4u"
-              target="_blank"
-              className="grid h-10 w-10 place-items-center rounded-full border border-dark_border bg-dark_b/55 text-foottext transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:text-secondary"
-            >
-              <Icon icon="fa6-brands:linkedin" className="text-xl" />
-            </Link>
-            <Link
-              href="https://www.youtube.com/@saarthi4uofficial"
-              target="_blank"
-              className="grid h-10 w-10 place-items-center rounded-full border border-dark_border bg-dark_b/55 text-foottext transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:text-secondary"
-            >
-              <Icon icon="fa6-brands:youtube" className="text-xl" />
-            </Link>
+          <div className="flex items-center gap-2">
+            {socialLinks.map((item) => (
+              <Link key={item.label} href={item.href} target="_blank" aria-label={item.label} className="grid h-8 w-8 place-items-center rounded-full border border-border/60 bg-white text-muted transition-colors duration-200 hover:border-secondary hover:text-secondary dark:border-dark_border dark:bg-darkmode dark:text-foottext">
+                <Icon icon={item.icon} className="text-base" />
+              </Link>
+            ))}
           </div>
         </div>
 
-        <div className="mb-12 grid grid-cols-12 gap-7 border-b border-dark_border pb-12 sm:gap-8">
+        {/* Main Footer Grid */}
+        <div className="grid grid-cols-12 gap-x-3 gap-y-4 border-t border-border/70 pt-5 dark:border-dark_border/70 sm:gap-x-5 sm:gap-y-5 sm:pt-6 lg:gap-y-6 lg:pt-7">
+          {/* Brand Section */}
           <div className="col-span-12 lg:col-span-4">
-            <Link href="/" className="mb-4 inline-block">
-              <Image
-                src="/images/logo/new_logo.png"
-                alt="Saarthi4u logo"
-                width={170}
-                height={38}
-                sizes="170px"
-                className="h-auto w-auto"
-              />
+            <Link href="/" className="inline-block mb-2">
+              <Image src="/images/logo/new_logo.png" alt="Saarthi4u" width={160} height={40} sizes="160px" className="h-auto w-auto" />
             </Link>
-            <p className="mb-5 max-w-md text-16 text-foottext">
-              AI-powered guidance platform helping students discover colleges,
-              courses, scholarships, and exams with confidence.
-            </p>
-
-            <p className="site-gradient-title mb-5 text-18 font-bold sm:text-20">
-              From confusion to confident admission decisions.
-            </p>
-
-            <div className="mb-5 flex flex-wrap gap-2">
-              <span className="rounded-full border border-dark_border bg-dark_b/50 px-3 py-1 text-13 text-foottext transition-colors duration-300 hover:border-secondary/50 hover:text-white">
-                AI Guidance
-              </span>
-              <span className="rounded-full border border-dark_border bg-dark_b/50 px-3 py-1 text-13 text-foottext transition-colors duration-300 hover:border-secondary/50 hover:text-white">
-                College Discovery
-              </span>
-              <span className="rounded-full border border-dark_border bg-dark_b/50 px-3 py-1 text-13 text-foottext transition-colors duration-300 hover:border-secondary/50 hover:text-white">
-                Scholarship Support
-              </span>
+            <p className="text-14 leading-tight text-muted dark:text-foottext mb-2">AI-powered guidance for colleges, courses, scholarships & exams.</p>
+            <p className="site-gradient-title text-16 font-bold leading-snug">From confusion to confident admission decisions.</p>
+            <div className="mt-2 flex gap-2 flex-wrap">
+              <span className="rounded-full border border-border/60 bg-white/60 px-2.5 py-0.5 text-12 font-medium text-muted dark:border-dark_border dark:bg-dark_b/30 dark:text-foottext">AI Guidance</span>
+              <span className="rounded-full border border-border/60 bg-white/60 px-2.5 py-0.5 text-12 font-medium text-muted dark:border-dark_border dark:bg-dark_b/30 dark:text-foottext">College Finder</span>
             </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                href="/college"
-                className="group relative flex h-10 items-center overflow-hidden rounded-full bg-accent px-4 text-14 font-semibold text-primary shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-accent-dark"
-              >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                Explore Colleges
-              </Link>
-              <Link
-                href="/contact"
-                className="flex h-10 items-center rounded-full border border-dark_border bg-dark_b/50 px-4 text-14 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:text-secondary"
-              >
-                Talk to Expert
-              </Link>
+            <div className="mt-3 flex gap-2">
+              <Link href="/college" className="site-cta h-9 px-3 rounded-full bg-accent text-13 font-semibold text-primary flex items-center">Explore</Link>
+              <Link href="/contact" className="site-cta h-9 px-3 rounded-full border border-border/60 bg-white text-13 font-semibold text-primary dark:border-dark_border dark:bg-dark_b/30">Contact</Link>
             </div>
           </div>
 
-          <div className="col-span-12 sm:col-span-4 lg:col-span-2">
-            <h4 className="mb-4 text-18 font-semibold text-white">Features</h4>
-            <ul className="space-y-2.5">
-              {footerLinks.features.map((item, i) => (
-                <li key={i}>
-                  <Link
-                    href={item.href}
-                    className="text-16 text-foottext transition-all duration-200 hover:pl-1 hover:text-secondary"
-                  >
+          {/* Features */}
+          <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+            <h4 className="mb-2 text-14 font-semibold text-primary dark:text-white">Features</h4>
+            <ul className="space-y-1.5">
+              {footerLinks.features.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="text-13 text-muted transition-colors hover:text-secondary dark:text-foottext">
                     {item.label}
                   </Link>
                 </li>
@@ -147,15 +96,13 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-span-12 sm:col-span-4 lg:col-span-2">
-            <h4 className="mb-4 text-18 font-semibold text-white">Resources</h4>
-            <ul className="space-y-2.5">
-              {footerLinks.resources.map((item, i) => (
-                <li key={i}>
-                  <Link
-                    href={item.href}
-                    className="text-16 text-foottext transition-all duration-200 hover:pl-1 hover:text-secondary"
-                  >
+          {/* Resources */}
+          <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+            <h4 className="mb-2 text-14 font-semibold text-primary dark:text-white">Resources</h4>
+            <ul className="space-y-1.5">
+              {footerLinks.resources.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="text-13 text-muted transition-colors hover:text-secondary dark:text-foottext">
                     {item.label}
                   </Link>
                 </li>
@@ -163,15 +110,13 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-span-12 sm:col-span-4 lg:col-span-2">
-            <h4 className="mb-4 text-18 font-semibold text-white">Platform</h4>
-            <ul className="space-y-2.5">
-              {footerLinks.platform.map((item, i) => (
-                <li key={i}>
-                  <Link
-                    href={item.href}
-                    className="text-16 text-foottext transition-all duration-200 hover:pl-1 hover:text-secondary"
-                  >
+          {/* Platform */}
+          <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+            <h4 className="mb-2 text-14 font-semibold text-primary dark:text-white">Platform</h4>
+            <ul className="space-y-1.5">
+              {footerLinks.platform.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="text-13 text-muted transition-colors hover:text-secondary dark:text-foottext">
                     {item.label}
                   </Link>
                 </li>
@@ -179,50 +124,28 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-span-12 lg:col-span-2">
-            <div className="mx-auto max-w-[180px] text-center lg:mx-0 lg:max-w-none lg:text-left">
-              <p className="mb-4 text-18 font-semibold text-white">Get App</p>
-              <div className="space-y-3">
-                <Link href="/contact" className="inline-block transition-transform duration-200 hover:-translate-y-0.5">
-                <Image
-                  src="/images/footer/play.png"
-                  alt="Google Play"
-                  width={140}
-                  height={46}
-                  sizes="140px"
-                  className="h-auto w-auto rounded-lg opacity-90 transition-opacity duration-200 hover:opacity-100"
-                />
-                </Link>
-                <Link href="/contact" className="inline-block transition-transform duration-200 hover:-translate-y-0.5">
-                <Image
-                  src="/images/footer/store.png"
-                  alt="App Store"
-                  width={140}
-                  height={46}
-                  sizes="140px"
-                  className="h-auto w-auto rounded-lg opacity-90 transition-opacity duration-200 hover:opacity-100"
-                />
-                </Link>
-              </div>
-              <p className="mt-3 text-13 text-foottext">Coming soon on Android & iOS</p>
+          {/* Get App */}
+          <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+            <h4 className="mb-2 text-14 font-semibold text-primary dark:text-white">Get App</h4>
+            <div className="flex flex-col gap-1.5">
+              <Link href="/contact" className="inline-block hover:-translate-y-0.5 transition-transform">
+                <Image src="/images/footer/play.png" alt="Google Play" width={100} height={30} sizes="100px" className="h-auto w-auto rounded-md max-w-full" />
+              </Link>
+              <Link href="/contact" className="inline-block hover:-translate-y-0.5 transition-transform">
+                <Image src="/images/footer/store.png" alt="App Store" width={100} height={30} sizes="100px" className="h-auto w-auto rounded-md max-w-full" />
+              </Link>
+              <p className="text-11 text-muted dark:text-foottext mt-1">Coming soon on Android & iOS</p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-3 py-6 text-center sm:flex-row sm:text-left">
-          <p className="text-16 text-foottext">
-            © {currentYear} Saarthi4u. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4 text-14">
-            <Link href="/terms" className="text-foottext transition-colors duration-200 hover:text-secondary">
-              Terms
-            </Link>
-            <Link href="/privacy-policy" className="text-foottext transition-colors duration-200 hover:text-secondary">
-              Privacy
-            </Link>
-            <Link href="/contact" className="text-foottext transition-colors duration-200 hover:text-secondary">
-              Contact
-            </Link>
+        {/* Bottom Bar */}
+        <div className="flex flex-col items-center gap-2 border-t border-border/70 mt-4 pt-3 text-center dark:border-dark_border/70 sm:flex-row sm:justify-between sm:text-left sm:gap-3 sm:mt-5 sm:pt-4">
+          <p className="text-12 text-muted dark:text-foottext">© {currentYear} Saarthi4u. All rights reserved.</p>
+          <div className="flex items-center gap-3 text-12">
+            <Link href="/terms" className="text-muted hover:text-secondary dark:text-foottext">Terms</Link>
+            <Link href="/privacy-policy" className="text-muted hover:text-secondary dark:text-foottext">Privacy</Link>
+            <Link href="/contact" className="text-muted hover:text-secondary dark:text-foottext">Contact</Link>
           </div>
         </div>
       </div>

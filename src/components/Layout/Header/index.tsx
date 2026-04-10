@@ -121,7 +121,7 @@ const Header: React.FC = () => {
         <div className="flex items-center gap-6 xl:gap-8">
           <Logo />
 
-          <nav className="site-glass-card hidden xl:flex items-center gap-1 rounded-full p-1.5">
+          <nav className="site-glass-card relative z-20 hidden xl:flex items-center gap-1 rounded-full p-1.5">
             {headerData.map((item, index) => (
               <HeaderLink key={index} item={item} />
             ))}

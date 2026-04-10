@@ -5,6 +5,12 @@ import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{
+    collegesPage?: string;
+    examsPage?: string;
+    blogsPage?: string;
+    newsPage?: string;
+  }>;
 };
 
 const normalizeSlug = (value: string) =>
@@ -29,22 +35,44 @@ const statCardClassName =
 const sectionClassName =
   "rounded-[2rem] border border-primary/10 bg-white/90 p-6 shadow-[0_24px_60px_rgba(10,24,58,0.08)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-8";
 
-export default async function CategoryDetailPage({ params }: Props) {
+export default async function CategoryDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
+
+  const sp = await searchParams;
+
+  const collegesPage = Number(sp?.collegesPage || 1);
+  const examsPage = Number(sp?.examsPage || 1);
+  const blogsPage = Number(sp?.blogsPage || 1);
+  const newsPage = Number(sp?.newsPage || 1);
+
 
   const categories = await getAllCategories();
   const category = categories?.find((c: any) => String(c.id) === id);
 
   if (!category) return notFound();
 
-  const data = await getCategoryContent(category.id);
+  const data = await getCategoryContent(category.id, {
+    page: collegesPage,        
+    limit: 3,
+
+    examPage: examsPage,      
+    examLimit: 3,
+
+    blogPage: blogsPage,      
+    blogLimit: 3,
+
+    newsPage: newsPage,        
+    newsLimit: 3,
+  });
+
 
   const { colleges, exams, blogs, news } = data;
+
   const sectionLinks = [
-    { id: "colleges", label: "Top Colleges", count: colleges?.length ?? 0 },
-    { id: "exams", label: "Entrance Exams", count: exams?.length ?? 0 },
-    { id: "blogs", label: "Guides & Blogs", count: blogs?.length ?? 0 },
-    { id: "news", label: "Latest News", count: news?.length ?? 0 },
+    { id: "colleges", label: "Top Colleges", count: colleges?.total ?? 0 },
+    { id: "exams", label: "Entrance Exams", count: exams?.total ?? 0 },
+    { id: "blogs", label: "Guides & Blogs", count: blogs?.total ?? 0 },
+    { id: "news", label: "Latest News", count: news?.total ?? 0 },
   ].filter((section) => section.count > 0);
 
   const totalResources = sectionLinks.reduce((sum, section) => sum + section.count, 0);
@@ -68,7 +96,7 @@ export default async function CategoryDetailPage({ params }: Props) {
               </div>
 
               <div className="space-y-4">
-                <h1 className="max-w-3xl text-35 font-extrabold leading-tight text-primary dark:text-white sm:text-48 lg:text-[3.6rem]">
+                <h1 className="max-w-3xl text-white text-35 font-extrabold leading-tight sm:text-48 lg:text-[3.6rem]">
                   {category.name}
                   <span className="ml-3 inline-block text-secondary">pathways</span>
                 </h1>
@@ -115,19 +143,20 @@ export default async function CategoryDetailPage({ params }: Props) {
                 </div>
                 <div className="mt-6 grid grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
                   <div className="rounded-2xl bg-primary/10 p-3 dark:bg-white/5">
-                    <p className="text-2xl font-bold text-primary dark:text-white">{colleges?.length ?? 0}</p>
+                    <p className="text-2xl font-bold text-primary dark:text-white">{colleges?.total ?? 0}</p>
                     <p className="mt-1">Colleges</p>
                   </div>
+
                   <div className="rounded-2xl bg-secondary/15 p-3 dark:bg-secondary/10">
-                    <p className="text-2xl font-bold text-primary dark:text-white">{exams?.length ?? 0}</p>
+                    <p className="text-2xl font-bold text-primary dark:text-white">{exams?.total ?? 0}</p>
                     <p className="mt-1">Exams</p>
                   </div>
                   <div className="rounded-2xl bg-primary/10 p-3 dark:bg-white/5">
-                    <p className="text-2xl font-bold text-primary dark:text-white">{blogs?.length ?? 0}</p>
+                    <p className="text-2xl font-bold text-primary dark:text-white">{blogs?.total ?? 0}</p>
                     <p className="mt-1">Guides</p>
                   </div>
                   <div className="rounded-2xl bg-secondary/15 p-3 dark:bg-secondary/10">
-                    <p className="text-2xl font-bold text-primary dark:text-white">{news?.length ?? 0}</p>
+                    <p className="text-2xl font-bold text-primary dark:text-white">{news?.total ?? 0}</p>
                     <p className="mt-1">Updates</p>
                   </div>
                 </div>
@@ -147,7 +176,7 @@ export default async function CategoryDetailPage({ params }: Props) {
           </div>
         </section>
 
-        {colleges?.length > 0 && (
+        {colleges?.data?.length > 0 && (
           <section id="colleges" className={sectionClassName}>
             <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
@@ -155,12 +184,12 @@ export default async function CategoryDetailPage({ params }: Props) {
                 <h2 className="mt-2 text-28 font-extrabold text-primary dark:text-white sm:text-35">Top Colleges</h2>
               </div>
               <span className="w-fit rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary dark:bg-white/5 dark:text-secondary">
-                {colleges.length} options
+                {colleges?.data?.length} options
               </span>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {colleges.map((college: any) => (
+              {colleges?.data?.map((college: any) => (
                 <Link
                   key={college.id}
                   href={`/college/${college.slug}`}
@@ -186,10 +215,29 @@ export default async function CategoryDetailPage({ params }: Props) {
                 </Link>
               ))}
             </div>
+            {colleges?.totalPages > 1 && (
+              <div className="flex justify-center mt-8 gap-2">
+                {Array.from({ length: colleges.totalPages }).map((_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <Link
+                      key={pageNum}
+                      href={`?collegesPage=${pageNum}&examsPage=${examsPage}&blogsPage=${blogsPage}&newsPage=${newsPage}`}
+                      className={`px-4 py-2 rounded-full border ${collegesPage === pageNum
+                          ? "bg-primary text-white"
+                          : "bg-white dark:bg-slate-900"
+                        }`}
+                    >
+                      {pageNum}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </section>
         )}
 
-        {exams?.length > 0 && (
+        {exams?.data?.length > 0 && (
           <section id="exams" className={sectionClassName}>
             <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
@@ -197,12 +245,12 @@ export default async function CategoryDetailPage({ params }: Props) {
                 <h2 className="mt-2 text-28 font-extrabold text-primary dark:text-white sm:text-35">Entrance Exams</h2>
               </div>
               <span className="w-fit rounded-full bg-secondary/15 px-4 py-2 text-sm font-semibold text-primary dark:bg-secondary/10 dark:text-secondary">
-                {exams.length} exams
+                {exams?.data?.length} exams
               </span>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {exams.map((exam: any) => (
+              {exams?.data?.map((exam: any) => (
                 <Link
                   key={exam.id}
                   href={`/exam/${exam.slug}`}
@@ -220,14 +268,34 @@ export default async function CategoryDetailPage({ params }: Props) {
                 </Link>
               ))}
             </div>
+
+            {exams?.totalPages > 1 && (
+              <div className="flex justify-center mt-8 gap-2">
+                {Array.from({ length: exams.totalPages }).map((_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <Link
+                      key={pageNum}
+                      href={`?collegesPage=${collegesPage}&examsPage=${pageNum}&blogsPage=${blogsPage}&newsPage=${newsPage}`}
+                      className={`px-4 py-2 rounded-full border ${examsPage === pageNum
+                          ? "bg-primary text-white"
+                          : "bg-white dark:bg-slate-900"
+                        }`}
+                    >
+                      {pageNum}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </section>
         )}
 
-        {blogs?.length > 0 && (
+        {blogs?.data?.length > 0 && (
           <section id="blogs" className={sectionClassName}>
             <h2 className="mb-6 text-28 font-extrabold text-primary dark:text-white sm:text-35">Related Blogs</h2>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {blogs.map((blog: any) => (
+              {blogs?.data?.map((blog: any) => (
                 <Link
                   key={blog.id}
                   href={`/blog/${blog.slug}`}
@@ -246,14 +314,33 @@ export default async function CategoryDetailPage({ params }: Props) {
                 </Link>
               ))}
             </div>
+            {blogs?.totalPages > 1 && (
+              <div className="flex justify-center mt-8 gap-2">
+                {Array.from({ length: blogs.totalPages }).map((_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <Link
+                      key={pageNum}
+                      href={`?collegesPage=${collegesPage}&examsPage=${examsPage}&blogsPage=${pageNum}&newsPage=${newsPage}`}
+                      className={`px-4 py-2 rounded-full border ${blogsPage === pageNum
+                          ? "bg-primary text-white"
+                          : "bg-white dark:bg-slate-900"
+                        }`}
+                    >
+                      {pageNum}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </section>
         )}
 
-        {news?.length > 0 && (
+        {news?.data?.length > 0 && (
           <section id="news" className={sectionClassName}>
             <h2 className="mb-6 text-28 font-extrabold text-primary dark:text-white sm:text-35">Latest News</h2>
             <div className="space-y-4">
-              {news.map((item: any) => (
+              {news?.data?.map((item: any) => (
                 <Link
                   key={item.id}
                   href={`/news/${item.slug}`}
@@ -264,6 +351,25 @@ export default async function CategoryDetailPage({ params }: Props) {
                 </Link>
               ))}
             </div>
+            {news?.totalPages > 1 && (
+              <div className="flex justify-center mt-8 gap-2">
+                {Array.from({ length: news.totalPages }).map((_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <Link
+                      key={pageNum}
+                      href={`?collegesPage=${collegesPage}&examsPage=${examsPage}&blogsPage=${blogsPage}&newsPage=${pageNum}`}
+                      className={`px-4 py-2 rounded-full border ${newsPage === pageNum
+                          ? "bg-primary text-white"
+                          : "bg-white dark:bg-slate-900"
+                        }`}
+                    >
+                      {pageNum}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </section>
         )}
 

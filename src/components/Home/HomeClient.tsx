@@ -8,6 +8,8 @@ import DiscoverMore from "@/components/discovermore/DiscoverMore";
 import ExploreColleges from "@/components/Home/ExploreColleges";
 import CareerCoaches from "@/components/Home/CareerCoaches";
 import EducationalPartners from "@/components/Educationpatner/EducationalPartners";
+import PromoSection from "@/components/Home/Promo";
+import CollegesAdBanner from "@/components/Home/CollegesAdBanner";
 import ResultsPromo from "@/components/Home/ResultsPromo";
 import Testimonials from "@/components/Home/Testimonials";
 import LeadershipCorner from "@/components/LeadershipCorner/LeadershipCorner";
@@ -27,9 +29,11 @@ export default function HomeClient() {
   return (
     <>
       <div className="site-reveal"><Hero /></div>
+      <div className="site-reveal"><PromoSection /></div>
+      <div className="site-reveal"><CollegesAdBanner /></div>
+      <div className="site-reveal"><ExploreColleges /></div>
       <div className="site-reveal"><DiscoverMore /></div>
       <div className="site-reveal"><CareerCoaches /></div>
-      <div className="site-reveal"><ExploreColleges /></div>
       <div className="site-reveal"><EducationalPartners /></div>
       <div className="site-reveal"><ResultsPromo /></div>
       <div className="site-reveal"><Testimonials /></div>

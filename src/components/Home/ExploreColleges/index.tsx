@@ -17,6 +17,7 @@ const ExploreColleges: React.FC = () => {
   const [liveStats, setLiveStats] = useState({
     total: 0,
     universities: 0,
+    colleges: 0, // ✅ add this
   });
 
   useEffect(() => {
@@ -27,29 +28,18 @@ const ExploreColleges: React.FC = () => {
 
   useEffect(() => {
     const loadStats = async () => {
-      const total = await getCollegeCount();
+      const stats = await getCollegeCount();
 
-      setLiveStats((prev) => ({
-        ...prev,
-        total,
-      }));
+      setLiveStats({
+        total: stats.total,
+        universities: stats.universities,
+        colleges: stats.colleges,
+      });
     };
 
     loadStats();
   }, []);
 
-  useEffect(() => {
-    if (collegesData.length > 0) {
-      const universityCount = collegesData.filter(
-        (c) => c.type?.toLowerCase() === "university"
-      ).length;
-
-      setLiveStats((prev) => ({
-        ...prev,
-        universities: universityCount,
-      }));
-    }
-  }, [collegesData]);
 
   useEffect(() => {
     const loadColleges = async () => {
@@ -161,7 +151,7 @@ const ExploreColleges: React.FC = () => {
   };
 
   return (
-    <section className="relative overflow-hidden bg-white py-8 dark:bg-black md:py-10" ref={ref}>
+    <section className="relative overflow-hidden bg-slate-50 py-10 dark:bg-black md:py-14" ref={ref}>
       <motion.div
         aria-hidden
         className="pointer-events-none absolute -left-24 top-16 h-64 w-64 rounded-full bg-secondary/20 blur-3xl dark:bg-secondary/10"
@@ -174,7 +164,7 @@ const ExploreColleges: React.FC = () => {
         animate={{ x: [0, -24, 0], y: [0, 10, 0], scale: [1, 1.08, 1] }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
-      {/* Sparkle dots */}
+      {/* Accent highlights */}
       <motion.div
         aria-hidden
         animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5] }}
@@ -187,19 +177,19 @@ const ExploreColleges: React.FC = () => {
         transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         className="pointer-events-none absolute right-[10%] top-32 hidden h-1.5 w-1.5 rounded-full bg-secondary lg:block"
       />
-      <div className="container mx-auto px-4 lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md)">
-        <div className="relative overflow-hidden rounded-[28px] border border-secondary/15 bg-gradient-to-b from-secondary/5 via-white to-white px-5 py-7 shadow-sm dark:border-primary/30 dark:from-slate-900 dark:via-black dark:to-black md:px-8 md:py-8">
+      <div className="container mx-auto px-4 lg:max-w-6xl md:max-w-5xl">
+        <div className="relative overflow-hidden rounded-[36px] border border-secondary/10 bg-white/95 px-5 py-8 shadow-[0_30px_90px_-45px_rgba(15,23,42,0.12)] dark:border-primary/20 dark:bg-slate-950 md:px-8 md:py-10">
           <motion.div
             {...badgeAnimation}
-            className="mx-auto mb-6 inline-flex items-center rounded-full border border-secondary/20 bg-secondary/10 px-4 py-2 dark:border-secondary/30 dark:bg-secondary/15"
+            className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/10 px-4 py-2 text-sm font-medium text-secondary dark:border-secondary/30 dark:bg-secondary/15"
           >
-            <Icon icon="mdi:school" className="mr-2 h-5 w-5 text-secondary" />
-            <span className="text-sm font-medium text-secondary">Premier Institutions</span>
+            <Icon icon="mdi:school" className="h-5 w-5" />
+            Premier Institutions
           </motion.div>
 
           <motion.h2
             {...titleAnimation}
-            className="text-center text-30 font-bold leading-tight text-midnight_text dark:text-white sm:text-36 md:text-42"
+            className="text-center text-3xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-4xl md:text-5xl"
           >
             Explore Top Colleges
             <br />
@@ -208,20 +198,24 @@ const ExploreColleges: React.FC = () => {
 
           <motion.p
             {...descriptionAnimation}
-            className="mx-auto mt-3 max-w-2xl text-center text-sm leading-relaxed text-muted dark:text-white/70 sm:text-base"
+            className="mx-auto mt-4 max-w-3xl text-center text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg"
           >
-            Explore trending colleges and universities with expert guidance,
-            helping you choose courses that match your passion, goals, and
-            career aspirations effortlessly.
+            Discover trending colleges and universities with curated expert guidance,
+            helping you choose courses aligned to your passions, goals, and career aspirations.
           </motion.p>
 
-          <div className="mx-auto mt-5 max-w-3xl overflow-hidden rounded-2xl border border-gray-200 bg-white/90 p-2 shadow-sm dark:border-gray-700 dark:bg-darkHeroBg/80">
-            <div className="grid grid-cols-2 items-center divide-x divide-gray-200 dark:divide-gray-700">
+          <div className="mx-auto mt-6 overflow-hidden rounded-3xl border border-gray-200 bg-slate-50/80 p-2 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               {[
                 {
                   value: liveStats.total > 0 ? `${liveStats.total}` : "—",
-                  label: "Colleges Listed",
+                  label: "Total Institutions",
                   icon: "solar:buildings-2-bold-duotone",
+                },
+                {
+                  value: liveStats.colleges > 0 ? `${liveStats.colleges}` : "—",
+                  label: "Colleges",
+                  icon: "solar:buildings-bold-duotone",
                 },
                 {
                   value: liveStats.universities > 0 ? `${liveStats.universities}` : "—",
