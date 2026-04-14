@@ -6,6 +6,7 @@ import { motion, useInView, AnimatePresence } from "motion/react";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { getAllTestimonials } from "@/app/api/testimonials";
 import type { Testimonial } from "@/types/testimonial";
+import EduLoader from "@/components/Common/EduLoader";
 import { DEMO_TESTIMONIALS } from "@/types/testimonial";
 
 function mapApiToTestimonial(item: any, fallbackId: number): Testimonial {
@@ -179,8 +180,8 @@ export default function Testimonials() {
   // ---------------------------------------------------------------------------
   if (loading) {
     return (
-      <section className="py-10 text-center text-midnight_text dark:text-white">
-        <p>Loading testimonials...</p>
+      <section className="flex items-center justify-center py-16">
+        <EduLoader overlay={false} message="Loading testimonials…" />
       </section>
     );
   }

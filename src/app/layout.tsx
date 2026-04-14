@@ -9,6 +9,7 @@ import AIChatbot from "@/components/Common/AIChatbot";
 import EnquiryPopup from "@/components/EnquiryPopup/EnquiryPopup";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
+import { RouteLoaderProvider } from "@/components/Common/RouteLoader";
 
 const dmsans = DM_Sans({ subsets: ["latin"] });
 const sora = Sora({
@@ -31,6 +32,7 @@ export default function RootLayout({
             enableSystem={false}
             defaultTheme="light"
           >
+            <RouteLoaderProvider>
             <Header />
             <Toaster position="top-center" reverseOrder={false} />
             {/* offset for fixed header */}
@@ -40,6 +42,7 @@ export default function RootLayout({
             <WhatsAppFloat />
             <ScrollToTop />
             <EnquiryPopup />
+            </RouteLoaderProvider>
           </ThemeProvider>
         </AuthProvider>
       </body>

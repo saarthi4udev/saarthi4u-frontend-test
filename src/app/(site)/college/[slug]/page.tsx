@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Icon } from "@iconify/react";
 import CollegeTabs from "@/components/Colleges/CollegeTabs";
 
@@ -76,9 +77,9 @@ export default async function CollegeDetailPage({ params }: Props) {
 
             {/* Breadcrumb */}
             <nav className="mb-3 flex items-center gap-1.5 text-xs font-medium text-white/55">
-              <span>Home</span>
+              <Link href="/" className="transition-colors hover:text-white/90">Home</Link>
               <Icon icon="solar:alt-arrow-right-linear" className="text-[0.6rem]" />
-              <span>Colleges</span>
+              <Link href="/college" className="transition-colors hover:text-white/90">Colleges</Link>
               <Icon icon="solar:alt-arrow-right-linear" className="text-[0.6rem]" />
               <span className="text-white/90">{college.name}</span>
             </nav>

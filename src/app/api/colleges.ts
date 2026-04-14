@@ -203,3 +203,21 @@ export const getAllInternationalColleges = async (page: number = 1, limit: numbe
     return null;
   }
 };
+
+export const getInternationalCollegeBySlug = async (slug: string) => {
+  try {
+    const res = await fetch(`${BASE_URL}/international/college/${slug}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return null;
+
+    const json = await res.json();
+
+    return json?.data ?? null;
+
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return null;
+  }
+};

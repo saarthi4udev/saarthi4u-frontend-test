@@ -155,6 +155,7 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import EduLoader from "@/components/Common/EduLoader";
 
 interface College {
   id: any;
@@ -174,15 +175,16 @@ interface College {
 
 interface CollegeCardProps {
   college: College;
+  basePath?: string;
 }
 
-const CollegeCard: React.FC<CollegeCardProps> = ({ college }) => {
+const CollegeCard: React.FC<CollegeCardProps> = ({ college, basePath = "/college" }) => {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 
   const handleNavigation = () => {
     setLoading(true);
-    router.push(`/college/${college.slug}`);
+    router.push(`${basePath}/${college.slug}`);
   };
 
   const location =
@@ -302,14 +304,7 @@ const CollegeCard: React.FC<CollegeCardProps> = ({ college }) => {
       </motion.div>
 
       {/* Overlay Loader */}
-      {loading && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-            <p className="text-white text-sm font-medium">Loading...</p>
-          </div>
-        </div>
-      )}
+      {loading && <EduLoader message="Loading…" />}
     </>
   );
 };

@@ -182,23 +182,31 @@ export default function ResultsSection() {
           </p>
         </motion.div>
 
-        <div className="mb-6 grid gap-3 sm:grid-cols-4">
-          <div className="rounded-xl border border-border bg-white p-3 dark:border-dark_border dark:bg-darkheader">
-            <p className="text-12 text-muted dark:text-white/65">Board Links</p>
-            <p className="mt-1 text-20 font-bold text-midnight_text dark:text-white">{stats.boardCount}</p>
-          </div>
-          <div className="rounded-xl border border-border bg-white p-3 dark:border-dark_border dark:bg-darkheader">
-            <p className="text-12 text-muted dark:text-white/65">Exam Links</p>
-            <p className="mt-1 text-20 font-bold text-midnight_text dark:text-white">{stats.examCount}</p>
-          </div>
-          <div className="rounded-xl border border-border bg-white p-3 dark:border-dark_border dark:bg-darkheader">
-            <p className="text-12 text-muted dark:text-white/65">Global Links</p>
-            <p className="mt-1 text-20 font-bold text-midnight_text dark:text-white">{stats.globalCount}</p>
-          </div>
-          <div className="rounded-xl border border-border bg-white p-3 dark:border-dark_border dark:bg-darkheader">
-            <p className="text-12 text-muted dark:text-white/65">Authorities</p>
-            <p className="mt-1 text-20 font-bold text-midnight_text dark:text-white">{stats.authorities}</p>
-          </div>
+        <div className={`mb-6 grid gap-3 sm:grid-cols-${[stats.boardCount, stats.examCount, stats.globalCount, stats.authorities].filter(Boolean).length || 1}`}>
+          {stats.boardCount > 0 && (
+            <div className="rounded-xl border border-border bg-white p-3 dark:border-dark_border dark:bg-darkheader">
+              <p className="text-12 text-muted dark:text-white/65">Board Links</p>
+              <p className="mt-1 text-20 font-bold text-midnight_text dark:text-white">{stats.boardCount}</p>
+            </div>
+          )}
+          {stats.examCount > 0 && (
+            <div className="rounded-xl border border-border bg-white p-3 dark:border-dark_border dark:bg-darkheader">
+              <p className="text-12 text-muted dark:text-white/65">Exam Links</p>
+              <p className="mt-1 text-20 font-bold text-midnight_text dark:text-white">{stats.examCount}</p>
+            </div>
+          )}
+          {stats.globalCount > 0 && (
+            <div className="rounded-xl border border-border bg-white p-3 dark:border-dark_border dark:bg-darkheader">
+              <p className="text-12 text-muted dark:text-white/65">Global Links</p>
+              <p className="mt-1 text-20 font-bold text-midnight_text dark:text-white">{stats.globalCount}</p>
+            </div>
+          )}
+          {stats.authorities > 0 && (
+            <div className="rounded-xl border border-border bg-white p-3 dark:border-dark_border dark:bg-darkheader">
+              <p className="text-12 text-muted dark:text-white/65">Authorities</p>
+              <p className="mt-1 text-20 font-bold text-midnight_text dark:text-white">{stats.authorities}</p>
+            </div>
+          )}
         </div>
 
         {(activeSection === "All Results" || activeSection === "Global Results") && featuredGlobal.length > 0 && (
@@ -370,9 +378,11 @@ export default function ResultsSection() {
                     <span className="inline-flex h-6 items-center rounded-full border border-secondary/25 bg-secondary/10 px-2.5 text-11 font-semibold text-secondary">
                       {result.section}
                     </span>
-                    <span className="inline-flex h-6 items-center rounded-full border border-primary/20 bg-primary/10 px-2.5 text-11 font-semibold text-primary">
-                      {result.category}
-                    </span>
+                    {result.category !== result.section && (
+                      <span className="inline-flex h-6 items-center rounded-full border border-primary/20 bg-primary/10 px-2.5 text-11 font-semibold text-primary">
+                        {result.category}
+                      </span>
+                    )}
                   </div>
 
                   <h3 className="text-16 font-bold text-midnight_text dark:text-white">{result.resultName}</h3>

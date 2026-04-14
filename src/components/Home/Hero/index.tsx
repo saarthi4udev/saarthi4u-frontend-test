@@ -5,21 +5,19 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
+import { getCollegeCount } from "@/app/api/colleges";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 const Hero = () => {
-  const [collegeCount, setCollegeCount] = useState<string>("1,200+");
+  const [collegeCount, setCollegeCount] = useState<string>("");
 
   useEffect(() => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-    fetch(`${baseUrl}/college/all`, { cache: "no-store" })
-      .then((r) => r.json())
+    getCollegeCount()
       .then((data) => {
-        const list: unknown[] = data?.data ?? (Array.isArray(data) ? data : []);
-        const count = list.length;
+        const count = data.total;
         if (count > 0) {
           setCollegeCount(
             count >= 1000
@@ -28,7 +26,7 @@ const Hero = () => {
           );
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   const leftAnimation = {

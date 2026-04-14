@@ -39,117 +39,123 @@ function sectionText(value: unknown, fallback: string) {
 
 function StatItem({ icon, label, value }: { icon: string; label: string; value?: string }) {
   return (
-    <div className="rounded-2xl border border-primary/10 bg-white/90 p-4 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
-      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-        <Icon icon={icon} className="h-4 w-4 text-secondary" />
-        {label}
-      </p>
-      <p className="mt-2 text-sm font-semibold text-primary dark:text-white">{value || "-"}</p>
+    <div className="flex items-start gap-3 rounded-xl border border-border bg-white px-4 py-3 dark:border-dark_border dark:bg-darkheader">
+      <Icon icon={icon} className="mt-0.5 h-4 w-4 shrink-0 text-secondary" />
+      <div className="min-w-0">
+        <p className="text-11 font-semibold uppercase tracking-[0.12em] text-muted dark:text-white/60">{label}</p>
+        <p className="mt-0.5 text-14 font-bold text-midnight_text dark:text-white">{value || "-"}</p>
+      </div>
     </div>
   );
 }
 
-function DetailCard({ title, text }: { title: string; text: string }) {
+function DetailCard({ icon, title, text }: { icon: string; title: string; text: string }) {
   return (
-    <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] dark:border-white/10 dark:bg-slate-900/80">
-      <h3 className="text-24 font-extrabold text-primary dark:text-white">{title}</h3>
-      <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{text}</p>
+    <div className="rounded-2xl border border-border bg-white p-5 shadow-sm dark:border-dark_border dark:bg-darkheader">
+      <div className="flex items-center gap-2.5">
+        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/10 dark:bg-primary/20">
+          <Icon icon={icon} className="h-4 w-4 text-primary" />
+        </div>
+        <h3 className="text-18 font-extrabold text-midnight_text dark:text-white">{title}</h3>
+      </div>
+      <p className="mt-3 text-14 leading-relaxed text-muted dark:text-white/70">{text}</p>
     </div>
   );
 }
 
-function DateItem({ label, value }: { label: string; value?: string }) {
+function DateItem({ icon, label, value }: { icon: string; label: string; value?: string }) {
   return (
-    <div className="rounded-xl border border-primary/10 bg-white/85 p-4 dark:border-white/10 dark:bg-slate-950/70">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="mt-2 text-sm font-semibold text-primary dark:text-white">{formatDate(value)}</p>
+    <div className="flex items-center gap-3 rounded-xl border border-border bg-hero-bg px-4 py-3 dark:border-dark_border dark:bg-dark_b">
+      <Icon icon={icon} className="h-4 w-4 shrink-0 text-secondary" />
+      <div className="min-w-0">
+        <p className="text-11 font-semibold uppercase tracking-[0.12em] text-muted dark:text-white/60">{label}</p>
+        <p className="mt-0.5 text-14 font-bold text-midnight_text dark:text-white">{formatDate(value)}</p>
+      </div>
     </div>
   );
 }
 
 export default function ExamDetailsView({ exam, relatedColleges }: Props) {
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f5fbff_0%,#ffffff_34%,#f0fdfa_100%)] py-16 transition-colors duration-300 dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_40%,#05111b_100%)] sm:py-20">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] overflow-hidden">
-        <div className="animate-gradient-shift absolute left-[-6rem] top-10 h-72 w-72 rounded-full bg-secondary/20 blur-3xl" />
-        <div className="animate-float absolute right-[-4rem] top-8 h-80 w-80 rounded-full bg-primary/15 blur-3xl" />
-      </div>
+    <section className="relative overflow-hidden bg-gradient-to-b from-hero-bg to-white py-10 dark:from-darkmode dark:to-darkmode sm:py-14">
+      <div className="pointer-events-none absolute -left-24 top-10 h-60 w-60 rounded-full bg-primary/15 blur-3xl" />
+      <div className="pointer-events-none absolute -right-20 bottom-16 h-56 w-56 rounded-full bg-secondary/15 blur-3xl" />
 
-      <div className="container relative mx-auto px-4 sm:px-6">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-          <Link href="/exam" className="font-medium transition-colors hover:text-primary">
-            Exams
-          </Link>
-          <Icon icon="mdi:chevron-right" className="h-4 w-4" />
-          <span className="font-semibold text-primary dark:text-white">{exam.name}</span>
-        </div>
+      <div className="container relative mx-auto px-4 lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md)">
+        {/* Hero Card */}
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary via-primary to-primary/90 p-6 shadow-lg sm:p-8">
+          <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-secondary/20 blur-2xl" />
 
-        <div className="relative mt-6 overflow-hidden rounded-[2rem] border border-primary/10 bg-white/85 p-6 shadow-[0_30px_80px_rgba(10,24,58,0.10)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-8 lg:p-10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(48,216,201,0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(23,30,76,0.10),transparent_32%)]" />
           <div className="relative">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary dark:bg-white/10 dark:text-secondary">
-                {exam.level || "Exam"}
-              </span>
-              {exam.popular && (
-                <span className="rounded-full bg-emerald-100 px-4 py-2 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
-                  Popular Exam
-                </span>
-              )}
-            </div>
-
-            <h1 className="mt-6 text-white text-35 font-extrabold leading-tight sm:text-48">
+            <h1 className="text-32 font-extrabold leading-tight text-white sm:text-44">
               {exam.name}
             </h1>
 
-            <p className="mt-4 max-w-4xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg">
+            <p className="mt-2 max-w-3xl text-15 leading-relaxed text-white/80">
               {sectionText(exam.overview, "Detailed exam information will be updated shortly.")}
             </p>
-
-            <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              <StatItem icon="mdi:office-building-outline" label="Conducting Body" value={exam.conductingBody} />
-              <StatItem icon="mdi:refresh" label="Frequency" value={exam.frequency} />
-              <StatItem icon="mdi:head-cog-outline" label="Mode" value={exam.examMode} />
-              <StatItem icon="mdi:clock-outline" label="Duration" value={exam.duration} />
-              <StatItem icon="mdi:currency-inr" label="Application Fee" value={sectionText(exam.applicationFee, "N/A")} />
-              <StatItem icon="mdi:book-open-page-variant-outline" label="Category" value={exam.category} />
-            </div>
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(20rem,0.9fr)]">
-          <div className="space-y-6">
-            <DetailCard title="Eligibility" text={sectionText(exam.eligibility, "Eligibility details will be shared soon.")} />
-            <DetailCard title="Exam Pattern" text={sectionText(exam.examPattern, "Exam pattern details will be shared soon.")} />
-            <DetailCard title="Syllabus" text={sectionText(exam.syllabus, "Syllabus details will be shared soon.")} />
-            <DetailCard title="Application Process" text={sectionText(exam.applicationProcess, "Application process details will be shared soon.")} />
+        {/* Stat Grid */}
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
+          <StatItem icon="mdi:office-building-outline" label="Conducting Body" value={exam.conductingBody} />
+          <StatItem icon="mdi:refresh" label="Frequency" value={exam.frequency} />
+          <StatItem icon="mdi:head-cog-outline" label="Mode" value={exam.examMode} />
+          <StatItem icon="mdi:clock-outline" label="Duration" value={exam.duration} />
+          <StatItem icon="mdi:currency-inr" label="Application Fee" value={sectionText(exam.applicationFee, "N/A")} />
+          <StatItem icon="mdi:book-open-page-variant-outline" label="Category" value={exam.category} />
+        </div>
+
+        {/* Content Grid */}
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_22rem]">
+          {/* Left Column - Details */}
+          <div className="space-y-5">
+            <DetailCard icon="mdi:school-outline" title="Eligibility" text={sectionText(exam.eligibility, "Eligibility details will be shared soon.")} />
+            <DetailCard icon="mdi:format-list-checks" title="Exam Pattern" text={sectionText(exam.examPattern, "Exam pattern details will be shared soon.")} />
+            <DetailCard icon="mdi:book-open-variant" title="Syllabus" text={sectionText(exam.syllabus, "Syllabus details will be shared soon.")} />
+            <DetailCard icon="mdi:file-document-edit-outline" title="Application Process" text={sectionText(exam.applicationProcess, "Application process details will be shared soon.")} />
           </div>
 
-          <aside className="space-y-6">
-            <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] dark:border-white/10 dark:bg-slate-900/80">
-              <h3 className="text-24 font-extrabold text-primary dark:text-white">Important Dates</h3>
-              <div className="mt-4 space-y-3">
-                <DateItem label="Application Start" value={exam.importantDates?.applicationStart} />
-                <DateItem label="Application End" value={exam.importantDates?.applicationEnd} />
-                <DateItem label="Exam Date" value={exam.importantDates?.examDate} />
-                <DateItem label="Result Date" value={exam.importantDates?.resultDate} />
+          {/* Right Sidebar */}
+          <aside className="space-y-5">
+            {/* Important Dates */}
+            <div className="rounded-2xl border border-border bg-white p-5 shadow-sm dark:border-dark_border dark:bg-darkheader">
+              <div className="flex items-center gap-2.5">
+                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-secondary/10 dark:bg-secondary/20">
+                  <Icon icon="mdi:calendar-clock" className="h-4 w-4 text-secondary" />
+                </div>
+                <h3 className="text-18 font-extrabold text-midnight_text dark:text-white">Important Dates</h3>
+              </div>
+              <div className="mt-4 space-y-2.5">
+                <DateItem icon="mdi:calendar-arrow-right" label="Application Start" value={exam.importantDates?.applicationStart} />
+                <DateItem icon="mdi:calendar-remove" label="Application End" value={exam.importantDates?.applicationEnd} />
+                <DateItem icon="mdi:calendar-edit" label="Exam Date" value={exam.importantDates?.examDate} />
+                <DateItem icon="mdi:calendar-check" label="Result Date" value={exam.importantDates?.resultDate} />
               </div>
             </div>
 
-            <div className="rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] dark:border-white/10 dark:bg-slate-900/80">
-              <h3 className="text-24 font-extrabold text-primary dark:text-white">Official Website</h3>
+            {/* Official Website */}
+            <div className="rounded-2xl border border-border bg-white p-5 shadow-sm dark:border-dark_border dark:bg-darkheader">
+              <div className="flex items-center gap-2.5">
+                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/10 dark:bg-primary/20">
+                  <Icon icon="mdi:web" className="h-4 w-4 text-primary" />
+                </div>
+                <h3 className="text-18 font-extrabold text-midnight_text dark:text-white">Official Website</h3>
+              </div>
               {exam.officialWebsite ? (
                 <a
                   href={exam.officialWebsite}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
+                  className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-primary text-14 font-semibold text-white transition-all duration-300 hover:opacity-90"
                 >
                   Visit Website
-                  <Icon icon="solar:alt-arrow-right-linear" className="h-4 w-4" />
+                  <Icon icon="solar:arrow-right-up-linear" className="h-4 w-4" />
                 </a>
               ) : (
-                <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Official website link is not available right now.</p>
+                <p className="mt-3 text-13 text-muted dark:text-white/70">Official website link is not available right now.</p>
               )}
             </div>
           </aside>

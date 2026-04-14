@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import CollegeCard from "@/components/Home/ExploreColleges/CollegeCard";
 import { getAllColleges } from "@/app/api/colleges";
 import { compareCollegesByIds } from "@/app/api/collegeCompare";
+import EduLoader from "@/components/Common/EduLoader";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "motion/react";
@@ -147,6 +148,13 @@ export default function NationalColleges() {
   const [compareError, setCompareError] = useState<string | null>(null);
   const [compareResult, setCompareResult] = useState<CompareResult | null>(null);
   const [showCompareDetails, setShowCompareDetails] = useState(false);
+  const [allCollegesForCompare, setAllCollegesForCompare] = useState<{ id: string, name: string }[]>([]);
+  const [compareSearchOne, setCompareSearchOne] = useState("");
+  const [compareSearchTwo, setCompareSearchTwo] = useState("");
+  const [dropdownOneOpen, setDropdownOneOpen] = useState(false);
+  const [dropdownTwoOpen, setDropdownTwoOpen] = useState(false);
+  const dropdownOneRef = useRef<HTMLDivElement>(null);
+  const dropdownTwoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchColleges = async () => {
@@ -184,11 +192,43 @@ export default function NationalColleges() {
   }, [currentPage]);
 
   useEffect(() => {
+    const fetchAllForCompare = async () => {
+      try {
+        const res = await getAllColleges(1, 9999);
+        const raw = res?.data || [];
+        setAllCollegesForCompare(
+          raw
+            .map((c: any) => ({ id: String(c.id), name: c.name }))
+            .sort((a: any, b: any) => a.name.localeCompare(b.name))
+        );
+      } catch {
+        // silently fail, fallback to paginated list
+      }
+    };
+    fetchAllForCompare();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownOneRef.current && !dropdownOneRef.current.contains(e.target as Node)) {
+        setDropdownOneOpen(false);
+      }
+      if (dropdownTwoRef.current && !dropdownTwoRef.current.contains(e.target as Node)) {
+        setDropdownTwoOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
     gridRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   }, [currentPage]);
+
+
 
   const handleReset = () => {
     setFilters({
@@ -231,6 +271,20 @@ export default function NationalColleges() {
     [selectedCollegeTwoId, collegesData]
   );
 
+  const compareOptionsOne = useMemo(() => {
+    const list = allCollegesForCompare.length > 0 ? allCollegesForCompare : collegeOptions;
+    return list.filter((c) =>
+      c.name.toLowerCase().includes(compareSearchOne.toLowerCase())
+    );
+  }, [allCollegesForCompare, collegeOptions, compareSearchOne]);
+
+  const compareOptionsTwo = useMemo(() => {
+    const list = allCollegesForCompare.length > 0 ? allCollegesForCompare : collegeOptions;
+    return list.filter((c) =>
+      c.name.toLowerCase().includes(compareSearchTwo.toLowerCase())
+    );
+  }, [allCollegesForCompare, collegeOptions, compareSearchTwo]);
+
   const getFallbackCompare = (collegeIds: string[]): CompareResult => {
     const selected = collegeIds
       .map((id) =>
@@ -264,16 +318,18 @@ export default function NationalColleges() {
 
   const normalizeCompareResponse = (payload: any): CompareResult | null => {
     const root = payload?.data ?? payload;
-    const verdict: CompareVerdict | undefined = root?.verdict;
+    const verdict: CompareVerdict | undefined = root?.verdict ?? root?.data?.verdict;
     const summary =
       verdict?.summary ||
       root?.summary ||
+      root?.data?.summary ||
       root?.overallSummary ||
       root?.comparisonSummary ||
       "";
 
     const rawColleges =
       (Array.isArray(root?.data) && root?.data) ||
+      (Array.isArray(root?.data?.data) && root?.data?.data) ||
       root?.colleges ||
       root?.items ||
       root?.data?.colleges ||
@@ -332,6 +388,7 @@ export default function NationalColleges() {
 
     try {
       const response = await compareCollegesByIds(collegeIds);
+      console.log("Raw compare response:", response);
       const normalized = normalizeCompareResponse(response);
 
       if (!normalized || normalized.colleges.length < 2) {
@@ -362,6 +419,10 @@ export default function NationalColleges() {
     setCompareError(null);
     setCompareResult(null);
     setShowCompareDetails(false);
+    setCompareSearchOne("");
+    setCompareSearchTwo("");
+    setDropdownOneOpen(false);
+    setDropdownTwoOpen(false);
   };
 
   const compareRows = useMemo(() => {
@@ -534,7 +595,7 @@ export default function NationalColleges() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" }}
-      className="relative overflow-hidden bg-[linear-gradient(180deg,#f7fbff_0%,#ffffff_34%,#f1faf8_100%)] py-16 transition-colors dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_42%,#05111b_100%)] sm:py-20"
+      className="relative overflow-visible bg-[linear-gradient(180deg,#f7fbff_0%,#ffffff_34%,#f1faf8_100%)] py-16 transition-colors dark:bg-[linear-gradient(180deg,#07111f_0%,#09182d_42%,#05111b_100%)] sm:py-20"
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -left-16 top-6 h-64 w-64 rounded-full bg-primary/12 blur-3xl" />
@@ -543,7 +604,7 @@ export default function NationalColleges() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* HEADER */}
-        <div className="relative mb-6 overflow-hidden rounded-lg border border-primary/10 bg-white/85 p-4 text-center shadow-md backdrop-blur sm:rounded-2xl sm:p-6 md:rounded-[2rem] md:p-8 lg:p-10 dark:border-white/10 dark:bg-slate-900/80">
+        <div className="relative mb-6 overflow-visible rounded-lg border border-primary/10 bg-white/85 p-4 text-center shadow-md backdrop-blur sm:rounded-2xl sm:p-6 md:rounded-[2rem] md:p-8 lg:p-10 dark:border-white/10 dark:bg-slate-900/80">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(48,216,201,0.16),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(23,30,76,0.08),transparent_31%)]" />
           <div className="relative mx-auto max-w-3xl">
             <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#FAFA33]/45 bg-[#FAFA33]/20 px-3 py-1.5 text-10 font-semibold uppercase tracking-[0.2em] text-primary shadow-sm dark:bg-[#FAFA33]/30 dark:text-primary sm:mb-4 sm:px-4 sm:py-2 sm:text-xs">
@@ -656,7 +717,7 @@ export default function NationalColleges() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="relative mb-4 overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-white via-white to-primary/5 shadow-[0_18px_44px_rgba(10,24,58,0.08)] dark:border-primary/25 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
+          className="relative mb-4 overflow-visible rounded-2xl border border-primary/15 bg-gradient-to-br from-white via-white to-primary/5 shadow-[0_18px_44px_rgba(10,24,58,0.08)] dark:border-primary/25 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
         >
           <motion.div
             aria-hidden
@@ -693,54 +754,172 @@ export default function NationalColleges() {
 
           <div className="flex flex-col gap-2.5 p-3.5 sm:p-4">
             <div className="grid grid-cols-1 gap-2.5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] xl:items-stretch">
-              <div className="flex min-h-[4.25rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
-                <label
-                  htmlFor="compare-college-one"
-                  className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300"
-                >
+              <div
+                className="flex min-h-[4.25rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70 "
+                ref={dropdownOneRef}
+              >
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300">
                   College 1
                 </label>
-                <select
-                  id="compare-college-one"
-                  value={selectedCollegeOneId}
-                  onChange={(event) => {
-                    setSelectedCollegeOneId(event.target.value);
-                    setCompareError(null);
-                  }}
-                  className="h-8 w-full bg-transparent text-sm font-medium text-gray-900 outline-none dark:text-gray-100"
-                >
-                  <option value="">Select first college</option>
-                  {collegeOptions.map((college) => (
-                    <option key={college.id} value={college.id}>
-                      {college.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <div
+                    onClick={() => {
+                      setDropdownOneOpen((prev) => !prev);
+                      setDropdownTwoOpen(false);
+                    }}
+                    className="flex h-8 cursor-pointer items-center justify-between text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >
+                    <span className="truncate">
+                      {allCollegesForCompare.find((c) => c.id === selectedCollegeOneId)?.name ||
+                        collegeOptions.find((c) => c.id === selectedCollegeOneId)?.name ||
+                        "Select first college"}
+                    </span>
+                    <Icon
+                      icon={dropdownOneOpen ? "mdi:chevron-up" : "mdi:chevron-down"}
+                      width="16"
+                      className="ml-1 shrink-0 text-slate-400"
+                    />
+                  </div>
+
+                  <AnimatePresence>
+                    {dropdownOneOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        transition={{ duration: 0.18 }}
+                        className="absolute left-0 top-full z-50 mt-1.5 w-96 rounded-xl border border-primary/15 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900"
+                      >
+                        <div className="border-b border-gray-100 p-2 dark:border-slate-700">
+                          <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 dark:border-slate-600 dark:bg-slate-800">
+                            <Icon icon="mdi:magnify" width="14" className="shrink-0 text-slate-400" />
+                            <input
+                              autoFocus
+                              type="text"
+                              placeholder="Search college..."
+                              value={compareSearchOne}
+                              onChange={(e) => setCompareSearchOne(e.target.value)}
+                              className="w-full bg-transparent text-xs text-gray-800 outline-none placeholder:text-slate-400 dark:text-gray-100"
+                            />
+                            {compareSearchOne && (
+                              <button onClick={() => setCompareSearchOne("")}>
+                                <Icon icon="mdi:close" width="12" className="text-slate-400 hover:text-slate-600" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="max-h-52 overflow-y-auto">
+                          {compareOptionsOne.length === 0 ? (
+                            <p className="px-4 py-3 text-xs text-slate-400">No colleges found</p>
+                          ) : (
+                            compareOptionsOne.map((college) => (
+                              <button
+                                key={college.id}
+                                onClick={() => {
+                                  setSelectedCollegeOneId(college.id);
+                                  setCompareSearchOne("");
+                                  setDropdownOneOpen(false);
+                                  setCompareError(null);
+                                }}
+                                className={`flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition hover:bg-primary/5 dark:hover:bg-slate-800 ${selectedCollegeOneId === college.id
+                                  ? "bg-primary/8 font-semibold text-primary dark:text-primary"
+                                  : "text-gray-800 dark:text-gray-100"
+                                  }`}
+                              >
+                                <Icon icon="mdi:school-outline" width="14" className="shrink-0 text-primary/60" />
+                                <span className="line-clamp-1">{college.name}</span>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
-              <div className="flex min-h-[4.25rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
-                <label
-                  htmlFor="compare-college-two"
-                  className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300"
-                >
+              <div
+                className="flex min-h-[4.25rem] flex-col justify-between rounded-xl border border-primary/10 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-slate-950/70"
+                ref={dropdownTwoRef}
+              >
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300">
                   College 2
                 </label>
-                <select
-                  id="compare-college-two"
-                  value={selectedCollegeTwoId}
-                  onChange={(event) => {
-                    setSelectedCollegeTwoId(event.target.value);
-                    setCompareError(null);
-                  }}
-                  className="h-8 w-full bg-transparent text-sm font-medium text-gray-900 outline-none dark:text-gray-100"
-                >
-                  <option value="">Select second college</option>
-                  {collegeOptions.map((college) => (
-                    <option key={college.id} value={college.id}>
-                      {college.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <div
+                    onClick={() => {
+                      setDropdownTwoOpen((prev) => !prev);
+                      setDropdownOneOpen(false);
+                    }}
+                    className="flex h-8 cursor-pointer items-center justify-between text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >
+                    <span className="truncate">
+                      {allCollegesForCompare.find((c) => c.id === selectedCollegeTwoId)?.name ||
+                        collegeOptions.find((c) => c.id === selectedCollegeTwoId)?.name ||
+                        "Select second college"}
+                    </span>
+                    <Icon
+                      icon={dropdownTwoOpen ? "mdi:chevron-up" : "mdi:chevron-down"}
+                      width="16"
+                      className="ml-1 shrink-0 text-slate-400"
+                    />
+                  </div>
+
+                  <AnimatePresence>
+                    {dropdownTwoOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        transition={{ duration: 0.18 }}
+                        className="absolute left-0 top-full z-50 mt-1.5 w-96 rounded-xl border border-primary/15 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900"
+                      >
+                        <div className="border-b border-gray-100 p-2 dark:border-slate-700">
+                          <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 dark:border-slate-600 dark:bg-slate-800">
+                            <Icon icon="mdi:magnify" width="14" className="shrink-0 text-slate-400" />
+                            <input
+                              autoFocus
+                              type="text"
+                              placeholder="Search college..."
+                              value={compareSearchTwo}
+                              onChange={(e) => setCompareSearchTwo(e.target.value)}
+                              className="w-full bg-transparent text-xs text-gray-800 outline-none placeholder:text-slate-400 dark:text-gray-100"
+                            />
+                            {compareSearchTwo && (
+                              <button onClick={() => setCompareSearchTwo("")}>
+                                <Icon icon="mdi:close" width="12" className="text-slate-400 hover:text-slate-600" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="max-h-52 overflow-y-auto">
+                          {compareOptionsTwo.length === 0 ? (
+                            <p className="px-4 py-3 text-xs text-slate-400">No colleges found</p>
+                          ) : (
+                            compareOptionsTwo.map((college) => (
+                              <button
+                                key={college.id}
+                                onClick={() => {
+                                  setSelectedCollegeTwoId(college.id);
+                                  setCompareSearchTwo("");
+                                  setDropdownTwoOpen(false);
+                                  setCompareError(null);
+                                }}
+                                className={`flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition hover:bg-primary/5 dark:hover:bg-slate-800 ${selectedCollegeTwoId === college.id
+                                  ? "bg-primary/8 font-semibold text-primary dark:text-primary"
+                                  : "text-gray-800 dark:text-gray-100"
+                                  }`}
+                              >
+                                <Icon icon="mdi:school-outline" width="14" className="shrink-0 text-primary/60" />
+                                <span className="line-clamp-1">{college.name}</span>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 xl:justify-end xl:self-stretch">
@@ -804,14 +983,106 @@ export default function NationalColleges() {
           </div>
         </motion.div>
 
+        {/* COMPARE RESULTS */}
+        <AnimatePresence>
+          {showCompareDetails && compareResult && compareResult.colleges.length >= 2 && (
+            <motion.div
+              key="compare-details"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="mb-6 overflow-hidden rounded-2xl border border-primary/15 bg-white shadow-[0_18px_44px_rgba(10,24,58,0.08)] dark:border-primary/25 dark:bg-slate-900"
+            >
+              {/* Header */}
+              <div className="border-b border-gray-100 bg-primary/5 px-5 py-4 dark:border-slate-700 dark:bg-slate-800/50">
+                <h3 className="text-base font-bold text-primary dark:text-white">
+                  Side-by-Side Comparison
+                </h3>
+                {compareResult.summary && (
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    {compareResult.summary}
+                  </p>
+                )}
+              </div>
+
+              {/* College name headers */}
+              <div className="grid grid-cols-3 gap-0 border-b border-gray-100 dark:border-slate-700">
+                <div className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  Metric
+                </div>
+                {compareResult.colleges.map((college) => (
+                  <div key={college.id} className="px-5 py-3">
+                    <p className="text-sm font-bold text-primary dark:text-white line-clamp-2">
+                      {college.name}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {college.city || college.location || "—"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Rows */}
+              <div className="divide-y divide-gray-50 dark:divide-slate-800">
+                {compareRows.map((row, idx) => (
+                  <div
+                    key={row.label}
+                    className={`grid grid-cols-3 gap-0 ${idx % 2 === 0 ? "bg-white dark:bg-slate-900" : "bg-slate-50/60 dark:bg-slate-800/30"}`}
+                  >
+                    <div className="px-5 py-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      {row.label}
+                    </div>
+                    <div className="px-5 py-3 text-sm font-medium text-gray-800 dark:text-gray-100">
+                      {row.first}
+                    </div>
+                    <div className="px-5 py-3 text-sm font-medium text-gray-800 dark:text-gray-100">
+                      {row.second}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Highlights */}
+              {compareHighlights && (
+                <div className="grid grid-cols-1 gap-3 border-t border-gray-100 p-5 sm:grid-cols-3 dark:border-slate-700">
+                  {[
+                    { label: "Higher Rating", winner: compareHighlights.higherRatingWinner },
+                    { label: "Stronger Placement", winner: compareHighlights.strongerPlacementWinner },
+                    { label: "Better Faculty Ratio", winner: compareHighlights.betterFacultyRatioWinner },
+                  ].map((h) => (
+                    <div key={h.label} className="rounded-xl border border-primary/10 bg-primary/5 px-4 py-3 dark:border-primary/20 dark:bg-slate-800/50">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        {h.label}
+                      </p>
+                      <p className="mt-1 text-sm font-bold text-primary dark:text-white">
+                        {h.winner}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Recommendation */}
+              {compareRecommendation && (
+                <div className="border-t border-gray-100 bg-primary/5 px-5 py-4 dark:border-slate-700 dark:bg-slate-800/40">
+                  <p className="text-sm font-bold text-primary dark:text-white">
+                    {compareRecommendation.title}
+                  </p>
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    {compareRecommendation.subtitle}
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* COLLEGES GRID */}
         <div ref={gridRef} className="mb-8">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="text-center">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-r-transparent"></div>
-                <p className="mt-4 text-slate-600 dark:text-slate-300">Loading colleges...</p>
-              </div>
+              <EduLoader overlay={false} message="Loading colleges…" />
             </div>
           ) : filteredColleges.length === 0 ? (
             <div className="rounded-2xl border border-primary/10 bg-white/95 px-6 py-16 text-center dark:border-white/10 dark:bg-slate-900/85">
@@ -844,13 +1115,12 @@ export default function NationalColleges() {
                         if (typeof item === "number") setCurrentPage(item);
                       }}
                       disabled={item === "..."}
-                      className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                        item === currentPage
-                          ? "bg-primary text-white shadow-sm"
-                          : item === "..."
-                            ? "cursor-default text-slate-400"
-                            : "border border-primary/25 bg-primary/5 text-primary hover:bg-primary/10"
-                      }`}
+                      className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${item === currentPage
+                        ? "bg-primary text-white shadow-sm"
+                        : item === "..."
+                          ? "cursor-default text-slate-400"
+                          : "border border-primary/25 bg-primary/5 text-primary hover:bg-primary/10"
+                        }`}
                     >
                       {item}
                     </button>

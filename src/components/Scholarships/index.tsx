@@ -5,6 +5,7 @@ import { useMemo, useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "motion/react";
 import { getAllScholarships } from "@/app/api/Scholarship";
+import EduLoader from "@/components/Common/EduLoader";
 
 const ALL = {
   type: "All Types",
@@ -349,8 +350,8 @@ export default function ScholarshipsSection() {
 
         {/* LOADING */}
         {loading && (
-          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-            Loading scholarships...
+          <div className="flex items-center justify-center py-12">
+            <EduLoader overlay={false} message="Loading scholarships…" />
           </div>
         )}
 
@@ -367,43 +368,44 @@ export default function ScholarshipsSection() {
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.32, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
+                className="h-full"
               >
                 <Link
                   href={`/scholarships/${item.slug}`}
-                  className="group relative block overflow-hidden rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-secondary/35 hover:shadow-[0_28px_64px_rgba(10,24,58,0.14)] dark:border-white/10 dark:bg-slate-900/80"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-secondary/35 hover:shadow-[0_28px_64px_rgba(10,24,58,0.14)] dark:border-white/10 dark:bg-slate-900/80"
                 >
                   <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#171e4c_0%,#30d8c9_100%)]" />
 
-                  <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
+                  <span className="self-start rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
                     {item.level}
                   </span>
 
-                  <h3 className="mt-3 text-xl font-bold text-primary dark:text-white">
+                  <h3 className="mt-3 min-h-[3.5rem] text-xl font-bold text-primary dark:text-white">
                     {item.name}
                   </h3>
 
-                  <p className="mt-2 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
+                  <p className="mt-2 min-h-[2.5rem] line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
                     {item.overview}
                   </p>
 
                   <div className="mt-4 space-y-2 text-sm text-gray-500 dark:text-gray-400">
                     <p className="flex items-center gap-2">
-                      <Icon icon="mdi:office-building-outline" className="h-4 w-4" />
-                      {item.provider}
+                      <Icon icon="mdi:office-building-outline" className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{item.provider}</span>
                     </p>
 
                     <p className="flex items-center gap-2">
-                      <Icon icon="mdi:currency-inr" className="h-4 w-4" />
-                      {item.amount}
+                      <Icon icon="mdi:currency-inr" className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{item.amount}</span>
                     </p>
 
                     <p className="flex items-center gap-2">
-                      <Icon icon="mdi:calendar-month-outline" className="h-4 w-4" />
-                      Deadline: {item.importantDates?.applicationEnd}
+                      <Icon icon="mdi:calendar-month-outline" className="h-4 w-4 shrink-0" />
+                      <span className="truncate">Deadline: {item.importantDates?.applicationEnd}</span>
                     </p>
                   </div>
 
-                  <div className="mt-5 flex items-center gap-1 border-t border-primary/10 pt-4 text-sm font-semibold text-primary dark:border-white/10">
+                  <div className="mt-auto flex items-center gap-1 border-t border-primary/10 pt-4 text-sm font-semibold text-primary dark:border-white/10" style={{ marginTop: "auto", paddingTop: "1rem" }}>
                     View Details
                     <Icon icon="solar:alt-arrow-right-linear" className="h-4 w-4" />
                   </div>

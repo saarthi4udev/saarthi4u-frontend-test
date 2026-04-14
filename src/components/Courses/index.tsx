@@ -336,10 +336,11 @@ export default function CoursesSection() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.32, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
+              className="h-full"
             >
               <Link
                 href={`/course/${category.id}`}
-                className="group relative block overflow-hidden rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-secondary/35 hover:shadow-[0_28px_64px_rgba(10,24,58,0.14)] dark:border-white/10 dark:bg-slate-900/80"
+                className="group relative flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-primary/10 bg-white/90 p-6 shadow-[0_20px_50px_rgba(10,24,58,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-secondary/35 hover:shadow-[0_28px_64px_rgba(10,24,58,0.14)] dark:border-white/10 dark:bg-slate-900/80"
               >
 
                 <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#171e4c_0%,#30d8c9_100%)]" />
@@ -352,15 +353,11 @@ export default function CoursesSection() {
                   {category.name}
                 </h3>
 
-                <p className="min-h-10 text-sm text-gray-500 dark:text-gray-400">
+                <p className="line-clamp-3 text-sm text-gray-500 dark:text-gray-400">
                   {truncateText(category.description, 120)}
                 </p>
 
-                <div className="mt-5 flex items-center justify-between border-t border-primary/10 pt-4 text-sm dark:border-white/10">
-                  <span className="text-slate-500 dark:text-slate-300">
-                    {category.totalCourses || "Courses"}
-                  </span>
-
+                <div className="mt-auto flex items-center justify-end border-t border-primary/10 pt-4 text-sm dark:border-white/10">
                   <span className="flex items-center gap-1 font-semibold text-primary">
                     Explore
                     <Icon icon="solar:alt-arrow-right-linear" className="h-4 w-4" />

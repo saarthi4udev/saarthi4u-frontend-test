@@ -65,33 +65,18 @@ const CareerCoaches = () => {
     const fetchMentors = async () => {
       const data = await getAllMentors();
 
-      const formatted = data.map((item: any) => {
-        // Ensure specialties is always an array
-        let specialties: string[] = [];
-        if (item.shortQualifications) {
-          if (Array.isArray(item.shortQualifications)) {
-            specialties = item.shortQualifications;
-          } else if (typeof item.shortQualifications === "string") {
-            specialties = item.shortQualifications
-              .split(",")
-              .map((s: string) => s.trim())
-              .filter((s: string) => s.length > 0);
-          }
-        }
-
-        return {
-          name: item.name,
-          title: item.title,
-          experience: `${item.experienceYears} Yrs`,
-          studentsGuided: `${item.studentsGuided?.toLocaleString()}+`,
-          rating: item.rating,
-          reviews: item.totalReviews,
-          specialties,
-          bio: item.description,
-          photo: item.profileImage,
-          topBadge: item.role || "Mentor",
-        };
-      });
+      const formatted = data.map((item: any) => ({
+        name: item.name,
+        title: item.title,
+        experience: `${item.experienceYears} Yrs`,
+        studentsGuided: `${item.studentsGuided?.toLocaleString()}+`,
+        rating: item.rating,
+        reviews: item.totalReviews,
+        specialties: item.shortQualifications || [],
+        bio: item.description,
+        photo: item.profileImage,
+        topBadge: item.role || "Mentor",
+      }));
 
       setCoaches(formatted);
     };
@@ -289,6 +274,7 @@ const CareerCoaches = () => {
                       {coach.bio}
                     </p>
 
+
                     <div className="mt-4 grid grid-cols-2 gap-3">
                       <div className="rounded-xl border border-border bg-gray-50/80 px-3 py-2.5 text-center dark:border-dark_border dark:bg-black/30">
                         <p className="text-17 font-bold text-secondary">{coach.experience}</p>
@@ -342,203 +328,3 @@ const CareerCoaches = () => {
 export default CareerCoaches;
 
 
-// "use client";
-
-// import Image from "next/image";
-// import Link from "next/link";
-// import { Icon } from "@iconify/react";
-// import { motion, useInView } from "motion/react";
-// import { useEffect, useRef, useState } from "react";
-// import { getAllMentors, Mentor } from "@/app/api/mentor";
-
-// /* ⭐ Star Component (PURE UI ONLY) */
-// function StarRating({ rating }: { rating: number }) {
-//   return (
-//     <div className="flex items-center gap-1">
-//       {[1, 2, 3, 4, 5].map((star) => (
-//         <Icon
-//           key={star}
-//           icon={
-//             star <= Math.floor(rating)
-//               ? "ph:star-fill"
-//               : star - 0.5 <= rating
-//               ? "ph:star-half-fill"
-//               : "ph:star"
-//           }
-//           className="h-3.5 w-3.5 text-amber-400"
-//         />
-//       ))}
-//     </div>
-//   );
-// }
-
-// const CareerCoaches = () => {
-//   const ref = useRef(null);
-//   const inView = useInView(ref, { once: true, amount: 0.1 });
-//   const scrollerRef = useRef<HTMLDivElement>(null);
-
-//   const [coaches, setCoaches] = useState<any[]>([]);
-//   const [visibleCount, setVisibleCount] = useState(4); // pagination control
-
-//   const [canScrollLeft, setCanScrollLeft] = useState(false);
-//   const [canScrollRight, setCanScrollRight] = useState(true);
-
-//   /* ✅ FETCH API */
-//   useEffect(() => {
-//     const fetchMentors = async () => {
-//       const data = await getAllMentors();
-
-//       const formatted = data.map((item: Mentor) => ({
-//         name: item.name,
-//         title: item.title,
-//         experience: `${item.experienceYears} Yrs`,
-//         studentsGuided: `${item.studentsGuided.toLocaleString()}+`,
-//         rating: item.rating,
-//         reviews: item.totalReviews,
-//         specialties: item.shortQualifications || [],
-//         bio: item.description,
-//         photo: item.profileImage,
-//         topBadge: item.role || "Mentor",
-//       }));
-
-//       setCoaches(formatted);
-//     };
-
-//     fetchMentors();
-//   }, []);
-
-//   /* ✅ SCROLL LOGIC */
-//   const updateScrollState = () => {
-//     const el = scrollerRef.current;
-//     if (!el) return;
-
-//     const maxScrollLeft = el.scrollWidth - el.clientWidth;
-//     setCanScrollLeft(el.scrollLeft > 4);
-//     setCanScrollRight(el.scrollLeft < maxScrollLeft - 4);
-//   };
-
-//   const scrollCoachesBy = (direction: "left" | "right") => {
-//     const el = scrollerRef.current;
-//     if (!el) return;
-
-//     const amount = Math.min(360, Math.round(el.clientWidth * 0.8));
-//     el.scrollBy({
-//       left: direction === "right" ? amount : -amount,
-//       behavior: "smooth",
-//     });
-//   };
-
-//   useEffect(() => {
-//     updateScrollState();
-//     window.addEventListener("resize", updateScrollState);
-//     return () => window.removeEventListener("resize", updateScrollState);
-//   }, []);
-
-//   /* ✅ LOAD MORE (Pagination style) */
-//   const handleLoadMore = () => {
-//     setVisibleCount((prev) => prev + 4);
-//   };
-
-//   const cardClass =
-//     "group relative flex h-full min-h-[575px] min-w-[280px] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-lg";
-
-//   return (
-//     <section ref={ref} className="py-12">
-//       <div className="container mx-auto px-4">
-
-//         {/* HEADER */}
-//         <h2 className="text-center text-3xl font-bold mb-6">
-//           Meet Your Career Guides
-//         </h2>
-
-//         {/* SCROLLER */}
-//         <div className="flex justify-between mb-3">
-//           <button onClick={() => scrollCoachesBy("left")} disabled={!canScrollLeft}>
-//             ◀
-//           </button>
-//           <button onClick={() => scrollCoachesBy("right")} disabled={!canScrollRight}>
-//             ▶
-//           </button>
-//         </div>
-
-//         <div
-//           ref={scrollerRef}
-//           onScroll={updateScrollState}
-//           className="flex gap-5 overflow-x-auto pb-3"
-//         >
-//           {coaches.slice(0, visibleCount).map((coach, index) => (
-//             <motion.div
-//               key={index}
-//               className="w-[320px] shrink-0"
-//               initial={{ opacity: 0, y: 30 }}
-//               animate={inView ? { opacity: 1, y: 0 } : {}}
-//             >
-//               <div className={cardClass}>
-
-//                 {/* IMAGE */}
-//                 <div className="flex justify-center mt-4">
-//                   <Image
-//                     src={coach.photo || "/images/default.png"}
-//                     alt={coach.name}
-//                     width={80}
-//                     height={80}
-//                     className="rounded-full"
-//                   />
-//                 </div>
-
-//                 {/* CONTENT */}
-//                 <div className="p-4 text-center">
-//                   <h3 className="font-bold">{coach.name}</h3>
-//                   <p className="text-sm text-secondary">{coach.title}</p>
-
-//                   <div className="flex justify-center mt-2">
-//                     <StarRating rating={coach.rating} />
-//                   </div>
-
-//                   <p className="text-xs mt-2">{coach.bio}</p>
-
-//                   {/* TAGS */}
-//                   <div className="flex flex-wrap justify-center gap-1 mt-2">
-//                     {coach.specialties.map((s: string) => (
-//                       <span key={s} className="text-xs bg-gray-200 px-2 py-1 rounded">
-//                         {s}
-//                       </span>
-//                     ))}
-//                   </div>
-
-//                   {/* STATS */}
-//                   <div className="flex justify-between mt-3 text-sm">
-//                     <span>{coach.experience}</span>
-//                     <span>{coach.studentsGuided}</span>
-//                   </div>
-
-//                   {/* CTA */}
-//                   <Link href="/contact">
-//                     <button className="mt-3 bg-secondary text-white px-4 py-2 rounded">
-//                       Book Session
-//                     </button>
-//                   </Link>
-//                 </div>
-//               </div>
-//             </motion.div>
-//           ))}
-//         </div>
-
-//         {/* LOAD MORE BUTTON */}
-//         {visibleCount < coaches.length && (
-//           <div className="text-center mt-6">
-//             <button
-//               onClick={handleLoadMore}
-//               className="px-6 py-2 bg-secondary text-white rounded"
-//             >
-//               Load More
-//             </button>
-//           </div>
-//         )}
-
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default CareerCoaches;

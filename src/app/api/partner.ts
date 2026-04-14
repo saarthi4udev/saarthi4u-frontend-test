@@ -1,3 +1,5 @@
+// src/app/api/partner.ts
+
 export type Partner = {
   id: number;
   name: string;
@@ -20,19 +22,31 @@ type ApiResponse = {
   data: Partner[];
 };
 
-// ✅ Correct base URL
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL;
+// ✅ BASE URL from .env
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // ✅ API endpoint
 const PARTNER_API = `${BASE_URL}/partner`;
 
-export const getAllPartners = async (): Promise<Partner[]> => {
+/* =========================
+   GET ALL PARTNERS (PAGINATED)
+========================= */
+export const getAllPartners = async (
+  page: number = 1,
+  limit: number = 8,
+  search: string = ""
+): Promise<{
+  data: Partner[];
+  totalPages: number;
+  currentPage: number;
+}> => {
   try {
+    const url = `${PARTNER_API}/all?page=${page}&limit=${limit}&search=${search}`;
+
     console.log("BASE_URL:", BASE_URL);
-    console.log("Fetching from:", `${PARTNER_API}/all`);
-      
-    const res = await fetch(`${PARTNER_API}/all`);
+    console.log("Fetching:", url);
+
+    const res = await fetch(url);
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -42,11 +56,19 @@ export const getAllPartners = async (): Promise<Partner[]> => {
 
     const result: ApiResponse = await res.json();
 
-    // return only visible partners
-    return result.data.filter((partner) => partner.visible);
-    
+    return {
+      data: result.data.filter((partner) => partner.visible),
+      totalPages: result.totalPages,
+      currentPage: result.page,
+    };
+
   } catch (error) {
     console.error("Partner API error:", error);
-    return [];
+
+    return {
+      data: [],
+      totalPages: 1,
+      currentPage: 1,
+    };
   }
 };

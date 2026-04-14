@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "motion/react";
@@ -369,7 +368,7 @@ export default function ExamsSection() {
 
         <div
           ref={gridRef}
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 xl:gap-6"
+          className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3"
         >
           {filteredExams.length === 0 && (
             <div className="col-span-full mt-1 rounded-[2rem] border border-primary/10 bg-white/90 px-6 py-12 text-center shadow-[0_24px_60px_rgba(10,24,58,0.08)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80">
@@ -398,10 +397,10 @@ export default function ExamsSection() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.32, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
+              className="h-full"
             >
-              <Link
-                href={`/exam/${exam.slug}`}
-                className="group relative block overflow-hidden rounded-[1.8rem] border border-primary/10 bg-white/90 p-6 shadow-[0_22px_55px_rgba(10,24,58,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-secondary/35 hover:shadow-[0_28px_65px_rgba(10,24,58,0.14)] dark:border-white/10 dark:bg-slate-900/80"
+              <div
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary/10 bg-white/90 p-5 shadow-[0_22px_55px_rgba(10,24,58,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-secondary/35 hover:shadow-[0_28px_65px_rgba(10,24,58,0.14)] dark:border-white/10 dark:bg-slate-900/80"
               >
                 <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#171e4c_0%,#30d8c9_100%)]" />
 
@@ -424,16 +423,16 @@ export default function ExamsSection() {
                   )}
                 </div>
 
-                <div className="mt-5">
-                  <h3 className="text-24 font-extrabold text-primary transition-colors duration-300 group-hover:text-secondary dark:text-white">
+                <div className="mt-3">
+                  <h3 className="text-lg font-extrabold leading-snug text-primary transition-colors duration-300 group-hover:text-secondary dark:text-white line-clamp-2 min-h-[2.75rem]">
                     {exam.name}
                   </h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300 line-clamp-2 min-h-[3rem]">
                     {truncateText(exam.overview, 120) || "Open the exam page for eligibility, dates, and application process."}
                   </p>
                 </div>
 
-                <div className="mt-5 grid gap-3 rounded-[1.3rem] bg-slate-50 p-4 text-sm dark:bg-white/5">
+                <div className="mt-3 grid gap-2 rounded-xl bg-slate-50 p-3 text-sm dark:bg-white/5">
                   <p className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                     <Icon icon="mdi:office-building-outline" className="h-4 w-4 text-secondary" />
                     {exam.conductingBody || "Body pending"}
@@ -448,14 +447,24 @@ export default function ExamsSection() {
                   </p>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-primary/10 pt-4 text-sm font-semibold text-primary dark:border-white/10 dark:text-secondary">
-                  <span>Explore Exam</span>
-                  <span className="inline-flex items-center gap-2 transition-transform duration-300 group-hover:translate-x-1">
-                    Open
-                    <Icon icon="solar:alt-arrow-right-linear" className="h-4 w-4" />
-                  </span>
+                <div className="mt-auto border-t border-primary/10 pt-3 dark:border-white/10">
+                  {exam.officialWebsite ? (
+                    <a
+                      href={exam.officialWebsite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary/5 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-300 hover:bg-secondary/15 hover:text-secondary hover:shadow-[0_4px_16px_rgba(48,216,201,0.2)] dark:bg-white/5 dark:text-secondary dark:hover:bg-secondary/10"
+                    >
+                      Visit Official Website
+                      <Icon icon="solar:square-top-down-linear" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    </a>
+                  ) : (
+                    <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary/5 px-4 py-2.5 text-sm font-semibold text-slate-400 dark:bg-white/5 dark:text-slate-500">
+                      Website Not Available
+                    </span>
+                  )}
                 </div>
-              </Link>
+              </div>
             </motion.div>
           ))}
         </div>

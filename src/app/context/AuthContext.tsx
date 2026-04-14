@@ -5,10 +5,26 @@ import { authApi } from "../api/auth.api";
 import api from "../api/axios";
 
 type User = {
-  phone: string;
+  age: any;
+  location: string;
+  qualification: string;
+  stream: string;
+  cgpa: any;
+  institute: string;
+  careerField: string;
+  careerRole: string;
+  hobbies: string;
+  shortTermGoal: string;
+  longTermGoal: string;
+  expectedSalary: any;
+  preferredLocation: string;
+  learningStyle: string;
+  budget: any;
+  profileImage: any;
   id: number;
   name: string;
   email: string;
+  phone: string;
   role: string;
 };
 
