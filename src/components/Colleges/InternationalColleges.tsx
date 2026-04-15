@@ -53,7 +53,6 @@ const getVisiblePageItems = (current: number, total: number) => {
 export default function InternationalColleges() {
   const limit = 8;
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
   const [collegesData, setCollegesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,6 +94,10 @@ export default function InternationalColleges() {
     ];
   }, [collegesData]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searching, setSearching] = useState(false);
+
   const [filters, setFilters] = useState({
     state: ALL_LOCATIONS,
     country: ALL_COUNTRIES,
@@ -103,12 +106,24 @@ export default function InternationalColleges() {
 
 
   useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setDebouncedSearch("");
+      setSearching(false);
+      return;
+    }
+    setSearching(true);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim());
+      setSearching(false);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
     const fetchColleges = async () => {
       try {
         setLoading(true);
-        const res = await getAllInternationalColleges(currentPage, limit);
-
-        setTotalPages(res?.pagination?.totalPages || res?.totalPages || 1);
+        const res = await getAllInternationalColleges(1, 9999);
 
         const raw = res?.data || [];
 
@@ -137,7 +152,7 @@ export default function InternationalColleges() {
     };
 
     fetchColleges();
-  }, [currentPage]);
+  }, []);
 
   useEffect(() => {
     gridRef.current?.scrollIntoView({
@@ -152,6 +167,9 @@ export default function InternationalColleges() {
       country: ALL_COUNTRIES,
       city: ALL_CITIES,
     });
+    setSearchQuery("");
+    setDebouncedSearch("");
+    setSearching(false);
     setCurrentPage(1);
   };
 
@@ -171,11 +189,25 @@ export default function InternationalColleges() {
       filters.city === ALL_CITIES ||
       college.city === filters.city;
 
-    return locationMatch && countryMatch && cityMatch;
+    const searchMatch =
+      debouncedSearch === "" ||
+      college.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      college.location?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      college.country?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      college.city?.toLowerCase().includes(debouncedSearch.toLowerCase());
+
+    return locationMatch && countryMatch && cityMatch && searchMatch;
   });
 
+  const filteredTotalPages = Math.max(1, Math.ceil(filteredColleges.length / limit));
+
+  const displayedColleges = filteredColleges.slice(
+    (currentPage - 1) * limit,
+    currentPage * limit
+  );
+
   const currentTotalLabel = `${filteredColleges.length} college${filteredColleges.length === 1 ? "" : "s"}`;
-  const pageItems = getVisiblePageItems(currentPage, totalPages);
+  const pageItems = getVisiblePageItems(currentPage, filteredTotalPages);
 
   return (
     <motion.section
@@ -286,6 +318,35 @@ export default function InternationalColleges() {
               </div>
             </div>
 
+            {/* SEARCH INPUT */}
+            <div className="relative">
+              <div className="flex items-center gap-2 rounded-xl border border-primary/10 bg-white px-3.5 py-2.5 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
+                <Icon icon="solar:magnifer-linear" className="shrink-0 text-lg text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search colleges by name, location, or country…"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full bg-transparent text-sm font-medium text-primary outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setDebouncedSearch("");
+                      setSearching(false);
+                    }}
+                    className="shrink-0 rounded-full p-0.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+                  >
+                    <Icon icon="mdi:close" className="text-base" />
+                  </button>
+                )}
+              </div>
+            </div>
+
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/10 bg-primary/5 px-3.5 py-2 text-sm dark:border-white/10 dark:bg-slate-950/60">
               <p className="font-semibold text-primary dark:text-white">
                 <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[#FAFA33] align-middle" />
@@ -300,9 +361,9 @@ export default function InternationalColleges() {
 
         {/* COLLEGES GRID */}
         <div ref={gridRef} className="mb-8">
-          {loading ? (
+          {loading || searching ? (
             <div className="flex items-center justify-center py-20">
-              <EduLoader overlay={false} message="Loading colleges…" />
+              <EduLoader overlay={false} message={searching ? "Searching colleges…" : "Loading colleges…"} />
             </div>
           ) : filteredColleges.length === 0 ? (
             <div className="rounded-2xl border border-primary/10 bg-white/95 px-6 py-16 text-center dark:border-white/10 dark:bg-slate-900/85">
@@ -313,12 +374,12 @@ export default function InternationalColleges() {
           ) : (
             <>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredColleges.map((college) => (
+                {displayedColleges.map((college) => (
                   <CollegeCard key={college.id} college={college} basePath="/international-colleges" />
                 ))}
               </div>
 
-              {totalPages > 1 && (
+              {filteredTotalPages > 1 && (
                 <div className="mt-8 flex items-center justify-center gap-2">
                   <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
@@ -348,8 +409,8 @@ export default function InternationalColleges() {
                   ))}
 
                   <button
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(Math.min(filteredTotalPages, currentPage + 1))}
+                    disabled={currentPage === filteredTotalPages}
                     className="rounded-lg border border-primary/25 bg-primary/5 px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10 disabled:opacity-50 dark:border-primary/30"
                   >
                     Next

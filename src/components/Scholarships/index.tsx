@@ -49,7 +49,6 @@ export default function ScholarshipsSection() {
 
   const [page, setPage] = useState(1);
   const limit = 6;
-  const [totalPages, setTotalPages] = useState(1);
   const gridRef = useRef<HTMLDivElement>(null);
 
   /* ------------------------------------------------ */
@@ -60,7 +59,7 @@ export default function ScholarshipsSection() {
     const fetchData = async () => {
       setLoading(true);
 
-      const res = await getAllScholarships(page, limit);
+      const res = await getAllScholarships(1, 9999);
 
       // Keep compatibility with both legacy and new API response shapes.
       const scholarshipList =
@@ -68,20 +67,13 @@ export default function ScholarshipsSection() {
         (Array.isArray(res?.data?.data) && res.data.data) ||
         [];
 
-      const pages =
-        Number(res?.totalPages) ||
-        Number(res?.pagination?.totalPages) ||
-        Number(res?.data?.pagination?.totalPages) ||
-        1;
-
       setScholarships(scholarshipList);
-      setTotalPages(pages > 0 ? pages : 1);
 
       setLoading(false);
     };
 
     fetchData();
-  }, [page]);
+  }, []);
 
   useEffect(() => {
     gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -192,7 +184,14 @@ export default function ScholarshipsSection() {
     setPage(1);
   };
 
-  const pageItems = getVisiblePageItems(page, totalPages);
+  const filteredTotalPages = Math.max(1, Math.ceil(filteredScholarships.length / limit));
+
+  const displayedScholarships = filteredScholarships.slice(
+    (page - 1) * limit,
+    page * limit
+  );
+
+  const pageItems = getVisiblePageItems(page, filteredTotalPages);
   const currentTotalLabel = `${filteredScholarships.length} scholarship${filteredScholarships.length === 1 ? "" : "s"}`;
 
   const handleFilterChange = <T extends string>(setter: (value: T) => void, value: T) => {
@@ -342,7 +341,7 @@ export default function ScholarshipsSection() {
                 Showing {currentTotalLabel}
               </p>
               <p className="rounded-full bg-white/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-900/70 dark:text-slate-300">
-                Page {page} of {totalPages}
+                Page {page} of {filteredTotalPages}
               </p>
             </div>
           </div>
@@ -361,7 +360,7 @@ export default function ScholarshipsSection() {
             ref={gridRef}
             className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
           >
-            {filteredScholarships.map((item, index) => (
+            {displayedScholarships.map((item, index) => (
               <motion.div
                 key={item.slug}
                 initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -416,7 +415,7 @@ export default function ScholarshipsSection() {
         )}
 
 
-        {totalPages > 1 && (
+        {filteredTotalPages > 1 && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -455,7 +454,7 @@ export default function ScholarshipsSection() {
             ))}
 
             <button
-              disabled={page === totalPages}
+              disabled={page === filteredTotalPages}
               onClick={() => setPage((prev) => prev + 1)}
               className="rounded-lg border border-primary/20 px-3 py-1.5 text-xs font-medium text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:text-white dark:hover:bg-primary sm:text-sm"
             >

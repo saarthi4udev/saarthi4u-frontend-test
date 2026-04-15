@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { headerData } from "../Header/Navigation/menuData";
 import Logo from "./Logo";
 import HeaderLink from "../Header/Navigation/HeaderLink";
 import MobileHeaderLink from "../Header/Navigation/MobileHeaderLink";
+import GlobalSearch from "./GlobalSearch";
 import { Icon } from "@iconify/react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/app/context/AuthContext";
@@ -20,7 +21,6 @@ const Header: React.FC = () => {
 
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -48,13 +48,6 @@ const Header: React.FC = () => {
     setTimeout(() => {
       router.push("/");
     }, 800);
-  };
-
-  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const value = searchTerm.trim();
-    setNavbarOpen(false);
-    router.push(value ? `/college?search=${encodeURIComponent(value)}` : "/college");
   };
 
   const handleScroll = () => {
@@ -129,20 +122,9 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <form
-            onSubmit={handleSearchSubmit}
-            className="hidden xl:flex h-10 items-center gap-2 rounded-full border border-border bg-gray-50 px-3 text-primary shadow-sm transition-all duration-300 focus-within:border-secondary/60 dark:border-dark_border dark:bg-dark_b dark:text-white"
-          >
-            <Icon icon="solar:magnifer-linear" className="text-xl text-secondary" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Search colleges or courses"
-              className="w-44 xl:w-48 2xl:w-52 bg-transparent p-0 text-14 text-primary placeholder:text-muted focus:outline-hidden dark:text-white"
-              aria-label="Search colleges or courses"
-            />
-          </form>
+          <div className="hidden xl:block">
+            <GlobalSearch />
+          </div>
 
           <button
             aria-label="Toggle theme"
@@ -244,20 +226,9 @@ const Header: React.FC = () => {
           </button>
         </div>
 
-        <form
-          onSubmit={handleSearchSubmit}
-          className="mb-4 flex h-11 items-center gap-2 rounded-full border border-border bg-white px-3 text-midnight_text shadow-sm focus-within:border-primary/60 dark:border-dark_border dark:bg-dark_b dark:text-white"
-        >
-          <Icon icon="solar:magnifer-linear" className="text-xl text-primary" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search colleges or courses"
-            className="w-full bg-transparent p-0 text-14 placeholder:text-muted focus:outline-hidden dark:text-white"
-            aria-label="Search colleges or courses"
-          />
-        </form>
+        <div className="mb-4">
+          <GlobalSearch mobile onNavigate={() => setNavbarOpen(false)} />
+        </div>
 
         <nav className="flex-1 space-y-2 overflow-y-auto pr-1">
           {headerData.map((item, index) => (

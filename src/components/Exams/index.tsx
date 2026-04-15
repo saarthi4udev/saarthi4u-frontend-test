@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "motion/react";
+import EduLoader from "@/components/Common/EduLoader";
 import {
   formatFeeRange,
   getAllExams,
@@ -78,18 +79,19 @@ export default function ExamsSection() {
 
   const [page, setPage] = useState(1);
   const limit = 6;
-  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadExams() {
-      const res = await getAllExams(page, limit);
+      setLoading(true);
+      const res = await getAllExams(1, 9999);
       setExams(res.data || []);
-      setTotalPages(res.totalPages || 1);
+      setLoading(false);
     }
 
     loadExams();
-  }, [page]);
+  }, []);
 
   useEffect(() => {
     gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -171,7 +173,14 @@ export default function ExamsSection() {
     setPage(1);
   };
 
-  const pageItems = getVisiblePageItems(page, totalPages);
+  const filteredTotalPages = Math.max(1, Math.ceil(filteredExams.length / limit));
+
+  const displayedExams = filteredExams.slice(
+    (page - 1) * limit,
+    page * limit
+  );
+
+  const pageItems = getVisiblePageItems(page, filteredTotalPages);
   const currentTotalLabel = `${filteredExams.length} exam${filteredExams.length === 1 ? "" : "s"}`;
 
   const handleFilterChange = <T extends string>(setter: (value: T) => void, value: T) => {
@@ -360,7 +369,7 @@ export default function ExamsSection() {
                 Showing {currentTotalLabel}
               </p>
               <p className="rounded-full bg-white/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-900/70 dark:text-slate-300">
-                Page {page} of {Math.max(totalPages, 1)}
+                Page {page} of {Math.max(filteredTotalPages, 1)}
               </p>
             </div>
           </div>
@@ -370,7 +379,11 @@ export default function ExamsSection() {
           ref={gridRef}
           className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3"
         >
-          {filteredExams.length === 0 && (
+          {loading ? (
+            <div className="col-span-full flex items-center justify-center py-20">
+              <EduLoader overlay={false} message="Loading exams…" />
+            </div>
+          ) : filteredExams.length === 0 ? (
             <div className="col-span-full mt-1 rounded-[2rem] border border-primary/10 bg-white/90 px-6 py-12 text-center shadow-[0_24px_60px_rgba(10,24,58,0.08)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
                 No Match Found
@@ -388,9 +401,10 @@ export default function ExamsSection() {
                 Clear all filters
               </button>
             </div>
-          )}
+          ) : (
+            <>
 
-          {filteredExams.map((exam, index) => (
+          {displayedExams.map((exam, index) => (
             <motion.div
               key={exam.slug ?? exam.id ?? `${exam.name}-${index}`}
               initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -467,9 +481,11 @@ export default function ExamsSection() {
               </div>
             </motion.div>
           ))}
+            </>
+          )}
         </div>
 
-        {totalPages > 1 && (
+        {!loading && filteredTotalPages > 1 && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -507,7 +523,7 @@ export default function ExamsSection() {
             ))}
 
             <button
-              disabled={page === totalPages}
+              disabled={page === filteredTotalPages}
               onClick={() => setPage((prev) => prev + 1)}
               className="rounded-lg border border-primary/20 px-3 py-1.5 text-xs font-medium text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:text-white dark:hover:bg-primary sm:text-sm"
             >

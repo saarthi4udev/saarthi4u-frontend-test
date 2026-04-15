@@ -101,7 +101,6 @@ const getVisiblePageItems = (current: number, total: number) => {
 export default function NationalColleges() {
   const limit = 8;
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
   const [collegesData, setCollegesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -142,6 +141,10 @@ export default function NationalColleges() {
     ownership: ALL_OWNERSHIP,
   });
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searching, setSearching] = useState(false);
+
   const [selectedCollegeOneId, setSelectedCollegeOneId] = useState("");
   const [selectedCollegeTwoId, setSelectedCollegeTwoId] = useState("");
   const [compareLoading, setCompareLoading] = useState(false);
@@ -157,12 +160,24 @@ export default function NationalColleges() {
   const dropdownTwoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setDebouncedSearch("");
+      setSearching(false);
+      return;
+    }
+    setSearching(true);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim());
+      setSearching(false);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
     const fetchColleges = async () => {
       try {
         setLoading(true);
-        const res = await getAllColleges(currentPage, limit);
-
-        setTotalPages(res?.pagination?.totalPages || 1);
+        const res = await getAllColleges(1, 9999);
 
         const raw = res?.data || [];
 
@@ -189,24 +204,17 @@ export default function NationalColleges() {
     };
 
     fetchColleges();
-  }, [currentPage]);
+  }, []);
 
   useEffect(() => {
-    const fetchAllForCompare = async () => {
-      try {
-        const res = await getAllColleges(1, 9999);
-        const raw = res?.data || [];
-        setAllCollegesForCompare(
-          raw
-            .map((c: any) => ({ id: String(c.id), name: c.name }))
-            .sort((a: any, b: any) => a.name.localeCompare(b.name))
-        );
-      } catch {
-        // silently fail, fallback to paginated list
-      }
-    };
-    fetchAllForCompare();
-  }, []);
+    if (collegesData.length > 0) {
+      setAllCollegesForCompare(
+        collegesData
+          .map((c: any) => ({ id: String(c.id), name: c.name }))
+          .sort((a: any, b: any) => a.name.localeCompare(b.name))
+      );
+    }
+  }, [collegesData]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -236,6 +244,9 @@ export default function NationalColleges() {
       type: ALL_TYPES,
       ownership: ALL_OWNERSHIP,
     });
+    setSearchQuery("");
+    setDebouncedSearch("");
+    setSearching(false);
     setCurrentPage(1);
   };
 
@@ -584,11 +595,24 @@ export default function NationalColleges() {
       filters.ownership === ALL_OWNERSHIP ||
       college.ownership === filters.ownership;
 
-    return stateMatch && typeMatch && ownershipMatch;
+    const searchMatch =
+      debouncedSearch === "" ||
+      college.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      college.location?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      college.category?.toLowerCase().includes(debouncedSearch.toLowerCase());
+
+    return stateMatch && typeMatch && ownershipMatch && searchMatch;
   });
 
+  const filteredTotalPages = Math.max(1, Math.ceil(filteredColleges.length / limit));
+
+  const displayedColleges = filteredColleges.slice(
+    (currentPage - 1) * limit,
+    currentPage * limit
+  );
+
   const currentTotalLabel = `${filteredColleges.length} college${filteredColleges.length === 1 ? "" : "s"}`;
-  const pageItems = getVisiblePageItems(currentPage, totalPages);
+  const pageItems = getVisiblePageItems(currentPage, filteredTotalPages);
 
   return (
     <motion.section
@@ -696,6 +720,35 @@ export default function NationalColleges() {
                   <Icon icon="solar:restart-bold-duotone" className="text-sm text-secondary" />
                   Reset Filters
                 </button>
+              </div>
+            </div>
+
+            {/* SEARCH INPUT */}
+            <div className="relative">
+              <div className="flex items-center gap-2 rounded-xl border border-primary/10 bg-white px-3.5 py-2.5 shadow-sm dark:border-white/10 dark:bg-slate-950/70">
+                <Icon icon="solar:magnifer-linear" className="shrink-0 text-lg text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search colleges by name, location, or category…"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full bg-transparent text-sm font-medium text-primary outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setDebouncedSearch("");
+                      setSearching(false);
+                    }}
+                    className="shrink-0 rounded-full p-0.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+                  >
+                    <Icon icon="mdi:close" className="text-base" />
+                  </button>
+                )}
               </div>
             </div>
 
@@ -1080,9 +1133,9 @@ export default function NationalColleges() {
 
         {/* COLLEGES GRID */}
         <div ref={gridRef} className="mb-8">
-          {loading ? (
+          {loading || searching ? (
             <div className="flex items-center justify-center py-20">
-              <EduLoader overlay={false} message="Loading colleges…" />
+              <EduLoader overlay={false} message={searching ? "Searching colleges…" : "Loading colleges…"} />
             </div>
           ) : filteredColleges.length === 0 ? (
             <div className="rounded-2xl border border-primary/10 bg-white/95 px-6 py-16 text-center dark:border-white/10 dark:bg-slate-900/85">
@@ -1093,12 +1146,12 @@ export default function NationalColleges() {
           ) : (
             <>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredColleges.map((college) => (
+                {displayedColleges.map((college) => (
                   <CollegeCard key={college.id} college={college} />
                 ))}
               </div>
 
-              {totalPages > 1 && (
+              {filteredTotalPages > 1 && (
                 <div className="mt-8 flex items-center justify-center gap-2">
                   <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
@@ -1127,8 +1180,8 @@ export default function NationalColleges() {
                   ))}
 
                   <button
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(Math.min(filteredTotalPages, currentPage + 1))}
+                    disabled={currentPage === filteredTotalPages}
                     className="rounded-lg border border-primary/25 bg-primary/5 px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10 disabled:opacity-50 dark:border-primary/30"
                   >
                     Next

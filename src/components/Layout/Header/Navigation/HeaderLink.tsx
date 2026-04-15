@@ -13,13 +13,29 @@ const NestedSubmenuItem: React.FC<{
   const [isNestedOpen, setIsNestedOpen] = useState(false);
   const nestedRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const leaveTimeoutRef = useRef<number | null>(null);
 
   const hasNestedSubmenu = Boolean(item.submenu?.length);
   const isCurrentItem = path === item.href || path.startsWith(`${item.href}/`);
 
-  const handleMouseLeave = useCallback(() => {
-    setIsNestedOpen(false);
+  const clearLeaveTimeout = useCallback(() => {
+    if (leaveTimeoutRef.current) {
+      window.clearTimeout(leaveTimeoutRef.current);
+      leaveTimeoutRef.current = null;
+    }
   }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    clearLeaveTimeout();
+    setIsNestedOpen(true);
+  }, [clearLeaveTimeout]);
+
+  const handleMouseLeave = useCallback(() => {
+    clearLeaveTimeout();
+    leaveTimeoutRef.current = window.setTimeout(() => {
+      setIsNestedOpen(false);
+    }, 150);
+  }, [clearLeaveTimeout]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (!hasNestedSubmenu) return;
@@ -28,31 +44,30 @@ const NestedSubmenuItem: React.FC<{
       case "Enter":
       case " ":
         e.preventDefault();
-        setIsNestedOpen(!isNestedOpen);
+        clearLeaveTimeout();
+        setIsNestedOpen(true);
         break;
       case "Escape":
         e.preventDefault();
+        clearLeaveTimeout();
         setIsNestedOpen(false);
         break;
       case "ArrowRight":
         e.preventDefault();
+        clearLeaveTimeout();
         setIsNestedOpen(true);
         break;
       case "ArrowLeft":
         e.preventDefault();
+        clearLeaveTimeout();
         setIsNestedOpen(false);
         break;
     }
-  }, [hasNestedSubmenu, isNestedOpen]);
+  }, [hasNestedSubmenu, clearLeaveTimeout]);
 
   useEffect(() => {
-    if (!hasNestedSubmenu || !nestedRef.current) return;
-
-    nestedRef.current.addEventListener("mouseleave", handleMouseLeave);
-    return () => {
-      nestedRef.current?.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, [hasNestedSubmenu, handleMouseLeave]);
+    return () => clearLeaveTimeout();
+  }, [clearLeaveTimeout]);
 
   if (!hasNestedSubmenu) {
     return (
@@ -75,12 +90,12 @@ const NestedSubmenuItem: React.FC<{
     <div
       ref={nestedRef}
       className="relative"
-      onMouseEnter={() => setIsNestedOpen(true)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <button
         ref={buttonRef}
-        onClick={() => setIsNestedOpen(!isNestedOpen)}
+        onClick={() => { clearLeaveTimeout(); setIsNestedOpen(true); }}
         onKeyDown={handleKeyDown}
         aria-expanded={isNestedOpen}
         aria-haspopup="menu"
@@ -101,7 +116,7 @@ const NestedSubmenuItem: React.FC<{
 
       {item.submenu && (
         <div
-          className={`absolute left-full top-0 ml-2 w-56 transition-all duration-200 ${
+          className={`absolute left-full top-0 w-56 pl-2 transition-all duration-200 ${
             isNestedOpen
               ? "pointer-events-auto visible translate-x-0 opacity-100"
               : "pointer-events-none invisible -translate-x-2 opacity-0"
@@ -273,7 +288,7 @@ const HeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
 
       {item.submenu && (
         <div
-          className={`absolute left-0 top-[calc(100%+0.25rem)] z-50 w-64 transition-all duration-200 ${
+          className={`absolute left-0 top-full z-50 w-64 pt-1 transition-all duration-200 ${
             isDropdownOpen
               ? "pointer-events-auto visible translate-y-0 opacity-100"
               : "pointer-events-none invisible -translate-y-1 opacity-0"
