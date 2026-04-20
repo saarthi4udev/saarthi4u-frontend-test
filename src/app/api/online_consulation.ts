@@ -1,16 +1,16 @@
 // services/consultationApi.ts
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
 
 export interface ConsultationFormData {
   fullName: string;
-  email: string;
+  email: string | null;
   phone: string;
-  message: string;
+  message: string | null;
   courseInterest: string;
-  preferredStateCity: string;
-  preferredConsultationDate: string;
-  preferredTime: string;
+  preferredStateCity: string | null;
+  preferredConsultationDate: string | null;
+  preferredTime: string | null;
 }
 
 export interface ConsultationResponse {
@@ -19,8 +19,13 @@ export interface ConsultationResponse {
   data?: {
     id: string;
     fullName: string;
-    email: string;
+    email: string | null;
     phone: string;
+    message: string | null;
+    courseInterest: string;
+    preferredStateCity: string | null;
+    preferredConsultationDate: string | null;
+    preferredTime: string | null;
     createdAt: string;
   };
   error?: string;
@@ -31,30 +36,36 @@ export async function createConsultation(
 ): Promise<ConsultationResponse> {
   try {
     const response = await fetch(`${BASE_URL}/api/consultation/create`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
 
-    const data: ConsultationResponse = await response.json();
+    const data = await response.json().catch(() => null);
 
     if (!response.ok) {
       return {
         success: false,
-        message: data.message || 'Something went wrong. Please try again.',
-        error: data.error || `HTTP error! status: ${response.status}`,
+        message:
+          data?.message || "Something went wrong. Please try again.",
+        error: data?.error || `HTTP error! status: ${response.status}`,
       };
     }
 
-    return data;
+    return {
+      success: true,
+      message: data?.message || "Consultation created successfully.",
+      data: data?.data,
+    };
   } catch (error) {
-    console.error('Consultation API Error:', error);
+    console.error("Consultation API Error:", error);
+
     return {
       success: false,
-      message: 'Network error. Please check your connection and try again.',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      message: "Network error. Please check your connection and try again.",
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

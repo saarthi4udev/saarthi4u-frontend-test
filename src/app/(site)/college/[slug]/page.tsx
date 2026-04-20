@@ -16,7 +16,7 @@ import {
   getReviewsByCollege,
   getPlacementsByCollege,
   getRecruitersByCollege,
-  getCoursesWithFees
+  getCoursesWithFeesBySlug
 } from "@/app/api/colleges";
 
 interface Props {
@@ -36,12 +36,13 @@ export default async function CollegeDetailPage({ params }: Props) {
   if (!college) return notFound();
 
   const collegeId = college.id;
+  const collegeslug =college.slug;
 
   const [
     courses, admissions, cutoffs, facilities, faculties,
     faqs, gallery, reviews, placements, recruiters,
   ] = await Promise.all([
-    getCoursesWithFees(collegeId),
+    getCoursesWithFeesBySlug(collegeslug),
     getAdmissionsByCollege(collegeId),
     getCutoffsByCollege(collegeId),
     getFacilitiesByCollege(collegeId),

@@ -365,7 +365,7 @@ const ExploreColleges: React.FC = () => {
                                 </p>
                               </div>
 
-                              <div className="ml-3 flex w-[72px] items-center justify-end gap-1.5">
+                              {/* <div className="ml-3 flex w-[72px] items-center justify-end gap-1.5">
                                 <span className="text-sm font-semibold text-midnight_text dark:text-white">
                                   {college.rating.toFixed(1)}
                                 </span>
@@ -375,7 +375,7 @@ const ExploreColleges: React.FC = () => {
                                   className={`h-4 w-4 text-secondary transition-transform duration-300 ${isActive ? "translate-x-0.5" : "group-hover:translate-x-0.5"
                                     }`}
                                 />
-                              </div>
+                              </div> */}
                             </button>
                           </motion.div>
                         );

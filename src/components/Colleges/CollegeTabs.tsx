@@ -43,7 +43,7 @@ export default function CollegeTabs({
   reviews = [],
   recruiters = [],
 }: Props) {
-  const [openFaq, setOpenFaq] = useState<string | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showAllCourses, setShowAllCourses] = useState(false);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
@@ -180,11 +180,12 @@ export default function CollegeTabs({
                   <div className="mt-3 grid grid-cols-2 gap-3">
                     <div>
                       <p className="text-[0.68rem] font-semibold uppercase tracking-wide text-slate-400 dark:text-white/45">Avg Package</p>
-                      <p className="mt-0.5 text-[0.9rem] font-bold text-primary dark:text-white">{p.avgPackage || "—"}</p>
+                      <p className="mt-0.5 text-[0.9rem] font-bold text-primary dark:text-white">{p.averagePackage ? `₹${Number(p.averagePackage).toLocaleString()}` : "—"}</p>
                     </div>
                     <div>
                       <p className="text-[0.68rem] font-semibold uppercase tracking-wide text-slate-400 dark:text-white/45">Highest</p>
-                      <p className="mt-0.5 text-[0.9rem] font-bold text-secondary">{p.highestPackage || "—"}</p>
+                      <p className="mt-0.5 text-[0.9rem] font-bold text-secondary">
+                        {p.highestPackage ? `₹${Number(p.highestPackage).toLocaleString()}` : "—"}                      </p>
                     </div>
                   </div>
                 </div>
@@ -378,7 +379,7 @@ export default function CollegeTabs({
                     ))}
                   </div>
                 </div>
-                <p className="mt-2 text-[0.78rem] leading-relaxed text-slate-500 dark:text-white/65">{r.review}</p>
+                <p className="mt-2 text-[0.78rem] leading-relaxed text-slate-500 dark:text-white/65">{r.comment}</p>
               </div>
             ))}
           </div>

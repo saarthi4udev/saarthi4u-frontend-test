@@ -140,27 +140,23 @@ export const getFAQsByCollege = (collegeId: number) =>
 
 /* ---------------- COURSES + FEES JOIN ---------------- */
 
-export const getCoursesWithFees = async (collegeId: number) => {
+export const getCoursesWithFeesBySlug = async (slug: string) => {
+  const response = await getCollegeBySlug(slug);
 
-  const response = await getCoursesByCollege(collegeId);
-  const courses = response?.data?.Courses || [];
+  // console.log("RESPONSE:", JSON.stringify(response, null, 2));
 
-  if (!Array.isArray(courses) || courses.length === 0) return [];
+  const courses = response?.Courses || [];
 
-  const coursesWithFees = await Promise.all(
-    courses.map(async (course: any) => {
-      const fees = await getFeesByCourse(course.id);
+  if (!Array.isArray(courses)) return [];
 
-      return {
-        ...course,
-        fees: fees || [],
-      };
-    })
-  );
-
-  return coursesWithFees;
+  return courses.map((course: any) => ({
+    id: course.id,
+    name: course.name,
+    specialization: course.specialization,
+    duration: course.duration,
+    fees: course.Fees || [],
+  }));
 };
-
 
 /* GALLERY */
 
