@@ -5,9 +5,8 @@ import { getAllPosts } from "@/utils/markdown";
 import { BlogPost } from "@/types/blog";
 
 export const metadata: Metadata = {
-  title: "Blog | Saarthi4u",
-  description:
-    "Explore education, career, exams, and scholarship insights with practical guidance from Saarthi4u experts.",
+  title: "Career Guidance Blog | Tips for College Students & Career Planning",
+  description: "Explore our blog for the best career options after 12th, tips for college students, and latest updates on entrance exams and certification courses.",
 };
 
 const Page = () => {

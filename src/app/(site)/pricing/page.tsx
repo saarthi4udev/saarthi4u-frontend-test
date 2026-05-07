@@ -4,7 +4,8 @@ import React from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pricing | Saarthi4u",
+  title: "Career Guidance Packages | Affordable Online Counseling India",
+  description: "Choose from our range of affordable career counseling and admission guidance packages. Invest in your future with Saarthi4u.",
 };
 
 const page = () => {

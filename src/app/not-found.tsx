@@ -3,7 +3,8 @@ import HeroSub from "@/components/SharedComponents/HeroSub";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "404 Page | Saarthi4u",
+  title: "404 - Page Not Found | Saarthi4u",
+  description: "Sorry, the page you are looking for does not exist. Explore Saarthi4u for career guidance and college admissions.",
 };
 
 const ErrorPage = () => {

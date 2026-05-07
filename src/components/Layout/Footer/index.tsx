@@ -70,15 +70,24 @@ const Footer = () => {
             <Link href="/" className="inline-block mb-2">
               <Image src="/images/logo/new_logo.png" alt="Saarthi4u" width={160} height={40} sizes="160px" className="h-auto w-auto" />
             </Link>
-            <p className="text-14 leading-tight text-muted dark:text-foottext mb-2">AI-powered guidance for colleges, courses, scholarships & exams.</p>
-            <p className="site-gradient-title text-16 font-bold leading-snug">From confusion to confident admission decisions.</p>
-            <div className="mt-2 flex gap-2 flex-wrap">
-              <span className="rounded-full border border-border/60 bg-white/60 px-2.5 py-0.5 text-12 font-medium text-muted dark:border-dark_border dark:bg-dark_b/30 dark:text-foottext">AI Guidance</span>
-              <span className="rounded-full border border-border/60 bg-white/60 px-2.5 py-0.5 text-12 font-medium text-muted dark:border-dark_border dark:bg-dark_b/30 dark:text-foottext">College Finder</span>
-            </div>
-            <div className="mt-3 flex gap-2">
-              <Link href="/college" className="site-cta h-9 px-3 rounded-full bg-accent text-13 font-semibold text-primary flex items-center">Explore</Link>
-              <Link href="/contact" className="site-cta h-9 px-3 rounded-full border border-border/60 bg-white text-13 font-semibold text-primary dark:border-dark_border dark:bg-dark_b/30">Contact</Link>
+            <p className="text-14 leading-relaxed text-muted dark:text-foottext mb-3 max-w-md">
+              Your trusted guide for colleges, courses, scholarships and exams — helping students take the next step with confidence.
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <Link
+                href="/college"
+                className="site-cta inline-flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-13 font-semibold text-primary transition-all duration-300 hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
+              >
+                <Icon icon="solar:compass-bold-duotone" className="text-base" />
+                Explore
+              </Link>
+              <Link
+                href="/contact"
+                className="site-cta inline-flex h-10 items-center gap-2 rounded-full border border-border/60 bg-white px-4 text-13 font-semibold text-primary transition-all duration-300 hover:border-secondary hover:text-secondary dark:border-dark_border dark:bg-dark_b/30 dark:text-white dark:hover:border-secondary dark:hover:text-secondary"
+              >
+                <Icon icon="solar:chat-round-line-bold-duotone" className="text-base" />
+                Contact
+              </Link>
             </div>
           </div>
 

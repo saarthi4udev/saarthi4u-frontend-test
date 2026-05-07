@@ -17,9 +17,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: scholarship
-      ? `${scholarship.name} | Scholarships | Saarthi4u`
+      ? `${scholarship.name} | College Scholarships & Financial Aid`
       : "Scholarship Details | Saarthi4u",
-    description: scholarship?.overview || "Scholarship details",
+    description: scholarship?.overview || `Learn about ${scholarship?.name || 'this scholarship'} and how to apply. Expert financial aid and scholarship guidance at Saarthi4u.`,
   };
 }
 

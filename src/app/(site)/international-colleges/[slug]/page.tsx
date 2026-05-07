@@ -1,9 +1,26 @@
 import { notFound } from "next/navigation";
 import { Icon } from "@iconify/react";
 import { getInternationalCollegeBySlug } from "@/app/api/colleges";
+import { Metadata } from "next";
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const college = await getInternationalCollegeBySlug(slug);
+
+  if (!college) {
+    return {
+      title: "College Not Found | Saarthi4u",
+    };
+  }
+
+  return {
+    title: `${college.name} | Study Abroad Admission Guidance`,
+    description: `Explore ${college.name} for international education. Get details on courses, admission process, and global career opportunities at Saarthi4u.`,
+  };
 }
 
 export default async function InternationalCollegeDetailPage({ params }: Props) {
@@ -100,20 +117,6 @@ export default async function InternationalCollegeDetailPage({ params }: Props) 
                 <QuickInfoRow icon="solar:map-point-bold-duotone" label="City" value={city} />
                 <QuickInfoRow icon="solar:globe-bold-duotone" label="Country" value={country} />
                 <QuickInfoRow icon="solar:map-point-bold-duotone" label="Location" value={college.location} />
-              </div>
-            </div>
-
-            {/* CTA */}
-            <div className="overflow-hidden rounded-2xl border border-secondary/25 bg-gradient-to-br from-secondary/5 via-heroBg to-white shadow-sm dark:border-secondary/20 dark:from-secondary/10 dark:via-dark_b dark:to-midnight_text">
-              <div className="p-5 text-center">
-                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary/15">
-                  <Icon icon="solar:chat-round-call-bold-duotone" className="text-xl text-secondary" />
-                </div>
-                <h4 className="mb-1 text-[0.9rem] font-bold text-primary dark:text-white">Interested in this college?</h4>
-                <p className="mb-4 text-[0.75rem] leading-relaxed text-slate-500 dark:text-white/55">Get details about admission, fees & scholarships</p>
-                <button className="w-full rounded-xl bg-secondary px-4 py-3 text-[0.85rem] font-bold text-white shadow-md transition-all hover:bg-secondary/90 hover:shadow-lg">
-                  Enquire Now
-                </button>
               </div>
             </div>
 

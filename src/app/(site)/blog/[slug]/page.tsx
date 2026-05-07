@@ -34,8 +34,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${post.title} | Saarthi4u Blog`,
-    description: post.excerpt || "Read this blog on Saarthi4u",
+    title: `${post.title} | Career Guidance Blog Saarthi4u`,
+    description: post.excerpt || `Read more about ${post.title} on Saarthi4u's career guidance blog. Expert tips and student future planning.`,
     openGraph: {
       title: post.title,
       description: post.excerpt,

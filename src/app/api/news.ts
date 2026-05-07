@@ -79,10 +79,20 @@ async function getCategoryMap(categoryIds: number[]) {
 
 export async function getAllNews(page = 1, limit = 5) {
   try {
-    const res = await fetch(
-      `${BASE_URL}/all?page=${page}&limit=${limit}`,
-      { cache: "no-store" }
-    );
+    // Ask the backend to return newest first. We pass the common parameter
+    // shapes (sortBy/order, sort=-field, order=desc) so the API picks up
+    // whichever it understands; unknown params are ignored.
+    const query = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      sortBy: "publishedAt",
+      order: "desc",
+      sort: "-publishedAt",
+    });
+
+    const res = await fetch(`${BASE_URL}/all?${query.toString()}`, {
+      cache: "no-store",
+    });
 
     if (!res.ok) {
       throw new Error("Failed to fetch news");
@@ -90,11 +100,19 @@ export async function getAllNews(page = 1, limit = 5) {
 
     const data: ApiResponse = await res.json();
 
-    const categoryIds = data.data.map((item) => item.categoryId);
+    // Defensive client-side sort: guarantees the items on the current page
+    // are newest-first even if the backend ignored our sort hints.
+    const sortedRaw = [...data.data].sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() -
+        new Date(a.publishedAt).getTime()
+    );
+
+    const categoryIds = sortedRaw.map((item) => item.categoryId);
 
     const categoryMap = await getCategoryMap(categoryIds);
 
-    const transformed: UiNewsItem[] = data.data.map((item) => ({
+    const transformed: UiNewsItem[] = sortedRaw.map((item) => ({
       id: item.id,
       slug: item.slug,
       title: item.title,

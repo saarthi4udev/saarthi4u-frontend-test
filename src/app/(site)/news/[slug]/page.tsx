@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const news = await getSingleNews(slug);
 
   return {
-    title: news?.metaTitle || news?.title,
-    description: news?.metaDescription || news?.summary,
+    title: news?.metaTitle || `${news?.title} | Latest Education News Saarthi4u`,
+    description: news?.metaDescription || news?.summary || "Stay updated with the latest education and admission news from Saarthi4u.",
   };
 }
 

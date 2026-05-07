@@ -3,8 +3,8 @@ import PhoneAuthClient from "@/components/Auth/PhoneAuth/PhoneAuthClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:
-    "Phone Login | Saarthi4u",
+  title: "Phone Login | Saarthi4u Career Planning Platform",
+  description: "Sign in with your phone number to access Saarthi4u's personalized career guidance and college search tools.",
 };
 
 const SigninPage = () => {

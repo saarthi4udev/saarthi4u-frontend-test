@@ -14,7 +14,7 @@ export async function getAllBlogs() {
 
     const blogs = json.data || [];
 
-    return blogs.map((blog: any) => ({
+    const mapped = blogs.map((blog: any) => ({
       id: blog.id,
       title: blog.title,
       slug: blog.slug,
@@ -28,6 +28,12 @@ export async function getAllBlogs() {
       date: blog.publishedAt || blog.createdAt,
       popularScore: blog.views || 0,
     }));
+
+    // Newest first
+    return mapped.sort(
+      (a: any, b: any) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
   } catch (error) {
     console.error("Blog fetch error:", error);
     return [];

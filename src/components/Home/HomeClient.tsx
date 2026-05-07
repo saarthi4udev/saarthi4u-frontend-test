@@ -14,6 +14,7 @@ import ResultsPromo from "@/components/Home/ResultsPromo";
 import Testimonials from "@/components/Home/Testimonials";
 import LeadershipCorner from "@/components/LeadershipCorner/LeadershipCorner";
 import InstagramSection from "@/components/Instagram/InstagramSection";
+import YoutubeSection from "@/components/Youtube/YoutubeSection";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 
 export default function HomeClient() {
@@ -38,6 +39,7 @@ export default function HomeClient() {
       <div className="site-reveal"><ResultsPromo /></div>
       <div className="site-reveal"><Testimonials /></div>
       <div className="site-reveal"><LeadershipCorner /></div>
+      <div className="site-reveal"><YoutubeSection /></div>
       <div className="site-reveal"><InstagramSection /></div>
 
       {showDialog && (

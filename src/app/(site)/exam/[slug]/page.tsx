@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${exam.name} | Exams | Saarthi4u`,
-    description: exam.overview || "Exam details",
+    title: `${exam.name} Entrance Exam Guide | Exam Dates & Syllabus`,
+    description: `Get complete information about ${exam.name} entrance exam, including eligibility, syllabus, and important dates. Expert preparation tips at Saarthi4u.`,
   };
 }
 

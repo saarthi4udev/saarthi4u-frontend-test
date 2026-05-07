@@ -18,9 +18,26 @@ import {
   getRecruitersByCollege,
   getCoursesWithFeesBySlug
 } from "@/app/api/colleges";
+import { Metadata } from "next";
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const college = await getCollegeBySlug(slug);
+
+  if (!college) {
+    return {
+      title: "College Not Found | Saarthi4u",
+    };
+  }
+
+  return {
+    title: `${college.name} Admission Guidance | Top Colleges in India`,
+    description: `Get detailed information about ${college.name} admission process, courses, fees, and rankings. Expert guidance for college search at Saarthi4u.`,
+  };
 }
 
 
@@ -36,7 +53,7 @@ export default async function CollegeDetailPage({ params }: Props) {
   if (!college) return notFound();
 
   const collegeId = college.id;
-  const collegeslug =college.slug;
+  const collegeslug = college.slug;
 
   const [
     courses, admissions, cutoffs, facilities, faculties,
@@ -206,20 +223,6 @@ export default async function CollegeDetailPage({ params }: Props) {
                 <QuickInfoRow icon="solar:calendar-bold-duotone" label="Established" value={college.establishedYear} />
                 <QuickInfoRow icon="solar:diploma-verified-bold-duotone" label="Affiliation" value={college.affiliation} />
                 <QuickInfoRow icon="solar:map-point-bold-duotone" label="Location" value={location} />
-              </div>
-            </div>
-
-            {/* CTA Card */}
-            <div className="overflow-hidden rounded-2xl border border-secondary/25 bg-gradient-to-br from-secondary/5 via-heroBg to-white shadow-sm dark:border-secondary/20 dark:from-secondary/10 dark:via-dark_b dark:to-midnight_text">
-              <div className="p-5 text-center">
-                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary/15">
-                  <Icon icon="solar:chat-round-call-bold-duotone" className="text-xl text-secondary" />
-                </div>
-                <h4 className="mb-1 text-[0.9rem] font-bold text-primary dark:text-white">Interested in this college?</h4>
-                <p className="mb-4 text-[0.75rem] leading-relaxed text-slate-500 dark:text-white/55">Get details about admission, fees & scholarships</p>
-                <button className="w-full rounded-xl bg-secondary px-4 py-3 text-[0.85rem] font-bold text-white shadow-md transition-all hover:bg-secondary/90 hover:shadow-lg">
-                  Enquire Now
-                </button>
               </div>
             </div>
 
