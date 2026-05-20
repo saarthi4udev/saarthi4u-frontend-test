@@ -141,7 +141,7 @@ const LeadershipCorner = () => {
                   </motion.p>
 
                   <motion.p variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}>
-                    Woh kahate hain na, agar hausle ho majbut, to sanson se bhi tufan uthaya ja sakta hai. Pathar par bhi phool khilaya ja sakta hai. <span className="font-semibold text-secondary">Aapke irade ho aasman se bhi unche, to suraj se bhi hath milaya ja sakta hai.</span>
+                    Woh kahate hain na, agar hausle ho majbut, to sanson se bhi tufan uthaya ja sakta hai. Pathar par bhi phool khilaya ja sakta hai. <span className="font-semibold text-accent">Aapke irade ho aasman se bhi unche, to suraj se bhi hath milaya ja sakta hai.</span>
                   </motion.p>
 
                   <motion.p variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}>
@@ -153,7 +153,7 @@ const LeadershipCorner = () => {
                   </motion.p>
 
                   <motion.p variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}>
-                    We are here to help you add those colors to your journey, one milestone at a time. <span className="font-semibold text-secondary">Start today, dream bigger, and achieve bigger.</span>
+                    We are here to help you add those colors to your journey, one milestone at a time. <span className="font-semibold text-accent">Start today, dream bigger, and achieve bigger.</span>
                   </motion.p>
                 </div>
 

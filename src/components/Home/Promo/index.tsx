@@ -67,9 +67,10 @@ const PromoSection = () => {
               {promoData.title}
             </h2>
 
-            <p className="max-w-2xl text-base leading-8 text-muted dark:text-slate-300 sm:text-lg">
-              {promoData.description}
-            </p>
+            <div
+              className="max-w-2xl text-base leading-8 text-muted dark:text-slate-300 sm:text-lg"
+              dangerouslySetInnerHTML={{ __html: promoData.description }}
+            />
 
             <div className="flex flex-wrap gap-3">
               <Link

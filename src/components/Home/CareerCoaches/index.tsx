@@ -234,26 +234,32 @@ const CareerCoaches = () => {
                   <div className="h-1.5 w-full bg-gradient-to-r from-secondary/70 via-secondary to-accent/70" />
 
                   <div className="relative bg-gradient-to-br from-secondary/12 via-white to-accent/5 px-5 pt-5 pb-4 dark:from-secondary/12 dark:via-darkHeroBg dark:to-secondary/8">
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-3">
                       <div className="relative shrink-0 rounded-full ring-4 ring-secondary/25 transition-transform duration-300 group-hover:scale-105">
                         <Image
                           src={coach.photo}
                           alt={coach.name}
-                          width={76}
-                          height={76}
-                          className="h-[76px] w-[76px] rounded-full object-cover"
+                          width={64}
+                          height={64}
+                          className="h-16 w-16 rounded-full object-cover"
                         />
-                        <span className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400 dark:border-darkHeroBg" />
+                        <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-emerald-400 dark:border-darkHeroBg" />
                       </div>
 
-                      <div className="min-w-0 flex-1 pt-1">
-                        <h3 className="line-clamp-2 min-h-[2.8rem] text-17 font-bold leading-tight text-midnight_text dark:text-white">
+                      <div className="min-w-0 flex-1">
+                        <h3
+                          title={coach.name}
+                          className="line-clamp-3 min-h-[3.9rem] break-words text-16 font-bold leading-snug text-midnight_text dark:text-white"
+                        >
                           {coach.name}
                         </h3>
-                        <p className="mt-0.5 line-clamp-2 min-h-[2.4rem] text-13 font-semibold text-secondary">
+                        <p
+                          title={coach.title}
+                          className="mt-1 line-clamp-2 min-h-[2.4rem] break-words text-13 font-semibold leading-snug text-secondary"
+                        >
                           {coach.title}
                         </p>
-                        <div className="mt-1.5 flex items-center gap-2">
+                        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
                           <StarRating rating={coach.rating} />
                           <span className="text-13 font-bold text-midnight_text dark:text-white">{coach.rating}</span>
                           <span className="text-12 text-muted dark:text-white/50">({coach.reviews})</span>

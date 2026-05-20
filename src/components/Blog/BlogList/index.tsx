@@ -53,7 +53,7 @@ export default function BlogList() {
   const fetchBlogs = async ({ initial = false }: { initial?: boolean } = {}) => {
     try {
       if (initial) setLoading(true);
-      const res = await fetch(`${base}/blog/all`);
+      const res = await fetch(`${base}/blog/all?page=1&limit=1000`);
 
       if (!res.ok) throw new Error("Failed to fetch blogs");
 

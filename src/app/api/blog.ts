@@ -6,7 +6,7 @@ const BASE_URL = base + "/blog";
 
 export async function getAllBlogs() {
   try {
-    const res = await fetch(`${BASE_URL}/all`);
+    const res = await fetch(`${BASE_URL}/all?page=1&limit=1000`);
 
     if (!res.ok) throw new Error("Failed to fetch blogs");
 

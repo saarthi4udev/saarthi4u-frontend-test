@@ -5,7 +5,7 @@ const BASE_URL = base + "/testimonial";
 
 export const getAllTestimonials = async (): Promise<Testimonial[]> => {
   try {
-    const res = await fetch(`${BASE_URL}/all`, {
+    const res = await fetch(`${BASE_URL}/all?page=1&limit=1000`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
