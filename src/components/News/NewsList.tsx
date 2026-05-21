@@ -372,11 +372,6 @@ export default function NewsList() {
                       {item.title}
                     </h2>
 
-                    {/* SUMMARY */}
-                    <p className="mt-3 line-clamp-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-                      {item.excerpt}
-                    </p>
-
                     {/* LINK */}
                     <Link
                       href={`/news/${item.slug}`}

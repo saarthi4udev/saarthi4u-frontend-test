@@ -295,7 +295,6 @@ export default async function CategoryDetailPage({ params, searchParams }: Props
                   )}
                   <div className="p-4">
                     <h3 className="text-base font-bold text-primary transition-colors group-hover:text-secondary dark:text-white">{blog.title}</h3>
-                    <p className="mt-1.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{truncateText(blog.excerpt, 120)}</p>
                   </div>
                 </NavLink>
               ))}

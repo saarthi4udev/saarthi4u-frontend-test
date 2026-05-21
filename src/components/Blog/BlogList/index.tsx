@@ -313,14 +313,16 @@ export default function BlogList() {
                           {post.title}
                         </h3>
 
-                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-4">
-                          {post.excerpt}
-                        </p>
-
                         <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
                           <span>{post.author}</span>
                           <span>{format(new Date(post.date), "dd MMM yyyy")}</span>
                         </div>
+
+                        {post.excerpt && (
+                          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-4">
+                            {post.excerpt.replace(/<[^>]*>/g, "").trim()}
+                          </p>
+                        )}
 
                         <Link
                           href={`/blog/${post.slug}`}

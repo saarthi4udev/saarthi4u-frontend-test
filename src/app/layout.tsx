@@ -1,4 +1,5 @@
 import { DM_Sans, Sora } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
@@ -25,6 +26,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-X2302S4586"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-X2302S4586');
+        `}
+      </Script>
       <body className={`${dmsans.className} ${sora.variable} site-body`}>
         <AuthProvider>
           <ThemeProvider

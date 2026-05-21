@@ -195,10 +195,6 @@ export default async function BlogPostPage({ params }: Props) {
                     {item.title}
                   </h3>
 
-                  <p className="text-sm text-muted line-clamp-2 mb-4">
-                    {item.excerpt}
-                  </p>
-
                   <Link
                     href={`/blog/${item.slug}`}
                     className="inline-flex items-center gap-2 text-primary font-medium"
