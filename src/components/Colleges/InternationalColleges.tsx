@@ -230,9 +230,9 @@ export default function InternationalColleges() {
               <Icon icon="mdi:globe" className="w-3 h-3 sm:w-4 sm:h-4" />
               International Education
             </span>
-            <h2 className="text-24 font-extrabold text-primary dark:text-white sm:text-28 md:text-35 lg:text-40">
+            <h1 className="text-24 font-extrabold text-primary dark:text-white sm:text-28 md:text-35 lg:text-40">
               Explore <span className="text-secondary">International Colleges</span>
-            </h2>
+            </h1>
             <p className="mt-2 text-13 font-medium leading-6 text-slate-600 dark:text-slate-300 sm:mt-3 sm:text-14 md:text-16">
               Study abroad at world-class institutions. Filter by location, country, and program to find your perfect match.
             </p>

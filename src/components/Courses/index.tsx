@@ -200,14 +200,23 @@ export default function CoursesSection() {
         {/* HEADER */}
         <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-primary/10 bg-white/85 p-4 sm:p-6 md:p-8 lg:p-10 text-center shadow-[0_28px_75px_rgba(10,24,58,0.10)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(48,216,201,0.16),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(23,30,76,0.08),transparent_30%)]" />
+          
+          {/* Floating Sparkles inside Header */}
+          <div className="pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 hidden lg:block animate-float">
+            <Icon icon="ph:sparkle-fill" className="text-accent text-28 opacity-45" />
+          </div>
+          <div className="pointer-events-none absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block animate-float" style={{ animationDelay: "1.5s" }}>
+            <Icon icon="ph:sparkle-fill" className="text-secondary text-24 opacity-40" />
+          </div>
+
           <div className="relative mx-auto max-w-3xl">
             <span className="mb-3 sm:mb-4 inline-flex items-center gap-2 rounded-full border border-[#FAFA33]/45 bg-[#FAFA33]/20 px-3 py-1.5 text-10 font-semibold uppercase tracking-[0.2em] text-primary shadow-sm dark:bg-[#FAFA33]/30 dark:text-primary sm:px-4 sm:py-2 sm:text-xs">
-              <Icon icon="mdi:shape-outline" className="h-3 sm:h-4 w-3 sm:w-4" />
+              <Icon icon="mdi:shape-outline" className="h-3 sm:h-4 w-3 sm:w-4 animate-spin-slow" style={{ animationDuration: "8s" }} />
               Category Explorer
             </span>
-            <h2 className="text-22 sm:text-28 md:text-35 lg:text-40 font-extrabold text-primary dark:text-white">
-              Explore <span className="text-secondary">Categories</span>
-            </h2>
+            <h1 className="text-22 sm:text-28 md:text-35 lg:text-40 font-extrabold text-primary dark:text-white">
+              Explore <span className="bg-gradient-to-r from-secondary via-accent to-secondary bg-[length:200%_200%] animate-gradient-shift bg-clip-text text-transparent">Categories</span>
+            </h1>
             <p className="mx-auto mt-2 sm:mt-3 max-w-2xl text-13 sm:text-14 md:text-16 font-medium leading-6 sm:leading-7 text-slate-600 dark:text-slate-300">
               Find the right path from category to specialization and college with cleaner filters and quicker browsing.
             </p>

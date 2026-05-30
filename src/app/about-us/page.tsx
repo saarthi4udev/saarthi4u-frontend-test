@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import CSSAnimatedGraduation from "@/components/Common/CSSAnimatedGraduation";
 
 export const metadata: Metadata = {
   title: "About Saarthi4u | Expert Career Mentors & Education Consulting",
@@ -106,15 +107,7 @@ const AboutUsPage = () => {
 
           {/* IMAGE */}
           <div className="relative flex justify-center animate-fadeInUp">
-            <div className="absolute inset-x-8 bottom-8 h-24 rounded-full bg-secondary/25 blur-2xl" />
-            <Image
-              src="/images/about-hero.svg"
-              alt="About Saarthi4u"
-              width={520}
-              height={420}
-              priority
-              className="relative w-full max-w-md transition-transform duration-500 hover:scale-[1.02]"
-            />
+            <CSSAnimatedGraduation />
           </div>
 
         </div>

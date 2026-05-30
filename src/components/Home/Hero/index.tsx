@@ -85,7 +85,7 @@ const Hero = () => {
   ];
 
   const stats = [
-    { value: "50K+", label: "students guided" },
+    { value: "10K+", label: "students guided" },
     { value: collegeCount, label: "colleges listed" },
     { value: "95%", label: "satisfaction rate" },
   ];

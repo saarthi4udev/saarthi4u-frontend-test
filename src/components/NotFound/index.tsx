@@ -16,7 +16,7 @@ const NotFound = () => {
                 height={0}
                 quality={100}
                 style={{width: "100%", height: "auto"}}
-                className="mx-auto max-w-full"
+                className="mx-auto max-w-full animate-float"
               />
             </div>
           </div>

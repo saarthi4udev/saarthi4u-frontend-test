@@ -379,12 +379,15 @@ const AIChatbot: React.FC = () => {
 
   return (
     <>
-      <div className="fixed bottom-28 right-4 z-[9998] sm:bottom-40 sm:right-6">
+      <div className="fixed bottom-28 right-4 z-[9998] sm:bottom-40 sm:right-6 flex items-center justify-center">
+        <div className={`absolute h-12 w-12 rounded-full bg-primary/25 sm:h-14 sm:w-14 transition-all duration-300 ${
+          isOpen && !isMinimized ? "scale-0 opacity-0" : "animate-pulse-ring"
+        }`} />
         <button
           type="button"
           onClick={openChat}
           aria-label="Open AI assistant"
-          className={`flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all duration-300 hover:scale-105 sm:h-14 sm:w-14 ${
+          className={`group relative flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all duration-300 hover:scale-105 sm:h-14 sm:w-14 ${
             isOpen && !isMinimized ? "scale-0 opacity-0 pointer-events-none" : "scale-100 opacity-100"
           }`}
         >

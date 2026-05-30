@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import CollegeTabs from "@/components/Colleges/CollegeTabs";
 
+export const dynamic = "force-dynamic";
+
 import {
   getCollegeBySlug,
   getCoursesByCollege,

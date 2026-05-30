@@ -28,7 +28,7 @@ interface HomeSectionApiResponse {
 export const getHomeSection = async (): Promise<HomeSectionData | null> => {
   try {
     const res = await fetch(`${BASE_URL}/home-section/all`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {

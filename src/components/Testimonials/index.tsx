@@ -22,6 +22,26 @@ function mapApiToTestimonial(item: any, fallbackId: number): Testimonial {
   };
 }
 
+const getVisiblePageItems = (current: number, total: number) => {
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  if (current <= 2) {
+    return [1, 2, "...", total];
+  }
+
+  if (current >= total - 1) {
+    return [1, "...", total - 1, total];
+  }
+
+  if (current === 3) {
+    return [1, 2, 3, "...", total];
+  }
+
+  return [1, 2, "...", current, "...", total];
+};
+
 // ---------------------------------------------------------------------------
 // Star rating helper
 // ---------------------------------------------------------------------------
@@ -155,6 +175,10 @@ export default function TestimonialsPage({
     testimonials && testimonials.length > 0 ? testimonials : DEMO_TESTIMONIALS
   );
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_LIMIT = 6;
+  const gridRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -174,6 +198,15 @@ export default function TestimonialsPage({
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilter]);
+
+  useEffect(() => {
+    if (currentPage === 1) return;
+    gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [currentPage]);
+
   const filtered = useMemo(
     () =>
       activeFilter === 0
@@ -181,6 +214,20 @@ export default function TestimonialsPage({
         : testimonialsList.filter((t) => Math.floor(t.rating) === activeFilter),
     [testimonialsList, activeFilter]
   );
+
+  const filteredTotalPages = Math.max(
+    1,
+    Math.ceil(filtered.length / PAGE_LIMIT)
+  );
+
+  const displayedItems = useMemo(() => {
+    return filtered.slice(
+      (currentPage - 1) * PAGE_LIMIT,
+      currentPage * PAGE_LIMIT
+    );
+  }, [filtered, currentPage]);
+
+  const pageItems = getVisiblePageItems(currentPage, filteredTotalPages);
 
   const filterOptions: { label: string; value: 0 | 5 | 4 | 3 }[] = [
     { label: "All", value: 0 },
@@ -264,7 +311,7 @@ export default function TestimonialsPage({
 
       {/* ── Grid section ── */}
       <section className="pb-20">
-        <div className="container mx-auto px-4 lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md)">
+        <div ref={gridRef} className="container mx-auto px-4 lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md)">
 
           {/* Filter pills */}
           <div className="mb-8 flex flex-wrap items-center gap-2">
@@ -310,12 +357,52 @@ export default function TestimonialsPage({
 
           {/* Responsive grid — grows automatically as backend sends more items */}
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((t, i) => (
+            {displayedItems.map((t, i) => (
               <TestimonialCard key={t.id} testimonial={t} index={i} />
             ))}
           </div>
 
-          {/* Future: pagination / load-more can be added here */}
+          {/* PAGINATION */}
+          {filteredTotalPages > 1 && (
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="rounded-lg border border-secondary/25 bg-secondary/5 px-3 py-2 text-sm font-semibold text-secondary transition hover:bg-secondary/10 disabled:cursor-not-allowed disabled:opacity-50 dark:border-secondary/30"
+              >
+                Previous
+              </button>
+
+              {pageItems.map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    if (typeof item === "number") setCurrentPage(item);
+                  }}
+                  disabled={item === "..."}
+                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                    item === currentPage
+                      ? "bg-secondary text-white shadow-sm"
+                      : item === "..."
+                        ? "cursor-default text-slate-400"
+                        : "border border-secondary/25 bg-secondary/5 text-secondary hover:bg-secondary/10 dark:border-secondary/30"
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+
+              <button
+                onClick={() =>
+                  setCurrentPage(Math.min(filteredTotalPages, currentPage + 1))
+                }
+                disabled={currentPage === filteredTotalPages}
+                className="rounded-lg border border-secondary/25 bg-secondary/5 px-3 py-2 text-sm font-semibold text-secondary transition hover:bg-secondary/10 disabled:cursor-not-allowed disabled:opacity-50 dark:border-secondary/30"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

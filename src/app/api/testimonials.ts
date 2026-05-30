@@ -14,15 +14,16 @@ export const getAllTestimonials = async (): Promise<Testimonial[]> => {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch testimonials");
+      console.warn(`Failed to fetch testimonials from API (Status: ${res.status}). Returning fallback empty list.`);
+      return [];
     }
 
     const data = await res.json();
 
     // adjust if your backend wraps response like { data: [...] }
-    return data?.data || data;
+    return data?.data || data || [];
   } catch (error) {
-    console.error("Error fetching testimonials:", error);
+    console.warn("API WARNING (getAllTestimonials): Failed to query testimonials. Serving fallback empty list instead.", error);
     return [];
   }
 };

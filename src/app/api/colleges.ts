@@ -3,7 +3,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 async function fetchAPI(endpoint: string) {
   try {
     const res = await fetch(`${BASE_URL}${endpoint}`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) return null;
@@ -24,7 +24,7 @@ async function fetchAPI(endpoint: string) {
 export const getAllColleges = async (page: number = 1, limit: number = 8) => {
   try {
     const res = await fetch(`${BASE_URL}/college/all?page=${page}&limit=${limit}`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) return null;
@@ -44,7 +44,7 @@ export const getAllColleges = async (page: number = 1, limit: number = 8) => {
 export const getAllCollegeshomepage = async () => {
   try {
     const res = await fetch(`${BASE_URL}/college/all`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) return null;
@@ -64,11 +64,16 @@ export const getAllCollegeshomepage = async () => {
 export const getCollegeCount = async () => {
   try {
     const res = await fetch(`${BASE_URL}/college/count`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch college stats");
+      console.warn(`Failed to fetch college stats (Status: ${res.status}). Returning fallback empty stats.`);
+      return {
+        total: 0,
+        universities: 0,
+        colleges: 0,
+      };
     }
 
     const json = await res.json();
@@ -79,7 +84,7 @@ export const getCollegeCount = async () => {
       colleges: json?.data?.colleges || 0,
     };
   } catch (err) {
-    console.error("API ERROR:", err);
+    console.warn("API WARNING (getCollegeCount): Failed to query college stats. Serving fallback empty stats instead.", err);
 
     return {
       total: 0,
@@ -154,6 +159,7 @@ export const getCoursesWithFeesBySlug = async (slug: string) => {
     name: course.name,
     specialization: course.specialization,
     duration: course.duration,
+    totalSeats: course.totalSeats || 0,
     fees: course.Fees || [],
   }));
 };
@@ -185,7 +191,7 @@ export const getRecruitersByCollege = (collegeId: number) =>
 export const getAllInternationalColleges = async (page: number = 1, limit: number = 8) => {
   try {
     const res = await fetch(`${BASE_URL}/international/all?page=${page}&limit=${limit}`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) return null;
@@ -203,7 +209,7 @@ export const getAllInternationalColleges = async (page: number = 1, limit: numbe
 export const getInternationalCollegeBySlug = async (slug: string) => {
   try {
     const res = await fetch(`${BASE_URL}/international/college/${slug}`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) return null;

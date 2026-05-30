@@ -65,18 +65,31 @@ const CareerCoaches = () => {
     const fetchMentors = async () => {
       const data = await getAllMentors();
 
-      const formatted = data.map((item: any) => ({
-        name: item.name,
-        title: item.title,
-        experience: `${item.experienceYears} Yrs`,
-        studentsGuided: `${item.studentsGuided?.toLocaleString()}+`,
-        rating: item.rating,
-        reviews: item.totalReviews,
-        specialties: item.shortQualifications || [],
-        bio: item.description,
-        photo: item.profileImage,
-        topBadge: item.role || "Mentor",
-      }));
+      const formatted = data.map((item: any) => {
+        // Parse specialties from comma-separated string, filtering out garbage values like "NaN" or "0"
+        let specialties: string[] = [];
+        if (typeof item.shortQualifications === "string") {
+          specialties = item.shortQualifications
+            .split(",")
+            .map((s: string) => s.trim())
+            .filter((s: string) => s && s !== "NaN" && s !== "0" && s !== "undefined");
+        } else if (Array.isArray(item.shortQualifications)) {
+          specialties = item.shortQualifications;
+        }
+
+        return {
+          name: item.name,
+          title: item.title,
+          experience: `${item.experienceYears || 0} Yrs`,
+          studentsGuided: `${(item.studentsGuided || 0).toLocaleString()}+`,
+          rating: item.rating || 5.0,
+          reviews: item.totalReviews || 0,
+          specialties,
+          bio: item.description,
+          photo: item.profileImage,
+          topBadge: item.role?.trim() || "Mentor",
+        };
+      });
 
       setCoaches(formatted);
     };
@@ -91,6 +104,10 @@ const CareerCoaches = () => {
       window.removeEventListener("resize", updateScrollState);
     };
   }, []);
+
+  if (coaches.length === 0) {
+    return null;
+  }
 
   return (
     <section ref={ref} className="relative overflow-hidden py-12 bg-white dark:bg-black">

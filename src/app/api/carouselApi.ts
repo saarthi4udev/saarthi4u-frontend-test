@@ -17,11 +17,12 @@ interface CarouselApiResponse {
 export const getAllCarouselImages = async (): Promise<CarouselItem[]> => {
   try {
     const res = await fetch(`${BASE_URL}/carousel/all`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch carousel data");
+      console.warn(`Failed to fetch carousel data from API (Status: ${res.status}). Returning fallback empty list.`);
+      return [];
     }
 
     const result: CarouselApiResponse = await res.json();
@@ -34,7 +35,7 @@ export const getAllCarouselImages = async (): Promise<CarouselItem[]> => {
       .filter((item) => item.isActive)
       .sort((a, b) => a.rank - b.rank);
   } catch (error) {
-    console.error("Carousel API error:", error);
+    console.warn("API WARNING (getAllCarouselImages): Failed to query carousel data. Serving fallback empty list instead.", error);
     return [];
   }
 };

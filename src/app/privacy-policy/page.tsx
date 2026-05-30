@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import CSSAnimatedPrivacy from "@/components/Common/CSSAnimatedPrivacy";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Saarthi4u - Secure Career Counseling Platform",
@@ -120,14 +121,9 @@ const PrivacyPolicyPage = () => {
             </div>
           </div>
 
-          {/* IMAGE */}
+          {/* ANIMATED VECTOR Visual */}
           <div className="relative flex justify-center lg:justify-end">
-            <div className="absolute -top-12 -right-12 h-72 w-72 rounded-full bg-secondary/15 blur-3xl opacity-70"></div>
-            <img
-              src="/images/privacy-hero.png"
-              alt="Privacy and data protection"
-              className="relative z-10 w-full max-w-xl transition-transform duration-500 hover:scale-[1.02]"
-            />
+            <CSSAnimatedPrivacy />
           </div>
 
         </div>

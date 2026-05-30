@@ -77,7 +77,7 @@ const PromoSection = () => {
                 href="/course"
                 className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-primary transition duration-200 hover:bg-accent-dark"
               >
-                View CAT + ICMAI course
+                View ICMAI Courses by Govt. Of India
               </Link>
 
               <Link
@@ -112,7 +112,7 @@ const PromoSection = () => {
                 src={promoData.imageUrl}
                 alt={promoData.title || "Promo image"}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-700 hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
               />

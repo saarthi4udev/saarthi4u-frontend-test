@@ -5,24 +5,19 @@ const BASE_URL = base + "/exam";
 export async function getAllExams(page = 1, limit = 1) {
   try {
     const res = await fetch(`${BASE_URL}/all?page=${page}&limit=${limit}`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch exams");
+      console.warn(`Failed to fetch exams from API (Status: ${res.status}). Returning fallback structure.`);
+      return { data: [], pagination: {} };
     }
 
     const data = await res.json();
 
     return data; 
-    // expect:
-    // {
-    //   data: [],
-    //   pagination: { page, limit, totalPages, totalItems }
-    // }
-
   } catch (error) {
-    console.error("Error fetching exams:", error);
+    console.warn("API WARNING (getAllExams): Failed to query exams. Serving fallback structure instead.", error);
     return { data: [], pagination: {} };
   }
 }
@@ -31,18 +26,19 @@ export async function getAllExams(page = 1, limit = 1) {
 export async function getExamBySlug(slug: string) {
   try {
     const res = await fetch(`${BASE_URL}/exam/${slug}`, {
-      cache: "no-store",
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {
-      throw new Error("Exam not found");
+      console.warn(`Exam not found by slug: ${slug} (Status: ${res.status}). Returning null.`);
+      return null;
     }
 
     const data = await res.json();
 
     return data?.data || null;
   } catch (error) {
-    console.error("Error fetching exam:", error);
+    console.warn(`API WARNING (getExamBySlug): Failed to query exam by slug: ${slug}`, error);
     return null;
   }
 }

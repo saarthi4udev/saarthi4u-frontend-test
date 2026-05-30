@@ -2,20 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
+import dynamic from "next/dynamic";
 
+// Above the fold critical components
 import Hero from "@/components/Home/Hero";
-import DiscoverMore from "@/components/discovermore/DiscoverMore";
-import ExploreColleges from "@/components/Home/ExploreColleges";
-import CareerCoaches from "@/components/Home/CareerCoaches";
-import EducationalPartners from "@/components/Educationpatner/EducationalPartners";
 import PromoSection from "@/components/Home/Promo";
 import CollegesAdBanner from "@/components/Home/CollegesAdBanner";
-import ResultsPromo from "@/components/Home/ResultsPromo";
-import Testimonials from "@/components/Home/Testimonials";
-import LeadershipCorner from "@/components/LeadershipCorner/LeadershipCorner";
-import InstagramSection from "@/components/Instagram/InstagramSection";
-import YoutubeSection from "@/components/Youtube/YoutubeSection";
-import UpdateProfileDialog from "./UpdateProfileDialog";
+
+// Lazy load non-critical / lower page components to reduce initial page weight
+const DiscoverMore = dynamic(() => import("@/components/discovermore/DiscoverMore"), { ssr: false });
+const ExploreColleges = dynamic(() => import("@/components/Home/ExploreColleges"), { ssr: false });
+const CareerCoaches = dynamic(() => import("@/components/Home/CareerCoaches"), { ssr: false });
+const EducationalPartners = dynamic(() => import("@/components/Educationpatner/EducationalPartners"), { ssr: false });
+const ResultsPromo = dynamic(() => import("@/components/Home/ResultsPromo"), { ssr: false });
+const Testimonials = dynamic(() => import("@/components/Home/Testimonials"), { ssr: false });
+const LeadershipCorner = dynamic(() => import("@/components/LeadershipCorner/LeadershipCorner"), { ssr: false });
+const YoutubeSection = dynamic(() => import("@/components/Youtube/YoutubeSection"), { ssr: false });
+const InstagramSection = dynamic(() => import("@/components/Instagram/InstagramSection"), { ssr: false });
+const UpdateProfileDialog = dynamic(() => import("./UpdateProfileDialog"), { ssr: false });
 
 export default function HomeClient() {
   const { user } = useAuth();

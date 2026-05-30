@@ -1,9 +1,17 @@
 export interface Mentor {
-  id?: string;
+  id?: number | string;
   name: string;
-  logo: string;
+  profileImage: string;
+  title: string;
+  role: string;
+  rating: number;
+  totalReviews: number;
   description: string;
-  support: string;
+  qualifications: string;
+  shortQualifications: string;
+  experienceYears: number;
+  studentsGuided: number;
+  visible?: boolean;
 }
 
 const base = process.env.NEXT_PUBLIC_API_URL;
@@ -16,19 +24,24 @@ export const getAllMentors = async (): Promise<Mentor[]> => {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "no-store", // ensures fresh data
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch mentors: ${res.status}`);
+      console.warn(`Failed to fetch mentors from API: ${res.status}`);
+      return [];
     }
 
     const data = await res.json();
+    const list = data?.data ?? data ?? [];
 
-    // Adjust based on API response structure
-    return data?.data ?? data ?? [];
+    if (!Array.isArray(list)) {
+      return [];
+    }
+
+    return list;
   } catch (error) {
-    console.error("Error fetching mentors:", error);
+    console.error("Error fetching mentors from API:", error);
     return [];
   }
 };

@@ -43,27 +43,28 @@ export const getAllPartners = async (
   try {
     const url = `${PARTNER_API}/all?page=${page}&limit=${limit}&search=${search}`;
 
-    console.log("BASE_URL:", BASE_URL);
-    console.log("Fetching:", url);
-
     const res = await fetch(url);
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("API Error:", res.status, errorText);
-      throw new Error("Failed to fetch partners");
+      console.warn(`Failed to fetch partners from API (Status: ${res.status}). Body: ${errorText}. Returning fallback empty structure.`);
+      return {
+        data: [],
+        totalPages: 1,
+        currentPage: 1,
+      };
     }
 
     const result: ApiResponse = await res.json();
 
     return {
-      data: result.data.filter((partner) => partner.visible),
-      totalPages: result.totalPages,
-      currentPage: result.page,
+      data: (result.data || []).filter((partner) => partner.visible),
+      totalPages: result.totalPages || 1,
+      currentPage: result.page || 1,
     };
 
   } catch (error) {
-    console.error("Partner API error:", error);
+    console.warn("API WARNING (getAllPartners): Failed to query partners. Serving fallback empty structure instead.", error);
 
     return {
       data: [],

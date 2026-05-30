@@ -21,6 +21,7 @@ interface Props {
 
 const navItems = [
   { key: "courses", label: "Courses & Fees", icon: "solar:notebook-bold-duotone" },
+  { key: "seats", label: "Seats Intake", icon: "solar:users-group-rounded-bold-duotone" },
   { key: "placements", label: "Placements", icon: "solar:graph-up-bold-duotone" },
   { key: "facilities", label: "Facilities", icon: "solar:buildings-2-bold-duotone" },
   { key: "faculty", label: "Faculty", icon: "solar:users-group-two-rounded-bold-duotone" },
@@ -160,6 +161,64 @@ export default function CollegeTabs({
         )}
       </section>
 
+      {/* ─── SEATS INTAKE ─── */}
+      <section ref={(el) => { sectionRefs.current["seats"] = el; }}>
+        <SectionHeader icon="solar:users-group-rounded-bold-duotone" title="Seats Intake Capacity" />
+        {courses.length === 0 ? (
+          <EmptyState icon="solar:users-group-rounded-bold-duotone" text="No seats data available" />
+        ) : (
+          <div className="space-y-4">
+            {/* Total Capacity summary card */}
+            <div className="flex items-center gap-4 rounded-xl border border-secondary/15 bg-gradient-to-r from-secondary/5 to-white p-4 dark:border-primary/20 dark:from-slate-900 dark:to-midnight_text">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/15 text-secondary">
+                <Icon icon="solar:users-group-rounded-bold-duotone" className="text-xl" />
+              </div>
+              <div>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-wide text-slate-400 dark:text-white/45">Total Approved Intake</p>
+                <p className="mt-0.5 text-[1.1rem] font-extrabold text-primary dark:text-white">
+                  {courses.reduce((sum, c) => sum + (c.totalSeats || 0), 0)} Seats Available
+                </p>
+              </div>
+            </div>
+
+            {/* Grid of courses with seats */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {courses.map((course: any) => (
+                <div
+                  key={course.id}
+                  className="rounded-xl border border-border/25 bg-white p-4 transition-all hover:shadow-sm dark:border-dark_border dark:bg-midnight_text"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h4 className="text-[0.82rem] font-bold text-primary dark:text-white">{course.name}</h4>
+                      {course.specialization && (
+                        <p className="mt-0.5 text-[0.7rem] text-slate-400 dark:text-white/50">{course.specialization}</p>
+                      )}
+                    </div>
+                    <span className="rounded-md bg-secondary/10 px-2 py-0.5 text-[0.72rem] font-bold text-secondary">
+                      {course.totalSeats || 0} Seats
+                    </span>
+                  </div>
+                  
+                  {course.totalSeats > 0 && (
+                    <div className="mt-3">
+                      <div className="h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800">
+                        <div
+                          className="h-1.5 rounded-full bg-gradient-to-r from-secondary to-accent"
+                          style={{
+                            width: `${Math.min(100, Math.max(15, (course.totalSeats / 240) * 100))}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
       {/* ─── PLACEMENTS ─── */}
       <section ref={(el) => { sectionRefs.current["placements"] = el; }}>
         <SectionHeader icon="solar:graph-up-bold-duotone" title="Placements" count={placements.length} />
@@ -180,12 +239,12 @@ export default function CollegeTabs({
                   <div className="mt-3 grid grid-cols-2 gap-3">
                     <div>
                       <p className="text-[0.68rem] font-semibold uppercase tracking-wide text-slate-400 dark:text-white/45">Avg Package</p>
-                      <p className="mt-0.5 text-[0.9rem] font-bold text-primary dark:text-white">{p.averagePackage ? `₹${Number(p.averagePackage).toLocaleString()}` : "—"}</p>
+                      <p className="mt-0.5 text-[0.9rem] font-bold text-primary dark:text-white">{p.averagePackage || "—"}</p>
                     </div>
                     <div>
                       <p className="text-[0.68rem] font-semibold uppercase tracking-wide text-slate-400 dark:text-white/45">Highest</p>
                       <p className="mt-0.5 text-[0.9rem] font-bold text-secondary">
-                        {p.highestPackage ? `₹${Number(p.highestPackage).toLocaleString()}` : "—"}                      </p>
+                        {p.highestPackage || "—"}                      </p>
                     </div>
                   </div>
                 </div>
@@ -328,9 +387,10 @@ export default function CollegeTabs({
                         transition={{ duration: 0.25 }}
                         className="overflow-hidden"
                       >
-                        <div className="border-t border-border/15 px-5 py-3 text-[0.8rem] leading-relaxed text-slate-500 dark:border-dark_border/30 dark:text-white/65">
-                          {f.answer}
-                        </div>
+                        <div 
+                          className="border-t border-border/15 px-5 py-3 text-[0.8rem] leading-relaxed text-slate-500 dark:border-dark_border/30 dark:text-white/65 prose prose-sm max-w-none dark:prose-invert"
+                          dangerouslySetInnerHTML={{ __html: f.answer }}
+                        />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -396,7 +456,7 @@ function SectionHeader({ icon, title, count }: { icon: string; title: string; co
       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-secondary/12">
         <Icon icon={icon} className="text-sm text-secondary" />
       </div>
-      <h3 className="text-[0.9rem] font-bold text-primary dark:text-white">{title}</h3>
+      <h2 className="text-[0.9rem] font-bold text-primary dark:text-white">{title}</h2>
       {count !== undefined && count > 0 && (
         <span className="rounded-md bg-primary/6 px-1.5 py-0.5 text-[0.68rem] font-bold text-primary/70 dark:bg-primary/20 dark:text-white/70">
           {count}

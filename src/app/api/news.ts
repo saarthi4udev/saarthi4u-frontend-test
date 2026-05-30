@@ -95,14 +95,15 @@ export async function getAllNews(page = 1, limit = 5) {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch news");
+      console.warn(`Failed to fetch news from API (Status: ${res.status}). Returning fallback structure.`);
+      return { data: [], total: 0, currentPage: 1, totalPages: 1 };
     }
 
     const data: ApiResponse = await res.json();
 
     // Defensive client-side sort: guarantees the items on the current page
     // are newest-first even if the backend ignored our sort hints.
-    const sortedRaw = [...data.data].sort(
+    const sortedRaw = [...(data.data || [])].sort(
       (a, b) =>
         new Date(b.publishedAt).getTime() -
         new Date(a.publishedAt).getTime()
@@ -128,7 +129,7 @@ export async function getAllNews(page = 1, limit = 5) {
     };
 
   } catch (error) {
-    console.error("Error fetching news:", error);
+    console.warn("API WARNING (getAllNews): Failed to query news feed. Serving fallback empty structure instead.", error);
     return { data: [], total: 0, currentPage: 1, totalPages: 1 };
   }
 }

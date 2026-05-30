@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getScholarshipBySlug } from "@/app/api/Scholarship";
+import { getAllCollegeshomepage } from "@/app/api/colleges";
 import ScholarshipDetailsView from "@/components/Scholarships/ScholarshipDetailsView";
 
 type Props = {
@@ -33,8 +34,24 @@ export default async function ScholarshipDetailsPage({ params }: Props) {
     notFound();
   }
 
-  // for now keep empty
-  const relatedColleges: any[] = [];
+  let relatedColleges: any[] = [];
+  try {
+    const colResponse = await getAllCollegeshomepage();
+    const allColleges = colResponse?.data || [];
+    
+    if (Array.isArray(allColleges)) {
+      relatedColleges = allColleges.slice(0, 4).map((c: any) => ({
+        ...c,
+        category: c.Category?.name || "",
+        established: c.establishedYear || null,
+        location: [c.city, c.state].filter(Boolean).join(", "),
+        logo: c.logo || "",
+        type: c.type || "College"
+      }));
+    }
+  } catch (err) {
+    console.warn("Failed to retrieve related colleges for scholarship page:", err);
+  }
 
   return (
     <ScholarshipDetailsView

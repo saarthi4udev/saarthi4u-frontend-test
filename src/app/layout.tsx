@@ -4,19 +4,17 @@ import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { ThemeProvider } from "next-themes";
-import ScrollToTop from "@/components/ScrollToTop";
-import WhatsAppFloat from "@/components/Common/WhatsAppFloat";
-import AIChatbot from "@/components/Common/AIChatbot";
-import EnquiryPopup from "@/components/EnquiryPopup/EnquiryPopup";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { RouteLoaderProvider } from "@/components/Common/RouteLoader";
+import RootClientLayout from "./RootClientLayout";
 
-const dmsans = DM_Sans({ subsets: ["latin"] });
+const dmsans = DM_Sans({ subsets: ["latin"], display: "swap" });
 const sora = Sora({
   subsets: ["latin"],
   variable: "--font-display",
   weight: ["600", "700", "800"],
+  display: "swap",
 });
 
 export default function RootLayout({
@@ -46,15 +44,12 @@ export default function RootLayout({
             defaultTheme="light"
           >
             <RouteLoaderProvider>
-            <Header />
-            <Toaster position="top-center" reverseOrder={false} />
-            {/* offset for fixed header */}
-            <main className="site-main flex-1 min-w-0 overflow-x-clip pt-[4.5rem] sm:pt-20">{children}</main>
-            <Footer />
-            <AIChatbot />
-            <WhatsAppFloat />
-            <ScrollToTop />
-            <EnquiryPopup />
+              <Header />
+              <Toaster position="top-center" reverseOrder={false} />
+              {/* offset for fixed header */}
+              <main className="site-main flex-1 min-w-0 overflow-x-clip pt-[4.5rem] sm:pt-20">{children}</main>
+              <Footer />
+              <RootClientLayout />
             </RouteLoaderProvider>
           </ThemeProvider>
         </AuthProvider>

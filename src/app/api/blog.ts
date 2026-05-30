@@ -8,7 +8,10 @@ export async function getAllBlogs() {
   try {
     const res = await fetch(`${BASE_URL}/all?page=1&limit=1000`);
 
-    if (!res.ok) throw new Error("Failed to fetch blogs");
+    if (!res.ok) {
+      console.warn(`Failed to fetch blogs from API (Status: ${res.status}). Returning fallback empty list.`);
+      return [];
+    }
 
     const json = await res.json();
 
@@ -35,7 +38,7 @@ export async function getAllBlogs() {
         new Date(b.date).getTime() - new Date(a.date).getTime()
     );
   } catch (error) {
-    console.error("Blog fetch error:", error);
+    console.warn("API WARNING (getAllBlogs): Failed to query blogs. Serving fallback empty list instead.", error);
     return [];
   }
 }
@@ -48,7 +51,10 @@ export async function getBlogBySlug(slug: string) {
       cache: "no-store",
     });
 
-    if (!res.ok) throw new Error("Failed to fetch blog");
+    if (!res.ok) {
+      console.warn(`Failed to fetch blog by slug: ${slug} (Status: ${res.status}). Returning null.`);
+      return null;
+    }
 
     const json = await res.json();
     const blog = json.data;
@@ -70,7 +76,7 @@ export async function getBlogBySlug(slug: string) {
       popularScore: blog.views || 0,
     };
   } catch (error) {
-    console.error("Blog slug fetch error:", error);
+    console.warn(`API WARNING (getBlogBySlug): Failed to query blog by slug: ${slug}`, error);
     return null;
   }
 }

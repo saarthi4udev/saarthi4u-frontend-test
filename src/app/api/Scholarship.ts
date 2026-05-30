@@ -11,14 +11,15 @@ export async function getAllScholarships(page = 1, limit = 6) {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch scholarships");
+      console.warn(`Failed to fetch scholarships from API (Status: ${res.status}). Returning fallback empty structure.`);
+      return { data: [], pagination: {} };
     }
 
     const json = await res.json();
 
     return json;
   } catch (error) {
-    console.error("Error fetching scholarships:", error);
+    console.warn("API WARNING (getAllScholarships): Failed to query scholarships. Serving fallback empty structure instead.", error);
     return { data: [], pagination: {} };
   }
 }
@@ -32,14 +33,15 @@ export async function getScholarshipBySlug(slug: string) {
     });
 
     if (!res.ok) {
-      throw new Error("Scholarship not found");
+      console.warn(`Scholarship not found by slug: ${slug} (Status: ${res.status}). Returning null.`);
+      return null;
     }
 
     const data = await res.json();
 
     return data?.data || null;
   } catch (error) {
-    console.error("Error fetching scholarship:", error);
+    console.warn(`API WARNING (getScholarshipBySlug): Failed to query scholarship by slug: ${slug}`, error);
     return null;
   }
 }

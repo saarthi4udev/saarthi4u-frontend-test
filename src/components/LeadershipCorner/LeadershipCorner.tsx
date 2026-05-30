@@ -137,11 +137,14 @@ const LeadershipCorner = () => {
 
                 <div className="space-y-4 text-16 leading-relaxed text-white/88 md:text-[1.03rem]">
                   <motion.p variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}>
-                    At Saarthi4u, we believe every student deserves <span className="font-semibold text-white">the right direction, the right support, and the right opportunities</span> to unlock their full potential.
+                     <span className="font-semibold text-accent">At Saarthi4u,</span>
+                    
+                     we believe every student deserves <span className="font-semibold text-white">the right direction, the right support, and the right opportunities</span> to unlock their full potential.
                   </motion.p>
 
                   <motion.p variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}>
-                    Woh kahate hain na, agar hausle ho majbut, to sanson se bhi tufan uthaya ja sakta hai. Pathar par bhi phool khilaya ja sakta hai. <span className="font-semibold text-accent">Aapke irade ho aasman se bhi unche, to suraj se bhi hath milaya ja sakta hai.</span>
+                    Woh kahate hain na, 
+                    <span className="font-semibold text-accent">Agar hausle ho majbut, to sanson se bhi tufan uthaya ja sakta hai. Pathar par bhi phool khilaya ja sakta hai. Aapke irade ho aasman se bhi unche, to suraj se bhi hath milaya ja sakta hai.</span>
                   </motion.p>
 
                   <motion.p variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}>
@@ -149,7 +152,12 @@ const LeadershipCorner = () => {
                   </motion.p>
 
                   <motion.p variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}>
-                    Yeh mauka mila hai, ise hath se mat jaane dijiye. Karm bhumi par fal ke liye shram sabko karna padta hai. Rab to keval lakiren deta hai, rang to humko bharna hota hai.
+                    Yeh mauka mila hai, ise hath se mat jaane dijiye. 
+                                        <span className="font-semibold text-accent">
+                    Karm bhumi par fal ke liye shram sabko karna padta hai. Rab to keval lakiren deta hai, rang to humko bharna hota hai.
+                                          
+                                          </span>
+
                   </motion.p>
 
                   <motion.p variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}>

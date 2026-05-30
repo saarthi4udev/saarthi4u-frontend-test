@@ -216,13 +216,22 @@ export default function ScholarshipsSection() {
         {/* ── HEADER ── */}
         <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-primary/10 bg-white/85 p-6 text-center shadow-[0_28px_75px_rgba(10,24,58,0.10)] backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-8 lg:p-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(48,216,201,0.16),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(23,30,76,0.08),transparent_31%)]" />
+          
+          {/* Floating Sparkles inside Header */}
+          <div className="pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 hidden lg:block animate-float">
+            <Icon icon="ph:sparkle-fill" className="text-accent text-28 opacity-45" />
+          </div>
+          <div className="pointer-events-none absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block animate-float" style={{ animationDelay: "1.5s" }}>
+            <Icon icon="ph:sparkle-fill" className="text-secondary text-24 opacity-40" />
+          </div>
+
           <div className="relative mx-auto max-w-3xl">
             <span className="mb-4 inline-flex h-9 items-center gap-2 rounded-full border border-secondary/25 bg-secondary/10 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary dark:text-secondary">
-              <Icon icon="solar:medal-ribbons-star-bold-duotone" className="h-4 w-4" />
+              <Icon icon="solar:medal-ribbons-star-bold-duotone" className="h-4 w-4 animate-pulse" />
             Scholarship Discovery
             </span>
             <h1 className="text-4xl font-extrabold tracking-tight text-primary dark:text-white md:text-5xl">
-              Explore <span className="text-secondary">Scholarships</span>
+              Explore <span className="bg-gradient-to-r from-secondary via-accent to-secondary bg-[length:200%_200%] animate-gradient-shift bg-clip-text text-transparent">Scholarships</span>
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">
               Discover scholarships by eligibility, funding type, provider, and application mode with a cleaner browse flow.

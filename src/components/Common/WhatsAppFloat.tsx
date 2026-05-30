@@ -9,13 +9,14 @@ const WhatsAppFloat: React.FC = () => {
   const href = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
-    <div className="fixed bottom-14 right-4 z-[980] sm:bottom-20 sm:right-6">
+    <div className="fixed bottom-14 right-4 z-[980] sm:bottom-20 sm:right-6 flex items-center justify-center">
+      <div className="absolute h-11 w-11 rounded-full bg-emerald-500/30 sm:h-12 sm:w-12 animate-pulse-ring" />
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-emerald-500/95 text-white shadow-[0_10px_20px_rgba(16,185,129,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-[0_14px_24px_rgba(16,185,129,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-dark_border dark:ring-offset-darkmode sm:h-12 sm:w-12"
+        className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-emerald-500/95 text-white shadow-[0_10px_20px_rgba(16,185,129,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-[0_14px_24px_rgba(16,185,129,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-dark_border dark:ring-offset-darkmode sm:h-12 sm:w-12"
         title="Chat on WhatsApp"
       >
         <svg
