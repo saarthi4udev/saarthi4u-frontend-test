@@ -1,6 +1,6 @@
 // services/consultationApi.ts
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export interface ConsultationFormData {
   fullName: string;
@@ -35,7 +35,7 @@ export async function createConsultation(
   formData: ConsultationFormData
 ): Promise<ConsultationResponse> {
   try {
-    const response = await fetch(`${BASE_URL}/api/consultation/create`, {
+    const response = await fetch(`${BASE_URL}/consultation/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -19,7 +19,7 @@ const BASE_URL = `${base}/mentor`;
 
 export const getAllMentors = async (): Promise<Mentor[]> => {
   try {
-    const res = await fetch(`${BASE_URL}/all`, {
+    const res = await fetch(`${BASE_URL}/all?page=1&limit=100&visible=true`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

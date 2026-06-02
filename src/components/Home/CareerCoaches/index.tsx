@@ -64,6 +64,7 @@ const CareerCoaches = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       const data = await getAllMentors();
+     
 
       const formatted = data.map((item: any) => {
         // Parse specialties from comma-separated string, filtering out garbage values like "NaN" or "0"
@@ -240,10 +241,16 @@ const CareerCoaches = () => {
           >
             {coaches.map((coach, index) => (
               <motion.div
-                key={coach.name}
+                key={coach.name || index}
                 initial={{ opacity: 0, y: 32, scale: 0.96 }}
-                animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.96 }}
-                transition={{ duration: 0.55, delay: 0.35 + index * 0.1, type: "spring", stiffness: 140, damping: 18 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{
+                  duration: 0.55,
+                  delay: index * 0.1,
+                  type: "spring",
+                  stiffness: 140,
+                  damping: 18,
+                }}
                 whileHover={{ y: -4, scale: 1.01 }}
                 className="w-[320px] shrink-0 snap-start"
               >
