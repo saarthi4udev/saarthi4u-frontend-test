@@ -14,34 +14,21 @@ export interface Mentor {
   visible?: boolean;
 }
 
-const base = process.env.NEXT_PUBLIC_API_URL;
-const BASE_URL = `${base}/mentor`;
-
 export const getAllMentors = async (): Promise<Mentor[]> => {
-  try {
-    const res = await fetch(`${BASE_URL}/all?page=1&limit=100&visible=true`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      next: { revalidate: 3600 },
-    });
+  const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/mentor`;
 
-    if (!res.ok) {
-      console.warn(`Failed to fetch mentors from API: ${res.status}`);
-      return [];
-    }
+  try {
+    const res = await fetch(
+      `${BASE_URL}/all?page=1&limit=100`
+    );
 
     const data = await res.json();
-    const list = data?.data ?? data ?? [];
 
-    if (!Array.isArray(list)) {
-      return [];
-    }
+    console.log("Mentor API Response:", data);
 
-    return list;
-  } catch (error) {
-    console.error("Error fetching mentors from API:", error);
+    return data?.data || [];
+  } catch (err) {
+    console.error(err);
     return [];
   }
 };

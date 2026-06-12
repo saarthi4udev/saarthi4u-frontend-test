@@ -98,7 +98,7 @@ const Location = () => {
           transition={{ duration: 0.55 }}
         >
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14009.240485599259!2d77.37517923452664!3d28.620466096688475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cef050db2c1b3%3A0x5ad04213abb8ce96!2sSector%2063!5e0!3m2!1sen!2sin!4v1770057791236!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.374762763082!2d77.38963079999999!3d28.6185281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ceffbdcd4443b%3A0xd50f6afbdcda134!2sSaarthi4u%20-%20Navigate%20your%20Future%20Effortlessly.!5e0!3m2!1sen!2sin!4v1781288009086!5m2!1sen!2sin"
             width="100%"
             height="420"
             loading="lazy"

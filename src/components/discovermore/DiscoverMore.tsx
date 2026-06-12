@@ -113,133 +113,132 @@ const DiscoverMore = () => {
           {...sectionAnimation}
           className="rounded-3xl border border-secondary/15 bg-gradient-to-b from-secondary/5 via-white to-white p-5 shadow-sm backdrop-blur-sm dark:border-primary/30 dark:from-slate-900 dark:via-black dark:to-black md:p-7"
         >
-        <motion.div {...badgeAnimation} className="flex justify-center mb-4">
-          <span className="px-6 py-2 rounded-full text-sm font-semibold tracking-wide bg-secondary/10 text-secondary dark:bg-secondary/20 dark:text-secondary">
-            DISCOVER MORE
-          </span>
-        </motion.div>
+          <motion.div {...badgeAnimation} className="flex justify-center mb-4">
+            <span className="px-6 py-2 rounded-full text-sm font-semibold tracking-wide bg-secondary/10 text-secondary dark:bg-secondary/20 dark:text-secondary">
+              DISCOVER MORE
+            </span>
+          </motion.div>
 
-        <motion.h2
-          {...titleAnimation}
-          className="text-32 md:text-40 font-semibold text-center text-gray-900 dark:text-white"
-        >
-          Choose Your Next <span className="text-secondary">Academic Step</span>
-        </motion.h2>
+          <motion.h2
+            {...titleAnimation}
+            className="text-32 md:text-40 font-semibold text-center text-gray-900 dark:text-white"
+          >
+            Discover More with  <span className="text-secondary">Online and Offline Courses</span>
+          </motion.h2>
 
-        <motion.p
+          {/* <motion.p
           {...descriptionAnimation}
           className="mt-2 max-w-2xl mx-auto text-center text-base leading-relaxed text-gray-600 dark:text-gray-300"
         >
           Explore key journeys from learning mode to admissions, exams, and
           direct expert support.
-        </motion.p>
+        </motion.p> */}
 
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <div className="rounded-2xl border border-gray-200 bg-white/70 p-2 dark:border-gray-700 dark:bg-slate-900/60">
-              {discoverItems.map((item, index) => {
-                const isActive = activeIndex === index;
+          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <div className="rounded-2xl border border-gray-200 bg-white/70 p-2 dark:border-gray-700 dark:bg-slate-900/60">
+                {discoverItems.map((item, index) => {
+                  const isActive = activeIndex === index;
 
-                return (
-                  <motion.div
-                    key={item.title}
-                    {...rowAnimation(index)}
-                    className="relative"
-                  >
-                    <Link
-                      href={item.href}
-                      onMouseEnter={() => setActiveIndex(index)}
-                      onFocus={() => setActiveIndex(index)}
-                      className={`group mt-2 flex items-center justify-between rounded-xl px-4 py-4 transition-all duration-300 ${
-                        isActive
-                          ? "bg-primary text-white shadow-md"
-                          : "bg-transparent text-gray-700 hover:bg-secondary/8 dark:text-gray-200 dark:hover:bg-slate-800"
-                      }`}
+                  return (
+                    <motion.div
+                      key={item.title}
+                      {...rowAnimation(index)}
+                      className="relative"
                     >
-                      <div>
-                        <p className={`text-xs font-semibold tracking-wider ${isActive ? "text-secondary" : "text-secondary dark:text-secondary"}`}>
-                          STEP {item.id}
-                        </p>
-                        <p className="mt-1 text-lg font-semibold">{item.title}</p>
-                        <p className={`mt-1 text-sm ${isActive ? "text-white/80" : "text-gray-500 dark:text-gray-400"}`}>
-                          {item.highlight}
-                        </p>
-                      </div>
-                      <span className={`text-xl transition-transform duration-300 ${isActive ? "translate-x-1" : "group-hover:translate-x-1"}`} aria-hidden>
-                        →
-                      </span>
-                    </Link>
-                  </motion.div>
-                );
-              })}
+                      <Link
+                        href={item.href}
+                        onMouseEnter={() => setActiveIndex(index)}
+                        onFocus={() => setActiveIndex(index)}
+                        className={`group mt-2 flex items-center justify-between rounded-xl px-4 py-4 transition-all duration-300 ${isActive
+                            ? "bg-primary text-white shadow-md"
+                            : "bg-transparent text-gray-700 hover:bg-secondary/8 dark:text-gray-200 dark:hover:bg-slate-800"
+                          }`}
+                      >
+                        <div>
+                          <p className={`text-xs font-semibold tracking-wider ${isActive ? "text-secondary" : "text-secondary dark:text-secondary"}`}>
+                            STEP {item.id}
+                          </p>
+                          <p className="mt-1 text-lg font-semibold">{item.title}</p>
+                          <p className={`mt-1 text-sm ${isActive ? "text-white/80" : "text-gray-500 dark:text-gray-400"}`}>
+                            {item.highlight}
+                          </p>
+                        </div>
+                        <span className={`text-xl transition-transform duration-300 ${isActive ? "translate-x-1" : "group-hover:translate-x-1"}`} aria-hidden>
+                          →
+                        </span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 22 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 22 }}
-            transition={{ duration: 0.6, delay: 0.35 }}
-            className="lg:col-span-7"
-          >
-            <div className="relative h-full overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-slate-900">
-              <div className="relative h-64 w-full md:h-72">
-                <Image
-                  key={activeItem.image}
-                  src={activeItem.image}
-                  alt={activeItem.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 58vw, 720px"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent" />
+            <motion.div
+              initial={{ opacity: 0, x: 22 }}
+              animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 22 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="lg:col-span-7"
+            >
+              <div className="relative h-full overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-slate-900">
+                <div className="relative h-64 w-full md:h-72">
+                  <Image
+                    key={activeItem.image}
+                    src={activeItem.image}
+                    alt={activeItem.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 58vw, 720px"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent" />
+
+                  <motion.div
+                    key={activeItem.title}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35 }}
+                    className="absolute bottom-4 left-4 right-4"
+                  >
+                    <span className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                      {activeItem.label}
+                    </span>
+                    <h3 className="mt-2 text-2xl font-semibold text-white md:text-3xl">
+                      {activeItem.title}
+                    </h3>
+                  </motion.div>
+                </div>
 
                 <motion.div
-                  key={activeItem.title}
+                  key={activeItem.description}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35 }}
-                  className="absolute bottom-4 left-4 right-4"
+                  className="p-5 md:p-6"
                 >
-                  <span className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-                    {activeItem.label}
-                  </span>
-                  <h3 className="mt-2 text-2xl font-semibold text-white md:text-3xl">
-                    {activeItem.title}
-                  </h3>
+                  <p className="text-base leading-7 text-gray-600 dark:text-gray-300">
+                    {activeItem.description}
+                  </p>
+
+                  <div className="mt-5 flex flex-wrap items-center gap-3">
+                    <Link
+                      href={activeItem.href}
+                      className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-primary transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
+                    >
+                      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                      Continue to {activeItem.title}
+                      <span aria-hidden>→</span>
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="inline-flex items-center gap-2 rounded-full border border-secondary/30 px-5 py-2.5 text-sm font-semibold text-secondary transition hover:bg-secondary/10 dark:border-secondary/40 dark:text-secondary dark:hover:bg-slate-800"
+                    >
+                      Talk to Counselor
+                    </Link>
+                  </div>
                 </motion.div>
               </div>
-
-              <motion.div
-                key={activeItem.description}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35 }}
-                className="p-5 md:p-6"
-              >
-                <p className="text-base leading-7 text-gray-600 dark:text-gray-300">
-                  {activeItem.description}
-                </p>
-
-                <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <Link
-                    href={activeItem.href}
-                    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-primary transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/25"
-                  >
-                    <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                    Continue to {activeItem.title}
-                    <span aria-hidden>→</span>
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center gap-2 rounded-full border border-secondary/30 px-5 py-2.5 text-sm font-semibold text-secondary transition hover:bg-secondary/10 dark:border-secondary/40 dark:text-secondary dark:hover:bg-slate-800"
-                  >
-                    Talk to Counselor
-                  </Link>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

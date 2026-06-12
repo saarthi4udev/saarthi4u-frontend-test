@@ -87,7 +87,7 @@ const Hero = () => {
   const stats = [
     { value: "10K+", label: "students guided" },
     { value: collegeCount, label: "colleges listed" },
-    { value: "95%", label: "satisfaction rate" },
+    { value: "98%", label: "satisfaction rate" },
   ];
 
   const sliderData = heroVisuals.length > 0 ? heroVisuals : fallbackVisuals;
